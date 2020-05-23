@@ -3,7 +3,7 @@
 Ase Framework is porting [Axon framework](https://github.com/AxonFramework/AxonFramework) into the dotnetCore. 
 There is a [progress graph](./How%20is%20able%20to%20port%20Axon.pdf) that shows what is the latest state of porting and what is the not implemented parts.
 
-In AseFramework has being tried to use as much as possible the same structure of AxonFramework to keep compatibility and easy use of documents and guidelines.  
+In AseFramework has being tried to use as much as possible the same structure of AxonFramework to keep compatibility and easy to use of documents and guidelines.  
 
 this is the AxonFramework readme:
 

@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messaging", "Messaging\Messaging.csproj", "{98C11FEE-62F9-4241-B7FA-13EB15543761}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AseFarmework.Messaging", "AseFarmework.Messaging\AseFarmework.Messaging.csproj", "{98C11FEE-62F9-4241-B7FA-13EB15543761}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

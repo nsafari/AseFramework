@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Messaging
+namespace Ase.Messaging.Messaging
 {
     /// <summary>
     /// Representation of a Message, containing a Payload and MetaData. Typical examples of Messages are Commands and
