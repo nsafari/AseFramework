@@ -1,11 +1,11 @@
 # Ase Framework 
 
-Ase Framework is porting [Axon framework](https://github.com/AxonFramework/AxonFramework) into the dotnetCore. 
-There is a [progress graph](./How%20is%20able%20to%20port%20Axon.pdf) that shows what is the latest state of porting and what is the not implemented parts.
+Ase Framework is porting [Axon framework](https://github.com/AxonFramework/AxonFramework) into dotnetCore. 
+There is a [progress graph](./How%20is%20able%20to%20port%20Axon.pdf) that shows what is the latest state of porting work and what are the non-implemented parts.
 
-In AseFramework has being tried to use as much as possible the same structure of AxonFramework to keep compatibility and easy to use of documents and guidelines.  
+In AseFramework we are trying comply to AxonFramework structure as much as possible to make it easy to follow AxonFramework documents and guidelines.  
 
-this is the AxonFramework readme:
+This is the AxonFramework readme intro:
 
 Axon Framework is a framework for building evolutionary, event-driven microservice systems,
  based on the principles of Domain Driven Design, Command-Query Responsibility Segregation (CQRS) and Event Sourcing.
@@ -14,10 +14,10 @@ It provides you the necessary building blocks to follow these principles.
 Building blocks like Aggregate factories and Repositories, Command, Event and Query Buses and an Event Store.
 The framework provides sensible defaults for all of these components out of the box.
 
-This set up helps you create a well structured application without having to bother with the infrastructure.
+This set up helps you create a well-structured application without having to bother with the infrastructure.
 The main focus can thus become your business functionality.
   
-For more information on anything Axon, please visit our website, [http://axoniq.io](http://axoniq.io).
+For more information about Axon, please follow this link, [http://axoniq.io](http://axoniq.io).
 
 ## Getting started
 
