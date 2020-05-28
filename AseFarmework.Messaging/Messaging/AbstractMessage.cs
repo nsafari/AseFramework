@@ -14,7 +14,7 @@ namespace Ase.Messaging.Messaging
         /// Initializes a new message with given identifier.
         /// </summary>
         /// <param name="identifier">the message identifier</param>
-        public AbstractMessage(string identifier)
+        protected AbstractMessage(string identifier)
         {
             _identifier = identifier;
         }

@@ -13,7 +13,7 @@ namespace Ase.Messaging.Messaging
     /// @author nSafari
     /// @since 2.0
     /// </summary>
-    public class MetaData : IImmutableDictionary<string, Object>
+    public class MetaData : IImmutableDictionary<string, object>
     {
         private static readonly MetaData EmptyMetaData = new MetaData();
         private static readonly string UnsupportedMutationMsg = "Metadata is immutable.";
