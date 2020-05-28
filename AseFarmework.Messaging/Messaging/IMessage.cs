@@ -65,5 +65,7 @@ namespace Ase.Messaging.Messaging
         /// <returns>a copy of this message with the given MetaData</returns>
         IMessage<T> AndMetaData(IReadOnlyDictionary<string, object> metaData);
 
+        //TODO: serializePayload
+        //TODO: serializeMetaData
     }
 }

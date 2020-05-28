@@ -28,11 +28,16 @@ namespace Ase.Messaging.Messaging
 
         public abstract T GetPayload();
 
-        public Type GetPayloadType()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Type GetPayloadType();
 
+        
+        /// <summary>
+        /// Returns a new message instance with the same payload and properties as this message but given <code>metaData</code>.
+        /// </summary>
+        /// <param name="metaData">The metadata in the new message</param>
+        /// <returns>a copy of this instance with given metadata</returns>
+        protected abstract IMessage<T> WithMetaData(MetaData metaData);
+        
         public IMessage<T> AndMetaData(IReadOnlyDictionary<string, object> metaData)
         {
             if (metaData?.Count == 0)
@@ -52,11 +57,5 @@ namespace Ase.Messaging.Messaging
             return WithMetaData(MetaData.From(metaData));
         }
         
-        /// <summary>
-        /// Returns a new message instance with the same payload and properties as this message but given <code>metaData</code>.
-        /// </summary>
-        /// <param name="metaData">The metadata in the new message</param>
-        /// <returns>a copy of this instance with given metadata</returns>
-        protected abstract IMessage<T> WithMetaData(MetaData metaData);
     }
 }
