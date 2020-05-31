@@ -16,7 +16,7 @@ namespace Ase.Messaging.CommandHandling
         /// parameter.
         /// </summary>
         /// <returns></returns>
-        string GetCommandName();
+        string CommandName();
         
         /// <summary>
         /// Returns a copy of this CommandMessage with the given {@code metaData}. The payload remains unchanged.

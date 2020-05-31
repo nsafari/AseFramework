@@ -65,7 +65,7 @@ namespace Ase.Messaging.Messaging
         /// comma when prefixing values.
         /// </summary>
         /// <param name="stringBuilder">the builder to append data to</param>
-        protected void DescribeTo(StringBuilder stringBuilder) {
+        protected virtual void DescribeTo(StringBuilder stringBuilder) {
             stringBuilder.Append("payload={")
                 .Append(GetPayload())
                 .Append('}')
@@ -83,7 +83,7 @@ namespace Ase.Messaging.Messaging
         /// Defaults to the simple class name of the actual instance.
         /// </summary>
         /// <returns>the type of message</returns>
-        protected string DescribeType()
+        protected virtual string DescribeType()
         {
             return typeof(MessageDecorator<>).Name;
         }

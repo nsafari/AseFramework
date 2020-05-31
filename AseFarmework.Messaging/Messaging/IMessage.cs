@@ -10,8 +10,6 @@ namespace Ase.Messaging.Messaging
     /// Instead of implementing <code>Message</code> directly, consider implementing
     /// <see cref="org.axonframework.commandhandling.CommandMessage"/> or <see cref="EventMessage"/> instead.
     /// <typeparam name="T">The type of payload contained in this Message</typeparam>
-    /// @author nSafari
-    /// @since 2.0
     /// </summary>
     public interface IMessage<T>
     {
@@ -19,20 +17,20 @@ namespace Ase.Messaging.Messaging
         /// Returns the identifier of this message. Two messages with the same identifiers should be interpreted as
         /// different representations of the same conceptual message. In such case, the meta-data may be different for both
         /// representations. The payload <em>may</em> be identical.
-        /// @return the unique identifier of this message
+        /// <returns>the unique identifier of this message</returns>
         /// </summary>
         String GetIdentifier();
 
         /// <summary>
         /// Returns the meta data for this event. This meta data is a collection of key-value pairs, where the key is a
         /// String, and the value is a serializable object.
-        /// @return the meta data for this event
+        /// <returns>the meta data for this event</returns>
         /// </summary>
         MetaData GetMetaData();
 
         /// <summary>
         /// Returns the payload of this Event. The payload is the application-specific information.
-        /// @return the payload of this Event
+        /// <returns>the payload of this Event</returns>
         /// </summary>
         T GetPayload();
 
@@ -41,7 +39,7 @@ namespace Ase.Messaging.Messaging
         /// <para></para>
         /// Is semantically equal to <code>getPayload().getClass()</code>, but allows implementations to optimize by using
         /// lazy loading or deserialization.
-        /// @return the type of payload.
+        /// <returns>the type of payload.</returns>
         /// </summary>
         Type GetPayloadType();
 
@@ -51,8 +49,8 @@ namespace Ase.Messaging.Messaging
         /// While the implementation returned may be different than the implementation of <code>this</code>, implementations
         /// must take special care in returning the same type of Message (e.g. EventMessage, DomainEventMessage) to prevent
         /// errors further downstream.
-        /// @param metaData The new MetaData for the Message
-        /// @return a copy of this message with the given MetaData
+        /// <param name="metaData">The new MetaData for the Message</param>
+        /// <returns>a copy of this message with the given MetaData</returns>
         /// </summary>
         IMessage<T> WithMetaData(IReadOnlyDictionary<string, object> metaData);
         

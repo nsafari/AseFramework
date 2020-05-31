@@ -95,10 +95,8 @@ namespace Ase.Messaging.Messaging
             {
                 return asMessage;
             }
-            else
-            {
-                return new GenericMessage<V>(payloadOrMessage);
-            }
+
+            return new GenericMessage<V>(payloadOrMessage);
         }
 
         /// <summary>
