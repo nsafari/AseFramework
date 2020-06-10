@@ -19,7 +19,7 @@ namespace Ase.Messaging.Messaging
         /// representations. The payload <em>may</em> be identical.
         /// <returns>the unique identifier of this message</returns>
         /// </summary>
-        String GetIdentifier();
+        string GetIdentifier();
 
         /// <summary>
         /// Returns the meta data for this event. This meta data is a collection of key-value pairs, where the key is a
