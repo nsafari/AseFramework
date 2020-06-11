@@ -7,7 +7,7 @@ namespace Ase.Messaging.Messaging
 {
     public abstract class MessageDecorator<T> : IMessage<T>
     {
-        public readonly IMessage<T> _delegate;
+        private readonly IMessage<T> _delegate;
 
         /// <summary>
         /// Initializes a new decorator with given {@code delegate} message. The decorator delegates to the delegate for
@@ -29,7 +29,7 @@ namespace Ase.Messaging.Messaging
             return _delegate.GetMetaData();
         }
 
-        public T GetPayload()
+        public virtual T GetPayload()
         {
             return _delegate.GetPayload();
         }
@@ -39,12 +39,12 @@ namespace Ase.Messaging.Messaging
             return _delegate.GetPayloadType();
         }
 
-        public IMessage<T> WithMetaData(IReadOnlyDictionary<string, object> metaData)
+        public virtual IMessage<T> WithMetaData(IReadOnlyDictionary<string, object> metaData)
         {
             return _delegate.WithMetaData(metaData);
         }
 
-        public IMessage<T> AndMetaData(IReadOnlyDictionary<string, object> metaData)
+        public virtual IMessage<T> AndMetaData(IReadOnlyDictionary<string, object> metaData)
         {
             return _delegate.AndMetaData(metaData);
         }

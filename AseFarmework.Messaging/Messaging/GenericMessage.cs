@@ -6,6 +6,7 @@ using Ase.Messaging.Messaging.UnitOfWork;
 namespace Ase.Messaging.Messaging
 {
     public class GenericMessage<T> : AbstractMessage<T>
+        where T : class
     {
         private readonly MetaData _metaData;
         private readonly Type _payloadType;
@@ -27,7 +28,7 @@ namespace Ase.Messaging.Messaging
         /// </summary>
         /// <param name="payload">The payload for the message as a generic <code>T</code></param>
         /// <param name="metaData">The meta data <link>Map</link> for the message</param>
-        public GenericMessage(T payload, IImmutableDictionary<string, object> metaData) : this(
+        public GenericMessage(T? payload, IImmutableDictionary<string, object> metaData) : this(
             GetDeclaredPayloadType(payload), payload, metaData)
         {
         }
@@ -39,7 +40,8 @@ namespace Ase.Messaging.Messaging
         /// <param name="declaredPayloadType">The declared type of message payload</param>
         /// <param name="payload">The payload for the message</param>
         /// <param name="metaData">The meta data for the message</param>
-        private GenericMessage(Type declaredPayloadType, T payload, IImmutableDictionary<string, object> metaData) : this(
+        private GenericMessage(Type declaredPayloadType, T payload,
+            IImmutableDictionary<string, object> metaData) : this(
             IdentifierFactory.GetInstance().GenerateIdentifier(), declaredPayloadType, payload,
             CurrentUnitOfWork.CorrelationData().MergedWith(MetaData.From(metaData)))
         {
@@ -74,14 +76,15 @@ namespace Ase.Messaging.Messaging
             _payload = payload;
             _metaData = MetaData.From(metaData);
         }
-        
-        
-        private GenericMessage(GenericMessage<T> original, MetaData metaData) :base(original.GetIdentifier()){
+
+
+        private GenericMessage(GenericMessage<T> original, MetaData metaData) : base(original.GetIdentifier())
+        {
             _payload = original.GetPayload();
             _payloadType = original.GetPayloadType();
             _metaData = metaData;
         }
-        
+
         /// <summary>
         /// Returns a Message representing the given <code>payloadOrMessage</code>, either by wrapping it or by returning it
         /// as-is. If the given <code>payloadOrMessage</code> already implements <link>Message</link>, it is returned as-is, otherwise
@@ -90,6 +93,7 @@ namespace Ase.Messaging.Messaging
         /// <param name="payloadOrMessage">The payload to wrap or message to return</param>
         /// <returns>a Message with the given payload or the message</returns>
         public static IMessage<V> AsMessage<V>(V payloadOrMessage)
+            where V : class
         {
             if (payloadOrMessage is IMessage<V> asMessage)
             {
@@ -105,7 +109,7 @@ namespace Ase.Messaging.Messaging
         /// </summary>
         /// <param name="payload">the payload of this {@link Message}</param>
         /// <returns>the declared type of the given <code>payload</code> or <link>Void</link> if <code>payload == null</code></returns>
-        private static Type GetDeclaredPayloadType(T payload)
+        private static Type GetDeclaredPayloadType(T? payload)
         {
             return payload != null ? payload.GetType() : typeof(void);
         }
@@ -130,10 +134,9 @@ namespace Ase.Messaging.Messaging
         {
             return new GenericMessage<T>(this, metaData);
         }
-        
+
         //TODO: serializePayload
         //TODO: serializeMetaData
         //TODO: serializedObjectHolder
-
     }
 }

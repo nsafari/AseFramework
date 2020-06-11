@@ -11,6 +11,7 @@ namespace Ase.Messaging.CommandHandling
     /// </summary>
     /// <typeparam name="T">The type of payload contained in this Message</typeparam>
     public class GenericCommandMessage<T> : MessageDecorator<T>, ICommandMessage<T>
+        where T : class
     {
         private readonly string _commandName;
 
@@ -53,6 +54,7 @@ namespace Ase.Messaging.CommandHandling
         /// already implements CommandMessage.</typeparam>
         /// <returns></returns>
         public static ICommandMessage<C> AsCommandMessage<C>(object command)
+            where C : class
         {
             if (command is ICommandMessage<C> asCommandMessage)
             {
