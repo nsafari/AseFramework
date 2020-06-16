@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using Ase.Messaging.Messaging;
 
 namespace Ase.Messaging.CommandHandling
@@ -10,9 +11,9 @@ namespace Ase.Messaging.CommandHandling
     public interface ICommandResultMessage<R>: IResultMessage<R>
     {
         
-        ICommandResultMessage<R> WithMetaData<T>(ReadOnlyDictionary<string, T> metaData);
+        ICommandResultMessage<R> WithMetaData(ReadOnlyDictionary<string, object> metaData);
         
-        ICommandResultMessage<R> AndMetaData<T>(ReadOnlyDictionary<string, T> metaData);
+        ICommandResultMessage<R> AndMetaData(ReadOnlyDictionary<string, object> metaData);
 
         
     }

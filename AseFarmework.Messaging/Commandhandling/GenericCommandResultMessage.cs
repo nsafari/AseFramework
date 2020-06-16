@@ -46,40 +46,78 @@ namespace Ase.Messaging.CommandHandling
             return new GenericCommandResultMessage<T>(exception);
         }
 
-        public GenericCommandResultMessage(R result) : base(result)
+        /// <summary>
+        /// Creates a Command Result Message with the given {@code commandResult} as the payload.
+        /// </summary>
+        /// <param name="commandResult">the payload for the Message</param>
+        public GenericCommandResultMessage(R commandResult) : base(commandResult)
         {
         }
 
+        
+        /// <summary>
+        /// Creates a Command Result Message with the given {@code exception}.
+        /// </summary>
+        /// <param name="exception">the Exception describing the cause of an error</param>
         public GenericCommandResultMessage(Exception exception) : base(exception)
         {
         }
 
-        public GenericCommandResultMessage(R result, IImmutableDictionary<string, object> metaData) : base(result,
+        /// <summary>
+        /// Creates a Command Result Message with the given {@code commandResult} as the payload and {@code metaData} as
+        /// the meta data.
+        /// </summary>
+        /// <param name="commandResult">the payload for the Message</param>
+        /// <param name="metaData">the meta data for the Message</param>
+        public GenericCommandResultMessage(R commandResult, IImmutableDictionary<string, object> metaData) : base(commandResult,
             metaData)
         {
         }
 
+        /// <summary>
+        /// Creates a Command Result Message with the given {@code exception} and {@code metaData}.
+        /// </summary>
+        /// <param name="exception">the Exception describing the cause of an error</param>
+        /// <param name="metaData">the meta data for the Message</param>
         public GenericCommandResultMessage(Exception exception, IImmutableDictionary<string, object> metaData) : base(
             exception, metaData)
         {
         }
 
+        /// <summary>
+        /// Creates a new Command Result Message with given {@code delegate} message.
+        /// </summary>
+        /// <param name="delegate">the message delegate</param>
         public GenericCommandResultMessage(IMessage<R> @delegate) : base(@delegate)
         {
         }
 
-        public GenericCommandResultMessage(IMessage<R> @delegate, Exception exception) : base(@delegate, exception)
+        /// <summary>
+        /// Creates a Command Result Message with given {@code delegate} message and {@code exception}.
+        /// </summary>
+        /// <param name="delegate">the Message delegate</param>
+        /// <param name="exception">the Exception describing the cause of an error</param>
+        public GenericCommandResultMessage(IMessage<R> @delegate, Exception? exception) : base(@delegate, exception)
         {
         }
 
-        public ICommandResultMessage<R> WithMetaData<T>(ReadOnlyDictionary<string, T> metaData)
+        public ICommandResultMessage<R> WithMetaData(ReadOnlyDictionary<string, object> metaData)
         {
-            throw new NotImplementedException();
+            Exception? exception = null;
+            return new GenericCommandResultMessage<R>(Delegate().WithMetaData(metaData), exception);
+
         }
 
-        public ICommandResultMessage<R> AndMetaData<T>(ReadOnlyDictionary<string, T> metaData)
+        public ICommandResultMessage<R> AndMetaData(ReadOnlyDictionary<string, object> metaData)
         {
-            throw new NotImplementedException();
+            Exception? exception = null;
+            return new GenericCommandResultMessage<R>(Delegate().AndMetaData(metaData), exception);
+
+        }
+
+        protected override string DescribeType()
+        {
+            return typeof(GenericCommandResultMessage<>).Name;
         }
     }
 }

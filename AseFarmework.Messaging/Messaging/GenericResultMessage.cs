@@ -18,8 +18,8 @@ namespace Ase.Messaging.Messaging
         /// <summary>
         ///  Creates a ResultMessage with the given {@code result} as the payload.
         /// </summary>
-        /// <param name="result">the payload for the Message</param>
-        public GenericResultMessage(R result) : this(result, MetaData.EmptyInstance)
+        /// <param name="commandResult">the payload for the Message</param>
+        public GenericResultMessage(R commandResult) : this(commandResult, MetaData.EmptyInstance)
         {
         }
         
@@ -34,10 +34,10 @@ namespace Ase.Messaging.Messaging
         /// <summary>
         /// Creates a ResultMessage with the given {@code result} as the payload and {@code metaData} as the meta data.
         /// </summary>
-        /// <param name="result">the payload for the Message</param>
+        /// <param name="commandResult">the payload for the Message</param>
         /// <param name="metaData">the meta data for the Message</param>
-        public GenericResultMessage(R result, IImmutableDictionary<string, object> metaData) : this(
-            new GenericMessage<R>(result, metaData))
+        public GenericResultMessage(R commandResult, IImmutableDictionary<string, object> metaData) : this(
+            new GenericMessage<R>(commandResult, metaData))
         {
         }
 
