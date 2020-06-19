@@ -1,4 +1,6 @@
-﻿namespace Ase.Messaging.Messaging.ResponseTypes
+﻿using System;
+
+namespace Ase.Messaging.Messaging.ResponseTypes
 {
     /// <summary>
     /// Specifies the expected response type required when performing a query through the
@@ -16,6 +18,11 @@
     /// </summary>
     public interface IResponseType<R>
     {
+    
+        public static IResponseType<R> InstanceOf(Type type) {
+            throw new NotImplementedException();
+        }
+
         
     }
 }
