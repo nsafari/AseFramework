@@ -116,7 +116,7 @@ namespace Ase.Messaging.Messaging
             return base.GetPayload();
         }
 
-        private static Exception? FindExceptionResult<R>(IMessage<R> @delegate)
+        private static Exception? FindExceptionResult(IMessage<R> @delegate)
         {
             if (@delegate is IResultMessage<R> resultMessage && resultMessage.IsExceptional())
             {

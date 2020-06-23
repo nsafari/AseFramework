@@ -16,10 +16,30 @@ namespace Ase.Messaging.Messaging.ResponseTypes
     {
         protected readonly Type expectedResponseType;
 
+        /// <summary>
+        /// Instantiate a {@link ResponseType} with the given
+        /// {@code expectedResponseType} as the type to be matched against and to which the query response should be
+        /// converted to, as is or as the contained type for an array/list/etc.
+        /// </summary>
+        /// <param name="expectedResponseType"></param>
         protected AbstractResponseType(Type expectedResponseType)
         {
-            
+            this.expectedResponseType = expectedResponseType;
+        }
+        
+        public bool Matches(Type responseType)
+        {
+            throw new NotImplementedException();
         }
 
+        public Type ResponseMessagePayloadType()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Type GetExpectedResponseType()
+        {
+            return expectedResponseType;
+        }
     }
 }
