@@ -14,7 +14,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
     /// <typeparam name="R"></typeparam>
     public abstract class AbstractResponseType<R>: IResponseType<R>
     {
-        protected readonly Type expectedResponseType;
+        protected readonly Type ExpectedResponseType;
 
         /// <summary>
         /// Instantiate a {@link ResponseType} with the given
@@ -24,7 +24,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         /// <param name="expectedResponseType"></param>
         protected AbstractResponseType(Type expectedResponseType)
         {
-            this.expectedResponseType = expectedResponseType;
+            ExpectedResponseType = expectedResponseType;
         }
         
         public bool Matches(Type responseType)
@@ -39,7 +39,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
 
         public Type GetExpectedResponseType()
         {
-            return expectedResponseType;
+            return ExpectedResponseType;
         }
     }
 }
