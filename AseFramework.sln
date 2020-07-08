@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AseFarmework.Messaging", "AseFarmework.Messaging\AseFarmework.Messaging.csproj", "{98C11FEE-62F9-4241-B7FA-13EB15543761}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AseFramework.Messaging", "AseFramework.Messaging\AseFramework.Messaging.csproj", "{98C11FEE-62F9-4241-B7FA-13EB15543761}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AseFramework.Messaging.Test", "AseFramework.Messaging.Test\AseFramework.Messaging.Test.csproj", "{1AAE65F0-9A9B-41F3-B382-C91591DB7A4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +14,13 @@ Global
 		{98C11FEE-62F9-4241-B7FA-13EB15543761}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{98C11FEE-62F9-4241-B7FA-13EB15543761}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{98C11FEE-62F9-4241-B7FA-13EB15543761}.Release|Any CPU.Build.0 = Release|Any CPU
+		{795DBB18-D1BE-4AF0-9460-5360CB687CF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{795DBB18-D1BE-4AF0-9460-5360CB687CF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{795DBB18-D1BE-4AF0-9460-5360CB687CF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{795DBB18-D1BE-4AF0-9460-5360CB687CF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AAE65F0-9A9B-41F3-B382-C91591DB7A4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AAE65F0-9A9B-41F3-B382-C91591DB7A4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AAE65F0-9A9B-41F3-B382-C91591DB7A4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AAE65F0-9A9B-41F3-B382-C91591DB7A4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
