@@ -34,7 +34,10 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         /// </summary>
         /// <param name="response">the {@link java.lang.Object} to convert into {@code R}</param>
         /// <returns>a {@code response} of type {@code R}</returns>
-        R Convert(object response) => (R) response;
+        R Convert(object response)
+        {
+            return (R) System.Convert.ChangeType(response, typeof(R));
+        }
 
         /// <summary>
         /// Returns a {@link java.lang.Class} representing the type of the payload to be contained in the response message.

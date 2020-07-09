@@ -26,11 +26,8 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         {
             ExpectedResponseType = expectedResponseType;
         }
-        
-        public bool Matches(Type responseType)
-        {
-            throw new NotImplementedException();
-        }
+
+        public abstract bool Matches(Type responseType);
 
         public Type ResponseMessagePayloadType()
         {
