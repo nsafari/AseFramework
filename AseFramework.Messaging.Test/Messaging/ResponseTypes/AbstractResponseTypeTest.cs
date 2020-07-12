@@ -43,5 +43,10 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             var methodInfoReturnType = methodInfo.ReturnType;
             Assert.Equal(expectedResult, TestSubject.Matches(methodInfoReturnType));
         }
+        
+    }
+    
+    public class QueryResponse {
+
     }
 }

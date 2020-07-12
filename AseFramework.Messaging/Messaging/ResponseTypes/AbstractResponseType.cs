@@ -38,5 +38,20 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         {
             return ExpectedResponseType;
         }
+        
+        
+        protected bool IsGenericAssignableFrom(Type responseType)
+        {
+            return false;
+            // return isTypeVariable(responseType) &&
+            // Arrays.stream(((TypeVariable) responseType).getBounds())
+            // .anyMatch(this::isAssignableFrom);
+        }
+        
+        protected bool IsAssignableFrom(Type responseType) {
+            return ExpectedResponseType.IsAssignableFrom(responseType);
+        }
+
+
     }
 }

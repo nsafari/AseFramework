@@ -34,7 +34,8 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         /// account</returns>
         public override bool Matches(Type responseType)
         {
-            throw new NotImplementedException();
+            Type unwrapped = responseType;// unwrapIfType(responseType, Future.class, Optional.class);
+            return IsGenericAssignableFrom(unwrapped) || IsAssignableFrom(unwrapped);
         }
     }
 }
