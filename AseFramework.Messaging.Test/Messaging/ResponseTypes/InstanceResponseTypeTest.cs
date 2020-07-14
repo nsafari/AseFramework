@@ -13,15 +13,23 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         public InstanceResponseTypeTest() : base(new InstanceResponseType<QueryResponse>(typeof(QueryResponse)))
         {
         }
-        
+
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsTheSame()
         {
             TestMatches("SomeQuery", Matches);
         }
-        
-        public QueryResponse SomeQuery() {
-            return new QueryResponse();
+
+        [Fact]
+        void TestMatchesReturnsTrueIfResponseTypeIsSubTypeOfProvidedType()
+        {
+            TestMatches("SomeSubTypedQuery", Matches);
+        }
+
+        [Fact]
+        void TestMatchesReturnsFalseIfResponseTypeIsSuperTypeOfProvidedType()
+        {
+            TestMatches("SomeSuperTypedQuery", DoesNotMatch);
         }
 
     }

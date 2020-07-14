@@ -43,10 +43,29 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             var methodInfoReturnType = methodInfo.ReturnType;
             Assert.Equal(expectedResult, TestSubject.Matches(methodInfoReturnType));
         }
+
+        public QueryResponse SomeQuery()
+        {
+            return new QueryResponse();
+        }
+
+        public SubTypedQueryResponse SomeSubTypedQuery()
+        {
+            return new SubTypedQueryResponse();
+        }
         
-    }
-    
-    public class QueryResponse {
+        public Object SomeSuperTypedQuery() {
+            return new Object();
+        }
 
     }
+
+    public class QueryResponse
+    {
+    }
+
+
+    public class SubTypedQueryResponse: QueryResponse {
+    }
+    
 }
