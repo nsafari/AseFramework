@@ -32,5 +32,13 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             TestMatches("SomeSuperTypedQuery", DoesNotMatch);
         }
 
+        [Fact]
+        void TestMatchesReturnsFalseIfResponseTypeIsUnboundedGeneric()
+        {
+            TestMatches("SomeUnboundedGenericQuery", DoesNotMatch);
+        }
+        
+        
+
     }
 }

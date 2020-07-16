@@ -53,11 +53,16 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         {
             return new SubTypedQueryResponse();
         }
-        
-        public Object SomeSuperTypedQuery() {
+
+        public Object SomeSuperTypedQuery()
+        {
             return new Object();
         }
 
+        public E SomeUnboundedGenericQuery<E>()
+        {
+            return (E) new SubTypedQueryResponse();
+        }
     }
 
     public class QueryResponse
@@ -65,7 +70,7 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
     }
 
 
-    public class SubTypedQueryResponse: QueryResponse {
+    public class SubTypedQueryResponse : QueryResponse
+    {
     }
-    
 }
