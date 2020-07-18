@@ -61,7 +61,7 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
 
         public E SomeUnboundedGenericQuery<E>()
         {
-            return (E) new SubTypedQueryResponse();
+            return default;
         }
     }
 
