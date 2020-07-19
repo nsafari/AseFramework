@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Ase.Messaging.Common;
 
 namespace Ase.Messaging.Messaging.ResponseTypes
 {
@@ -34,7 +36,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         /// account</returns>
         public override bool Matches(Type responseType)
         {
-            Type unwrapped = responseType;// unwrapIfType(responseType, Future.class, Optional.class);
+            Type unwrapped = ReflectionUtils.UnwrapIfType(responseType, typeof(Task));
             return IsGenericAssignableFrom(unwrapped) || IsAssignableFrom(unwrapped);
         }
     }
