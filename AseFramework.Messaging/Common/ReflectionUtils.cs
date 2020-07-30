@@ -31,7 +31,7 @@ namespace Ase.Messaging.Common
         /// <returns></returns>
         public static Type? GetExactSuperType(Type type, Type searchClass)
         {
-            if (type.IsGenericType || type.HasElementType)
+            if (type.IsGenericType || type.IsClass || type.HasElementType)
             {
                 Type? clazz = Erase(type);
 
@@ -78,13 +78,8 @@ namespace Ase.Messaging.Common
             foreach (Type wrapperType in wrapperTypes)
             {
                 Type? wrapper = ReflectionUtils.GetExactSuperType(type, wrapperType);
-                if (wrapper == null)
-                {
-                    // the wrapper type doesn't declare what it wraps. In that case we just know it's an Object
-                    return typeof(object);
-                }
 
-                if (wrapper.IsGenericType)
+                if (wrapper != null && wrapper.IsGenericType)
                 {
                     Type[] actualTypeArguments = wrapper.GetGenericArguments();
                     if (actualTypeArguments.Length == 1)
