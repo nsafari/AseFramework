@@ -1,4 +1,5 @@
-﻿using Ase.Messaging.Messaging.ResponseTypes;
+﻿using System;
+using Ase.Messaging.Messaging.ResponseTypes;
 using Xunit;
 
 namespace Ase.Messaging.Test.Messaging.ResponseTypes
@@ -242,5 +243,39 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             TestMatches("SomeOptionalQueryResponse", Matches);
         }
         
+        [Fact]
+        void TestConvertReturnsSingleResponseAsIs() {
+            QueryResponse testResponse = new QueryResponse();
+
+            QueryResponse result = TestSubject.Convert(testResponse);
+
+            Assert.Equal(testResponse, result);
+        }
+        
+        
+        [Fact]
+        void TestConvertReturnsSingleResponseAsIsForSubTypedResponse() {
+            SubTypedQueryResponse testResponse = new SubTypedQueryResponse();
+
+            QueryResponse result = TestSubject.Convert(testResponse);
+
+            Assert.Equal(testResponse, result);
+        }
+        
+        [Fact]
+        void TestConvertThrowsClassCastExceptionForDifferentSingleInstanceResponse()
+        {
+            // IQueryResponseInterface q = (IQueryResponseInterface) new { };
+            // Assert.Throws(typeof(Exception), () => {
+                // QueryResponse convert = TestSubject.Convert(q);
+            // });
+        }
+
+        [Fact]
+        void TestConvertThrowsClassCastExceptionForMultipleInstanceResponse() {
+            Assert.Throws(typeof(Exception), () => {
+                QueryResponse convert = TestSubject.Convert(new QueryResponse[]{});
+            });
+        }
     }
 }
