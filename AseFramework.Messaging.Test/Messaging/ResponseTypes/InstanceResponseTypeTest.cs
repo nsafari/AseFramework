@@ -261,19 +261,24 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
 
             Assert.Equal(testResponse, result);
         }
+
+        class QueryResponseInterface : IQueryResponseInterface
+        {
+        }
         
+
         [Fact]
         void TestConvertThrowsClassCastExceptionForDifferentSingleInstanceResponse()
         {
-            // IQueryResponseInterface q = (IQueryResponseInterface) new { };
-            // Assert.Throws(typeof(Exception), () => {
-                // QueryResponse convert = TestSubject.Convert(q);
-            // });
+            
+            Assert.Throws<InvalidCastException>(() => {
+                QueryResponse convert = TestSubject.Convert(new QueryResponseInterface());
+            });
         }
 
         [Fact]
         void TestConvertThrowsClassCastExceptionForMultipleInstanceResponse() {
-            Assert.Throws(typeof(Exception), () => {
+            Assert.Throws<InvalidCastException>(() => {
                 QueryResponse convert = TestSubject.Convert(new QueryResponse[]{});
             });
         }

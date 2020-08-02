@@ -36,7 +36,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         /// <returns>a {@code response} of type {@code R}</returns>
         R Convert(object response)
         {
-            return (R) System.Convert.ChangeType(response, typeof(R));
+            return (R) response;
         }
 
         /// <summary>
