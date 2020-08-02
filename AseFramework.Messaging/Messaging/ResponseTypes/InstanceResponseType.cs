@@ -20,7 +20,9 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         /// converted to.
         /// </summary>
         /// <param name="expectedResponseType">the response type which is expected to be matched against and returned</param>
-        public InstanceResponseType(Type expectedResponseType) : base(expectedResponseType)
+        // @JsonCreator
+        // @ConstructorProperties({"expectedResponseType"})
+        public InstanceResponseType(/*@JsonProperty("expectedResponseType")*/ Type expectedResponseType) : base(expectedResponseType)
         {
         }
 
@@ -38,6 +40,17 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         {
             Type unwrapped = ReflectionUtils.UnwrapIfType(responseType, typeof(Task));
             return IsGenericAssignableFrom(unwrapped) || IsAssignableFrom(unwrapped);
+        }
+
+        public override Type ResponseMessagePayloadType()
+        {
+            return (Type) Convert.ChangeType(ExpectedResponseType, typeof(R));
+        }
+
+        public override string ToString()
+        {
+            return "InstanceResponseType{" + ExpectedResponseType + "}";
+
         }
     }
 }

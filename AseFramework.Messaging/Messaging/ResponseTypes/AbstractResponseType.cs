@@ -29,16 +29,12 @@ namespace Ase.Messaging.Messaging.ResponseTypes
 
         public abstract bool Matches(Type responseType);
 
-        public Type ResponseMessagePayloadType()
-        {
-            throw new NotImplementedException();
-        }
-
+        public abstract Type ResponseMessagePayloadType();
+        
         public Type GetExpectedResponseType()
         {
             return ExpectedResponseType;
         }
-        
         
         protected bool IsGenericAssignableFrom(Type responseType)
         {
