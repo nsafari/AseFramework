@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections;
+using System.Linq;
+using System.Reflection;
+using Ase.Messaging.Common;
 
 namespace Ase.Messaging.Messaging.ResponseTypes
 {
@@ -36,17 +40,38 @@ namespace Ase.Messaging.Messaging.ResponseTypes
             return ExpectedResponseType;
         }
         
-        protected bool IsGenericAssignableFrom(Type responseType)
-        {
-            return false;
-            // return isTypeVariable(responseType) &&
-            // Arrays.stream(((TypeVariable) responseType).getBounds())
-            // .anyMatch(this::isAssignableFrom);
+        protected bool IsGenericAssignableFrom(Type responseType) {
+            return responseType.IsGenericType &&
+                   responseType.GetGenericParameterConstraints().Any(IsAssignableFrom);
         }
         
         protected bool IsAssignableFrom(Type responseType) {
             return ExpectedResponseType.IsAssignableFrom(responseType);
         }
+
+        protected bool IsIterableOfExpectedType(Type responseType) {
+            Type? iterableType = ReflectionUtils.GetExactSuperType(responseType, typeof(IEnumerator));
+            return iterableType != null && IsParameterizedTypeOfExpectedType(iterableType);
+        }
+        
+        protected bool IsParameterizedTypeOfExpectedType(Type responseType) {
+            bool isGenericType = responseType.IsGenericType;
+            if (!isGenericType) {
+                return false;
+            }
+
+            Type[] actualTypeArguments = responseType.GetGenericArguments();
+            bool hasOneTypeArgument = actualTypeArguments.Length == 1;
+            if (!hasOneTypeArgument) {
+                return false;
+            }
+
+            Type actualTypeArgument = actualTypeArguments[0];
+            return IsAssignableFrom(actualTypeArgument) ||
+                   IsGenericAssignableFrom(actualTypeArgument); //||
+            //isWildcardTypeWithMatchingUpperBound(actualTypeArgument);
+        }
+        
 
 
     }
