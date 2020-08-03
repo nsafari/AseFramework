@@ -40,12 +40,13 @@ namespace Ase.Messaging.Messaging.ResponseTypes
             return ExpectedResponseType;
         }
         
-        protected bool IsGenericAssignableFrom(Type responseType) {
-            return responseType.IsGenericType &&
+        protected bool IsGenericAssignableFrom(Type? responseType) {
+            return responseType != null && 
+                   responseType.IsGenericType && 
                    responseType.GetGenericParameterConstraints().Any(IsAssignableFrom);
         }
         
-        protected bool IsAssignableFrom(Type responseType) {
+        protected bool IsAssignableFrom(Type? responseType) {
             return ExpectedResponseType.IsAssignableFrom(responseType);
         }
 
@@ -72,7 +73,18 @@ namespace Ase.Messaging.Messaging.ResponseTypes
             //isWildcardTypeWithMatchingUpperBound(actualTypeArgument);
         }
         
+        protected bool IsGenericArrayOfExpectedType(Type responseType) {
+            return IsGenericArrayType(responseType) &&
+                   IsGenericAssignableFrom(responseType.GetElementType());
+        }
+        
+        protected bool IsGenericArrayType(Type responseType) {
+            return responseType.IsArray && responseType.IsGenericType;
+        }
 
-
+        protected bool IsArrayOfExpectedType(Type responseType) {
+            return responseType.IsArray && IsAssignableFrom(responseType.GetElementType());
+        }
+        
     }
 }
