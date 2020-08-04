@@ -42,7 +42,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         
         protected bool IsGenericAssignableFrom(Type? responseType) {
             return responseType != null && 
-                   responseType.IsGenericType && 
+                   responseType.IsGenericParameter && 
                    responseType.GetGenericParameterConstraints().Any(IsAssignableFrom);
         }
         
