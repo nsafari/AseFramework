@@ -102,14 +102,16 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         private List<R> ConvertToList(IEnumerable responseIterable)
         {
             List<R> response = new List<R>();
-            IEnumerator responseIterator = responseIterable.GetEnumerator();
-            // responseIterator.forEachRemaining(responseInstance -> response.add((R) responseInstance));
+            foreach(var item in responseIterable)
+            {
+                response.Add((R) item!);
+            }
             return response;
         }
 
         public override Type ResponseMessagePayloadType()
         {
-            throw new NotImplementedException();
+            return typeof(List<>);
         }
     }
 }
