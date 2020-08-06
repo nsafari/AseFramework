@@ -56,7 +56,8 @@ namespace Ase.Messaging.Messaging.ResponseTypes
                    IsArrayOfExpectedType(unwrapped);
         }
 
-        public List<R> Convert(object response)
+        
+        public override List<R> Convert(object response)
         {
             Type responseType = response.GetType();
 
@@ -65,7 +66,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
                 return ((R[]) response).ToList();
             }
 
-            if (IsIterableOfExpectedType(response))
+            if (IsIterableOfExpectedTypeByObject(response))
             {
                 return ConvertToList((IEnumerable) response);
             }
@@ -75,7 +76,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
                                                + "the expected response type [" + ExpectedResponseType + "]");
         }
 
-        private bool IsIterableOfExpectedType(Object response)
+        private bool IsIterableOfExpectedTypeByObject(object response)
         {
             Type responseType = response.GetType();
 
@@ -85,9 +86,9 @@ namespace Ase.Messaging.Messaging.ResponseTypes
                 return false;
             }
 
-            IEnumerable responseIterator = ((IEnumerable) response);
+            IEnumerator responseIterator = ((IEnumerable) response).GetEnumerator();
 
-            bool canMatchContainedType = responseIterator.GetEnumerator().MoveNext();
+            bool canMatchContainedType = responseIterator.MoveNext();
             if (!canMatchContainedType)
             {
                 // logger.info("The given response is an Iterable without any contents, hence we cannot verify if the "
@@ -96,7 +97,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
                 return true;
             }
 
-            return IsAssignableFrom(responseIterator.GetEnumerator().Current?.GetType());
+            return IsAssignableFrom(responseIterator.Current?.GetType());
         }
 
         private List<R> ConvertToList(IEnumerable responseIterable)

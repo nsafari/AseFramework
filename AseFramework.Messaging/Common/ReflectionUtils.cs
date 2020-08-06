@@ -244,22 +244,20 @@ namespace Ase.Messaging.Common
 
             if (type.IsGenericType)
             {
-                return type.BaseType;
+                var typeBaseType = type.BaseType;
+                return typeBaseType == typeof(object) ? type.GetInterfaces()[0] : typeBaseType;
             }
-            else if (type.IsGenericParameter)
+
+            if (type.IsGenericParameter)
             {
                 return type.GetGenericParameterConstraints().Length == 0
                     ? typeof(object)
                     : Erase(type.GetGenericParameterConstraints()[0]);
             }
-            else if (type.HasElementType)
-            {
-                return Erase(type.GetElementType())?.MakeArrayType();
-            }
+
+            return type.HasElementType ? Erase(type.GetElementType())?.MakeArrayType() : typeof(object);
 
             // logger.debug(type.getClass() + " is not supported for type erasure. Will by default return Object.");
-
-            return typeof(object);
         }
     }
 }

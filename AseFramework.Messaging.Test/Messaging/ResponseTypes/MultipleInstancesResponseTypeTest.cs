@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Ase.Messaging.Messaging.ResponseTypes;
 using Xunit;
 
@@ -50,149 +51,149 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsMultiBoundedGenericOfProvidedType()
         {
-            TestMatches("someMultiBoundedGenericQuery", DoesNotMatch);
+            TestMatches("SomeMultiBoundedGenericQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsGenericOfOtherType()
         {
-            TestMatches("someNonMatchingBoundedGenericQuery", DoesNotMatch);
+            TestMatches("SomeNonMatchingBoundedGenericQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsArrayOfProvidedType()
         {
-            TestMatches("someArrayQuery", Matches);
+            TestMatches("SomeArrayQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsArrayWithSubTypeOfProvidedType()
         {
-            TestMatches("someSubTypedArrayQuery", Matches);
+            TestMatches("SomeSubTypedArrayQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsArrayWithSuperTypeOfProvidedType()
         {
-            TestMatches("someSuperTypedArrayQuery", DoesNotMatch);
+            TestMatches("SomeSuperTypedArrayQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsUnboundedGenericArray()
         {
-            TestMatches("someUnboundedGenericArrayQuery", DoesNotMatch);
+            TestMatches("SomeUnboundedGenericArrayQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsBoundedGenericArrayOfProvidedType()
         {
-            TestMatches("someBoundedGenericArrayQuery", Matches);
+            TestMatches("SomeBoundedGenericArrayQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsMultiBoundedGenericArrayOfProvidedType()
         {
-            TestMatches("someMultiBoundedGenericArrayQuery", Matches);
+            TestMatches("SomeMultiBoundedGenericArrayQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsGenericArrayOfOtherType()
         {
-            TestMatches("someNonMatchingBoundedGenericArrayQuery", DoesNotMatch);
+            TestMatches("SomeNonMatchingBoundedGenericArrayQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsListOfProvidedType()
         {
-            TestMatches("someListQuery", Matches);
+            TestMatches("SomeListQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsSubListOfProvidedType()
         {
-            TestMatches("someSubListQuery", Matches);
+            TestMatches("SomeSubListQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsSuperListOfProvidedType()
         {
-            TestMatches("someSuperListQuery", DoesNotMatch);
+            TestMatches("SomeSuperListQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsBoundedGenericListOfProvidedType()
         {
-            TestMatches("someBoundedGenericListQuery", Matches);
+            TestMatches("SomeBoundedGenericListQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsUnboundedGenericList()
         {
-            TestMatches("someUnboundedGenericListQuery", DoesNotMatch);
+            TestMatches("SomeUnboundedGenericListQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsMultiBoundedGenericListOfProvidedType()
         {
-            TestMatches("someMultiBoundedGenericListQuery", Matches);
+            TestMatches("SomeMultiBoundedGenericListQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsGenericListOfOtherType()
         {
-            TestMatches("someNonMatchingBoundedGenericListQuery", DoesNotMatch);
+            TestMatches("SomeNonMatchingBoundedGenericListQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsUnboundedWildcardList()
         {
-            TestMatches("someUnboundedWildcardListQuery", DoesNotMatch);
+            TestMatches("SomeUnboundedWildcardListQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsLowerBoundedWildcardList()
         {
-            TestMatches("someLowerBoundedWildcardListQuery", DoesNotMatch);
+            TestMatches("SomeLowerBoundedWildcardListQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsUpperBoundedWildcardListOfProvidedType()
         {
-            TestMatches("someUpperBoundedWildcardListQuery", Matches);
+            TestMatches("SomeUpperBoundedWildcardListQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsWildcardListOfOtherType()
         {
-            TestMatches("someNonMatchingUpperBoundedWildcardQuery", DoesNotMatch);
+            TestMatches("SomeNonMatchingUpperBoundedWildcardQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsUnboundedGenericUpperBoundedWildcardList()
         {
-            TestMatches("someUnboundedGenericUpperBoundedWildcardListQuery", DoesNotMatch);
+            TestMatches("SomeUnboundedGenericUpperBoundedWildcardListQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsGenericUpperBoundedWildcardListOfProvidedType()
         {
-            TestMatches("someGenericUpperBoundedWildcardListQuery", Matches);
+            TestMatches("SomeGenericUpperBoundedWildcardListQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsMultiGenericUpperBoundedWildcardListOfProvidedType()
         {
-            TestMatches("someMultiGenericUpperBoundedWildcardListQuery", Matches);
+            TestMatches("SomeMultiGenericUpperBoundedWildcardListQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsListImplementationOfProvidedType()
         {
-            TestMatches("someListImplementationQuery", Matches);
+            TestMatches("SomeListImplementationQuery", Matches);
         }
 
         /*
-         This dummy function (QueryResponseList someListImplementationQuery) and dummy class (QueryResponseList) are
+         This dummy function (QueryResponseList SomeListImplementationQuery) and dummy class (QueryResponseList) are
          contained in this test class instead of the AbstractResponseTypeTest class, because the functionality to derive
          whether a response type has a direct super type which we service (an Iterable in this case), checks if the
          enclosing classes contain unresolved generic types. It does this to check whether the type has raw types or not.
@@ -201,183 +202,178 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
          (whilst in fact it is). This is however such a slim scenario, that I decided to put the dummy class and test
          function in the actual test class itself instead of in the abstract test class.
          */
-
-        
-
-        public static QueryResponseList someListImplementationQuery()
+        public static QueryResponseList SomeListImplementationQuery()
         {
             return new QueryResponseList();
         }
 
-        @SuppressWarnings("WeakerAccess")
 
-        static class QueryResponseList
-
-        extends ArrayList<QueryResponse> {
+        public class QueryResponseList: List<QueryResponse> {
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsUnboundedListImplementationOfProvidedType()
         {
-            TestMatches("someUnboundedListImplementationQuery", DoesNotMatch);
+            TestMatches("SomeUnboundedListImplementationQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsBoundedListImplementationOfProvidedType()
         {
-            TestMatches("someBoundedListImplementationQuery", Matches);
+            TestMatches("SomeBoundedListImplementationQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsMultiUnboundedListImplementationOfProvidedType()
         {
-            TestMatches("someMultiUnboundedListImplementationQuery", DoesNotMatch);
+            TestMatches("SomeMultiUnboundedListImplementationQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsMultiBoundedListImplementationOfProvidedType()
         {
-            TestMatches("someMultiBoundedListImplementationQuery", Matches);
+            TestMatches("SomeMultiBoundedListImplementationQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsSetOfProvidedType()
         {
-            TestMatches("someSetQuery", Matches);
+            TestMatches("SomeSetQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsStreamOfProvidedType()
         {
-            TestMatches("someStreamQuery", Matches);
+            TestMatches("SomeStreamQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsMapOfProvidedType()
         {
-            TestMatches("someMapQuery", DoesNotMatch);
+            TestMatches("SomeMapQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsFutureOfProvidedType()
         {
-            TestMatches("someFutureQuery", DoesNotMatch);
+            TestMatches("SomeFutureQuery", DoesNotMatch);
         }
 
         [Fact]
         void TestMatchesReturnsTrueIfResponseTypeIsListOfFutureOfProvidedType()
         {
-            TestMatches("someFutureListQuery", Matches);
+            TestMatches("SomeFutureListQuery", Matches);
         }
 
         [Fact]
         void TestMatchesReturnsFalseIfResponseTypeIsOptionalOfProvidedType()
         {
-            TestMatches("someOptionalQueryResponse", DoesNotMatch);
+            TestMatches("SomeOptionalQueryResponse", DoesNotMatch);
         }
 
         
-
         [Fact]
-        void testConvertThrowsExceptionForSingleInstanceResponse()
+        void TestConvertThrowsExceptionForSingleInstanceResponse()
         {
-            Assert.Throws<Exception>(() -> testSubject.convert(new QueryResponse()));
+            Assert.Throws<ArgumentException>(() => TestSubject.Convert(new QueryResponse()));
         }
 
         [Fact]
-        void testConvertReturnsListOnResponseOfArrayType()
+        void TestConvertReturnsListOnResponseOfArrayType()
         {
             QueryResponse[] testResponse = new QueryResponse[] {new QueryResponse()};
 
-            List<QueryResponse> result = testSubject.convert(testResponse);
+            List<QueryResponse> result = TestSubject.Convert(testResponse);
 
-            assertEquals(testResponse.length, result.size());
-            assertEquals(testResponse[0], result.get(0));
+            Assert.Equal(testResponse.Length, result.Count);
+            Assert.Equal(testResponse[0], result[0]);
         }
 
         [Fact]
-        void testConvertReturnsListOnResponseOfSubTypedArrayType()
+        void TestConvertReturnsListOnResponseOfSubTypedArrayType()
         {
             SubTypedQueryResponse[] testResponse = new SubTypedQueryResponse[] {new SubTypedQueryResponse()};
 
-            List<QueryResponse> result = testSubject.convert(testResponse);
+            List<QueryResponse> result = TestSubject.Convert(testResponse);
 
-            assertEquals(testResponse.length, result.size());
-            assertEquals(testResponse[0], result.get(0));
+            Assert.Equal(testResponse.Length, result.Count);
+            Assert.Equal(testResponse[0], result[0]);
         }
 
         
 
         [Fact]
-        void testConvertThrowsExceptionForResponseOfDifferentArrayType()
+        void TestConvertThrowsExceptionForResponseOfDifferentArrayType()
         {
-            QueryResponseInterface[] testResponse = new QueryResponseInterface[]
-            {
-                new QueryResponseInterface()
+            IQueryResponseInterface[] testResponse = {
+                new QueryResponseFromInterface()
                 {
                 }
             };
 
-            assertThrows(Exception.class, () -> testSubject.convert(testResponse));
+            Assert.Throws<ArgumentException>(() => TestSubject.Convert(testResponse));
         }
 
         [Fact]
-        void testConvertReturnsListOnResponseOfListType()
+        void TestConvertReturnsListOnResponseOfListType()
         {
-            List<QueryResponse> testResponse = new ArrayList<>();
-            testResponse.add(new QueryResponse());
+            List<QueryResponse> testResponse = new List<QueryResponse>();
+            testResponse.Add(new QueryResponse());
 
-            List<QueryResponse> result = testSubject.convert(testResponse);
+            List<QueryResponse> result = TestSubject.Convert(testResponse);
 
-            assertEquals(testResponse.size(), result.size());
-            assertEquals(testResponse.get(0), result.get(0));
+            Assert.Equal(testResponse.Count, result.Count);
+            Assert.Equal(testResponse[0], result[0]);
         }
 
         [Fact]
-        void testConvertReturnsListOnResponseOfSubTypedListType()
+        void TestConvertReturnsListOnResponseOfSubTypedListType()
         {
-            List<SubTypedQueryResponse> testResponse = new ArrayList<>();
-            testResponse.add(new SubTypedQueryResponse());
+            List<SubTypedQueryResponse> testResponse = new List<SubTypedQueryResponse>();
+            testResponse.Add(new SubTypedQueryResponse());
 
-            List<QueryResponse> result = testSubject.convert(testResponse);
+            List<QueryResponse> result = TestSubject.Convert(testResponse);
 
-            assertEquals(testResponse.size(), result.size());
-            assertEquals(testResponse.get(0), result.get(0));
+            Assert.Equal(testResponse.Count, result.Count);
+            Assert.Equal(testResponse[0], result[0]);
         }
 
         [Fact]
-        void testConvertReturnsListOnResponseOfSetType()
+        void TestConvertReturnsListOnResponseOfSetType()
         {
-            Set<QueryResponse> testResponse = new HashSet<>();
-            testResponse.add(new QueryResponse());
+            HashSet<QueryResponse> testResponse = new HashSet<QueryResponse>();
+            testResponse.Add(new QueryResponse());
 
-            List<QueryResponse> result = testSubject.convert(testResponse);
+            List<QueryResponse> result = TestSubject.Convert(testResponse);
 
-            assertEquals(testResponse.size(), result.size());
-            assertEquals(testResponse.iterator().next(), result.get(0));
+            Assert.Equal(testResponse.Count, result.Count);
+            Assert.Equal(testResponse.First(), result[0]);
         }
 
         
 
         [Fact]
-        void testConvertThrowsExceptionForResponseOfDifferentListType()
+        void TestConvertThrowsExceptionForResponseOfDifferentListType()
         {
-            List<QueryResponseInterface> testResponse = new ArrayList<>();
-            testResponse.add(new QueryResponseInterface()
+            List<QueryResponseFromInterface> testResponse = new List<QueryResponseFromInterface>();
+            testResponse.Add(new QueryResponseFromInterface()
             {
             });
 
-            assertThrows(Exception.class, () -> testSubject.convert(testResponse));
+            Assert.Throws<ArgumentException>(() => TestSubject.Convert(testResponse));
         }
 
         [Fact]
-        void testConvertReturnsEmptyListForResponseOfDifferentListTypeIfTheListIsEmpty()
+        void TestConvertReturnsEmptyListForResponseOfDifferentListTypeIfTheListIsEmpty()
         {
-            List<QueryResponseInterface> testResponse = new ArrayList<>();
+            List<IQueryResponseInterface> testResponse = new List<IQueryResponseInterface>();
 
-            List<QueryResponse> result = testSubject.convert(testResponse);
+            List<QueryResponse> result = TestSubject.Convert(testResponse);
 
-            assertTrue(result.isEmpty());
+            Assert.True(!result.Any());
         }
+        
     }
+    
+    
 }

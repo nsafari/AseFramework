@@ -227,6 +227,46 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         {
             return new QueryResponse();
         }
+
+        public List<T> SomeLowerBoundedWildcardListQuery<T>()
+            where T : QueryResponse
+        {
+            return new List<T>();
+        }
+
+        public List<T> SomeUpperBoundedWildcardListQuery<T>()
+            where T : SubTypedQueryResponse
+        {
+            return new List<T>();
+        }
+
+        public List<T> SomeNonMatchingUpperBoundedWildcardQuery<T>()
+            where T : IQueryResponseInterface
+        {
+            return new List<T>();
+        }
+
+        public List<T> SomeUnboundedGenericUpperBoundedWildcardListQuery<T>()
+        {
+            return new List<T>();
+        }
+
+        public List<T> SomeGenericUpperBoundedWildcardListQuery<T>()
+            where T : SubTypedQueryResponse
+        {
+            return new List<T>();
+        }
+
+        public List<T> SomeMultiGenericUpperBoundedWildcardListQuery<T>()
+            where T : SubTypedQueryResponse, IQueryResponseInterface
+        {
+            return new List<T>();
+        }
+
+        public List<T> SomeUnboundedWildcardListQuery<T>() {
+            return new List<T>();
+        }
+
     }
 
     public class QueryResponse
@@ -239,6 +279,10 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
     }
 
     public interface IQueryResponseInterface
+    {
+    }
+
+    public class QueryResponseFromInterface : IQueryResponseInterface
     {
     }
 

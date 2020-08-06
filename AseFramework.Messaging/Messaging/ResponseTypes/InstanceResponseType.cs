@@ -44,7 +44,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
 
         public override Type ResponseMessagePayloadType()
         {
-            return (Type) Convert.ChangeType(ExpectedResponseType, typeof(R));
+            return (Type) System.Convert.ChangeType(ExpectedResponseType, typeof(R));
         }
 
         public override string ToString()

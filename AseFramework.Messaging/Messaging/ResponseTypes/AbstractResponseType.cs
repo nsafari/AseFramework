@@ -16,7 +16,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
     /// 
     /// </summary>
     /// <typeparam name="R"></typeparam>
-    public abstract class AbstractResponseType<R>: IResponseType<R>
+    public abstract class AbstractResponseType<R> : IResponseType<R>
     {
         protected readonly Type ExpectedResponseType;
 
@@ -34,36 +34,47 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         public abstract bool Matches(Type responseType);
 
         public abstract Type ResponseMessagePayloadType();
-        
+
+        public virtual R Convert(object response)
+        {
+            return (R) response;
+        }
+
         public Type GetExpectedResponseType()
         {
             return ExpectedResponseType;
         }
-        
-        protected bool IsGenericAssignableFrom(Type? responseType) {
-            return responseType != null && 
-                   responseType.IsGenericParameter && 
+
+        protected bool IsGenericAssignableFrom(Type? responseType)
+        {
+            return responseType != null &&
+                   responseType.IsGenericParameter &&
                    responseType.GetGenericParameterConstraints().Any(IsAssignableFrom);
         }
-        
-        protected bool IsAssignableFrom(Type? responseType) {
+
+        protected bool IsAssignableFrom(Type? responseType)
+        {
             return ExpectedResponseType.IsAssignableFrom(responseType);
         }
 
-        protected bool IsIterableOfExpectedType(Type responseType) {
+        protected bool IsIterableOfExpectedType(Type responseType)
+        {
             Type? iterableType = ReflectionUtils.GetExactSuperType(responseType, typeof(IEnumerator));
             return iterableType != null && IsParameterizedTypeOfExpectedType(iterableType);
         }
-        
-        protected bool IsParameterizedTypeOfExpectedType(Type responseType) {
+
+        protected bool IsParameterizedTypeOfExpectedType(Type responseType)
+        {
             bool isGenericType = responseType.IsGenericType;
-            if (!isGenericType) {
+            if (!isGenericType)
+            {
                 return false;
             }
 
             Type[] actualTypeArguments = responseType.GetGenericArguments();
             bool hasOneTypeArgument = actualTypeArguments.Length == 1;
-            if (!hasOneTypeArgument) {
+            if (!hasOneTypeArgument)
+            {
                 return false;
             }
 
@@ -72,19 +83,21 @@ namespace Ase.Messaging.Messaging.ResponseTypes
                    IsGenericAssignableFrom(actualTypeArgument); //||
             //isWildcardTypeWithMatchingUpperBound(actualTypeArgument);
         }
-        
-        protected bool IsGenericArrayOfExpectedType(Type responseType) {
+
+        protected bool IsGenericArrayOfExpectedType(Type responseType)
+        {
             return IsGenericArrayType(responseType) &&
                    IsGenericAssignableFrom(responseType.GetElementType());
         }
-        
-        protected bool IsGenericArrayType(Type responseType) {
+
+        protected bool IsGenericArrayType(Type responseType)
+        {
             return responseType.IsArray && responseType.IsGenericType;
         }
 
-        protected bool IsArrayOfExpectedType(Type responseType) {
+        protected bool IsArrayOfExpectedType(Type responseType)
+        {
             return responseType.IsArray && IsAssignableFrom(responseType.GetElementType());
         }
-        
     }
 }
