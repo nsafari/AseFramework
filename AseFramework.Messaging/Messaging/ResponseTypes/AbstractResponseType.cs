@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Ase.Messaging.Common;
 
 namespace Ase.Messaging.Messaging.ResponseTypes
 {
@@ -59,8 +57,9 @@ namespace Ase.Messaging.Messaging.ResponseTypes
 
         protected bool IsIterableOfExpectedType(Type responseType)
         {
-            Type? iterableType = ReflectionUtils.GetExactSuperType(responseType, typeof(IEnumerator));
-            return iterableType != null && IsParameterizedTypeOfExpectedType(iterableType);
+            // Type? iterableType = ReflectionUtils.GetExactSuperType(responseType, typeof(IEnumerator));
+            // return iterableType != null && IsParameterizedTypeOfExpectedType(iterableType);
+            return typeof(IEnumerable<>).MakeGenericType(ExpectedResponseType).IsAssignableFrom(responseType);
         }
 
         protected bool IsParameterizedTypeOfExpectedType(Type responseType)
