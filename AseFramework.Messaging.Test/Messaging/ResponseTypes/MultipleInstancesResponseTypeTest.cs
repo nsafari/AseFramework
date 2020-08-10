@@ -151,9 +151,9 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         }
 
         [Fact]
-        void TestMatchesReturnsFalseIfResponseTypeIsLowerBoundedWildcardList()
+        void TestMatchesReturnsTrueIfResponseTypeIsLowerBoundedGenericList()
         {
-            TestMatches("SomeLowerBoundedWildcardListQuery", DoesNotMatch);
+            TestMatches("SomeLowerBoundedWildcardListQuery", Matches);
         }
 
         [Fact]
