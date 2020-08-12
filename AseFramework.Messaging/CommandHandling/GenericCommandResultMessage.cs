@@ -49,8 +49,8 @@ namespace Ase.Messaging.CommandHandling
         /// <summary>
         /// Creates a Command Result Message with the given {@code commandResult} as the payload.
         /// </summary>
-        /// <param name="commandResult">the payload for the Message</param>
-        public GenericCommandResultMessage(R commandResult) : base(commandResult)
+        /// <param name="result">the payload for the Message</param>
+        public GenericCommandResultMessage(R result) : base(result)
         {
         }
 
@@ -67,9 +67,9 @@ namespace Ase.Messaging.CommandHandling
         /// Creates a Command Result Message with the given {@code commandResult} as the payload and {@code metaData} as
         /// the meta data.
         /// </summary>
-        /// <param name="commandResult">the payload for the Message</param>
+        /// <param name="result">the payload for the Message</param>
         /// <param name="metaData">the meta data for the Message</param>
-        public GenericCommandResultMessage(R commandResult, IImmutableDictionary<string, object> metaData) : base(commandResult,
+        public GenericCommandResultMessage(R result, IImmutableDictionary<string, object> metaData) : base(result,
             metaData)
         {
         }

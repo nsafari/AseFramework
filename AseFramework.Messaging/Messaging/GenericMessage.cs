@@ -40,7 +40,7 @@ namespace Ase.Messaging.Messaging
         /// <param name="declaredPayloadType">The declared type of message payload</param>
         /// <param name="payload">The payload for the message</param>
         /// <param name="metaData">The meta data for the message</param>
-        private GenericMessage(Type declaredPayloadType, T payload,
+        public GenericMessage(Type declaredPayloadType, T payload,
             IImmutableDictionary<string, object> metaData) : this(
             IdentifierFactory.GetInstance().GenerateIdentifier(), declaredPayloadType, payload,
             CurrentUnitOfWork.CorrelationData().MergedWith(MetaData.From(metaData)))
