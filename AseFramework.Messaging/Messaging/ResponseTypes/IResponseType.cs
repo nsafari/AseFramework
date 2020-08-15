@@ -17,6 +17,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
     /// <seealso cref="ResponseTypes"/>
     /// </summary>
     public interface IResponseType<R>
+        where R : class
     {
         /// <summary>
         /// Match the query handler its response {@link java.lang.reflect.Type} with the {@link ResponseType} implementation
@@ -34,9 +35,9 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         /// </summary>
         /// <param name="response">the {@link java.lang.Object} to convert into {@code R}</param>
         /// <returns>a {@code response} of type {@code R}</returns>
-        R Convert(object response)
+        R? Convert(object? response)
         {
-            return (R) response;
+            return (R?) response;
         }
 
         /// <summary>

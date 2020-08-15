@@ -15,6 +15,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
     /// </summary>
     /// <typeparam name="R"></typeparam>
     public abstract class AbstractResponseType<R> : IResponseType<R>
+        where R : class
     {
         protected readonly Type ExpectedResponseType;
 
@@ -33,9 +34,9 @@ namespace Ase.Messaging.Messaging.ResponseTypes
 
         public abstract Type ResponseMessagePayloadType();
 
-        public virtual R Convert(object response)
+        public virtual R? Convert(object? response)
         {
-            return (R) response;
+            return (R?) response;
         }
 
         public Type GetExpectedResponseType()
@@ -94,9 +95,9 @@ namespace Ase.Messaging.Messaging.ResponseTypes
             return responseType.IsArray && responseType.IsGenericType;
         }
 
-        protected bool IsArrayOfExpectedType(Type responseType)
+        protected bool IsArrayOfExpectedType(Type? responseType)
         {
-            return responseType.IsArray && IsAssignableFrom(responseType.GetElementType());
+            return responseType != null && (responseType.IsArray && IsAssignableFrom(responseType.GetElementType()));
         }
     }
 }

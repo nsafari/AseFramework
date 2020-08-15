@@ -57,8 +57,13 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         }
 
         
-        public override List<R> Convert(object response)
+        public override List<R>? Convert(object? response)
         {
+            if (response == null)
+            {
+                return null;
+            }
+            
             Type responseType = response.GetType();
 
             if (IsArrayOfExpectedType(responseType))
@@ -78,6 +83,11 @@ namespace Ase.Messaging.Messaging.ResponseTypes
 
         private bool IsIterableOfExpectedTypeByObject(object response)
         {
+            if (response == null)
+            {
+                return false;
+            }
+            
             Type responseType = response.GetType();
 
             bool isIterableType = typeof(IEnumerable).IsAssignableFrom(responseType);

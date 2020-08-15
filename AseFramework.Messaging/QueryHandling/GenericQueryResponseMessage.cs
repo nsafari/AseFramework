@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using Ase.Messaging.Messaging;
@@ -104,12 +105,12 @@ namespace Ase.Messaging.QueryHandling
         {
         }
 
-        public IQueryResponseMessage<R> WithMetaData(ReadOnlyDictionary<string, object> metaData)
+        public IQueryResponseMessage<R> WithMetaData(IReadOnlyDictionary<string, object> metaData)
         {
             return new GenericQueryResponseMessage<R>(Delegate().WithMetaData(metaData));
         }
 
-        public IQueryResponseMessage<R> AndMetaData(ReadOnlyDictionary<string, object> additionalMetaData)
+        public IQueryResponseMessage<R> AndMetaData(IReadOnlyDictionary<string, object> additionalMetaData)
         {
             return new GenericQueryResponseMessage<R>(Delegate().AndMetaData(additionalMetaData));
         }

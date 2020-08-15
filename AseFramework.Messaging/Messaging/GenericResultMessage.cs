@@ -111,11 +111,6 @@ namespace Ase.Messaging.Messaging
             return typeof(GenericResultMessage<>).Name;
         }
 
-        public override R GetPayload()
-        {
-            return base.GetPayload();
-        }
-
         private static Exception? FindExceptionResult(IMessage<R> @delegate)
         {
             if (@delegate is IResultMessage<R> resultMessage && resultMessage.IsExceptional())

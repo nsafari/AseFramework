@@ -1,4 +1,5 @@
-﻿using System.Collections.Immutable;
+﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using Ase.Messaging.Messaging;
 
@@ -16,7 +17,7 @@ namespace Ase.Messaging.QueryHandling
         /// </summary>
         /// <param name="metaData">The new MetaData for the QueryResponseMessage</param>
         /// <returns>a copy of this message with the given MetaData</returns>
-        IQueryResponseMessage<T> WithMetaData(ReadOnlyDictionary<string, object> metaData);
+        IQueryResponseMessage<T> WithMetaData(IReadOnlyDictionary<string, object> metaData);
 
         /// <summary>
         /// Returns a copy of this QueryResponseMessage with its MetaData merged with given {@code metaData}. The payload
@@ -24,6 +25,6 @@ namespace Ase.Messaging.QueryHandling
         /// </summary>
         /// <param name="additionalMetaData">The MetaData to merge into the QueryResponseMessage</param>
         /// <returns>a copy of this message with the given additional MetaData</returns>
-        IQueryResponseMessage<T> AndMetaData(ReadOnlyDictionary<string, object> additionalMetaData);
+        IQueryResponseMessage<T> AndMetaData(IReadOnlyDictionary<string, object> additionalMetaData);
     }
 }

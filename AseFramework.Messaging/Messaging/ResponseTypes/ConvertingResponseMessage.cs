@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using Ase.Messaging.QueryHandling;
 
 namespace Ase.Messaging.Messaging.ResponseTypes
@@ -13,56 +12,90 @@ namespace Ase.Messaging.Messaging.ResponseTypes
     /// {@link OptionalResponseType}.
     /// </summary>
     /// <typeparam name="R"></typeparam>
-    public class ConvertingResponseMessage<R>: IQueryResponseMessage<R>
+    public class ConvertingResponseMessage<R> : IQueryResponseMessage<R>
+        where R : class
     {
+        private readonly IResponseType<R> _expectedResponseType;
+        private readonly IQueryResponseMessage<R> _responseMessage;
+
+        /// <summary>
+        /// Initialize a response message, using {@code expectedResponseType} to convert the payload from the {@code
+        /// responseMessage}, if necessary.
+        /// </summary>
+        /// <param name="expectedResponseType">an instance describing the expected response type</param>
+        /// <param name="responseMessage">the message containing the actual response from the handler</param>
+        public ConvertingResponseMessage(IResponseType<R> expectedResponseType,
+            IQueryResponseMessage<R> responseMessage)
+        {
+            this._expectedResponseType = expectedResponseType;
+            this._responseMessage = responseMessage;
+        }
+
+
+        // @Override
+        // public <S> SerializedObject<S> serializePayload(Serializer serializer, Class<S> expectedRepresentation) {
+        //     return responseMessage.serializePayload(serializer, expectedRepresentation);
+        // }
+
+        // @Override
+        // public <T> SerializedObject<T> serializeExceptionResult(Serializer serializer, Class<T> expectedRepresentation) {
+        //     return responseMessage.serializeExceptionResult(serializer, expectedRepresentation);
+        // }
+
+        // @Override
+        // public <R1> SerializedObject<R1> serializeMetaData(Serializer serializer, Class<R1> expectedRepresentation) {
+        //     return responseMessage.serializeMetaData(serializer, expectedRepresentation);
+        // }
+
         public string GetIdentifier()
         {
-            throw new NotImplementedException();
+            return _responseMessage.GetIdentifier();
         }
 
         public MetaData GetMetaData()
         {
-            throw new NotImplementedException();
+            return _responseMessage.GetMetaData();
         }
 
-        public R GetPayload()
+        public R? GetPayload()
         {
-            throw new NotImplementedException();
+            return _expectedResponseType.Convert(_responseMessage.GetPayload());
         }
 
         public Type GetPayloadType()
         {
-            throw new NotImplementedException();
-        }
-
-        public IMessage<R> WithMetaData(IReadOnlyDictionary<string, object> metaData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IMessage<R> AndMetaData(IReadOnlyDictionary<string, object> metaData)
-        {
-            throw new NotImplementedException();
+            return _expectedResponseType.ResponseMessagePayloadType();
         }
 
         public bool IsExceptional()
         {
-            throw new NotImplementedException();
+            return _responseMessage.IsExceptional();
         }
 
         public Exception? OptionalExceptionResult()
         {
-            throw new NotImplementedException();
+            return _responseMessage.OptionalExceptionResult();
         }
 
-        public IQueryResponseMessage<R> WithMetaData(ReadOnlyDictionary<string, object> metaData)
+        public IQueryResponseMessage<R> WithMetaData(IReadOnlyDictionary<string, object> metaData)
         {
-            throw new NotImplementedException();
+            return new ConvertingResponseMessage<R>(_expectedResponseType, _responseMessage.WithMetaData(metaData));
         }
 
-        public IQueryResponseMessage<R> AndMetaData(ReadOnlyDictionary<string, object> additionalMetaData)
+        public IQueryResponseMessage<R> AndMetaData(IReadOnlyDictionary<string, object> additionalMetaData)
         {
-            throw new NotImplementedException();
+            return new ConvertingResponseMessage<R>(_expectedResponseType,
+                _responseMessage.AndMetaData(additionalMetaData));
+        }
+
+        IMessage<R> IMessage<R>.WithMetaData(IReadOnlyDictionary<string, object> metaData)
+        {
+            return _responseMessage.WithMetaData(metaData);
+        }
+
+        IMessage<R> IMessage<R>.AndMetaData(IReadOnlyDictionary<string, object> metaData)
+        {
+            return _responseMessage.AndMetaData(metaData);
         }
     }
 }

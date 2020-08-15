@@ -12,6 +12,7 @@ namespace Ase.Messaging.Messaging
     /// <typeparam name="T">The type of payload contained in this Message</typeparam>
     /// </summary>
     public interface IMessage<T>
+        where T : class
     {
         /// <summary>
         /// Returns the identifier of this message. Two messages with the same identifiers should be interpreted as
@@ -32,7 +33,7 @@ namespace Ase.Messaging.Messaging
         /// Returns the payload of this Event. The payload is the application-specific information.
         /// <returns>the payload of this Event</returns>
         /// </summary>
-        T GetPayload();
+        T? GetPayload();
 
         /// <summary>
         /// Returns the type of the payload.
@@ -53,8 +54,8 @@ namespace Ase.Messaging.Messaging
         /// <returns>a copy of this message with the given MetaData</returns>
         /// </summary>
         IMessage<T> WithMetaData(IReadOnlyDictionary<string, object> metaData);
-        
-        
+
+
         /// <summary>
         /// Returns a copy of this Message with it MetaData merged with the given <code>metaData</code>. The payload
         /// remains unchanged.
