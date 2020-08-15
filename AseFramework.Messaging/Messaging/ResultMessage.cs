@@ -7,6 +7,7 @@ namespace Ase.Messaging.Messaging
     /// <param name="R">The type of payload contained in this Message</param>
     /// </summary>
     public interface IResultMessage<R> : IMessage<R>
+        where R : class
     {
         /// <summary>
         /// Indicates whether the ResultMessage represents unsuccessful execution.
@@ -44,9 +45,8 @@ namespace Ase.Messaging.Messaging
         {
             return HandlerExecutionException<D>.ResolveDetails<D>(OptionalExceptionResult());
         }
- 
-        
-        
+
+
         //TODO: serializePayload
         //TODO: serializeExceptionResult
     }

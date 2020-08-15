@@ -13,6 +13,7 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
     /// <typeparam name="R">a generic for the expected response type of the {@link ResponseType} test subject</typeparam>
     /// </summary>
     public class AbstractResponseTypeTest<R>
+        where R : class
     {
         protected static readonly bool Matches = true;
         protected static readonly bool DoesNotMatch = false;
@@ -263,10 +264,10 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             return new List<T>();
         }
 
-        public List<T> SomeUnboundedWildcardListQuery<T>() {
+        public List<T> SomeUnboundedWildcardListQuery<T>()
+        {
             return new List<T>();
         }
-
     }
 
     public class QueryResponse

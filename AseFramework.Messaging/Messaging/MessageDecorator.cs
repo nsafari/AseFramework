@@ -6,6 +6,7 @@ using System.Text;
 namespace Ase.Messaging.Messaging
 {
     public abstract class MessageDecorator<T> : IMessage<T>
+        where T : class
     {
         private readonly IMessage<T> _delegate;
 
@@ -29,7 +30,7 @@ namespace Ase.Messaging.Messaging
             return _delegate.GetMetaData();
         }
 
-        public virtual T GetPayload()
+        public virtual T? GetPayload()
         {
             return _delegate.GetPayload();
         }
@@ -55,7 +56,7 @@ namespace Ase.Messaging.Messaging
         /// <returns>the delegate message</returns>
         protected IMessage<T> Delegate() => _delegate;
 
-        
+
         /// <summary>
         /// Describe the message specific properties to the given {@code stringBuilder}. Subclasses should override this
         /// method, calling the super method and appending their own properties to the end (or beginning).
@@ -65,7 +66,8 @@ namespace Ase.Messaging.Messaging
         /// comma when prefixing values.
         /// </summary>
         /// <param name="stringBuilder">the builder to append data to</param>
-        protected virtual void DescribeTo(StringBuilder stringBuilder) {
+        protected virtual void DescribeTo(StringBuilder stringBuilder)
+        {
             stringBuilder.Append("payload={")
                 .Append(GetPayload())
                 .Append('}')
@@ -97,9 +99,8 @@ namespace Ase.Messaging.Messaging
             return sb.Append("}")
                 .ToString();
         }
-        
+
         //TODO: serializePayload
         //TODO: serializeMetaData
-        
     }
 }

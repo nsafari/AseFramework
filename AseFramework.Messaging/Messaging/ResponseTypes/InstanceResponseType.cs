@@ -13,6 +13,7 @@ namespace Ase.Messaging.Messaging.ResponseTypes
     /// <typeparam name="R">The response type which will be matched against and converted to</typeparam>
     /// </summary>
     public class InstanceResponseType<R> : AbstractResponseType<R>
+        where R : class
     {
         /// <summary>
         /// Instantiate a {@link InstanceResponseType} with the given
@@ -22,7 +23,8 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         /// <param name="expectedResponseType">the response type which is expected to be matched against and returned</param>
         // @JsonCreator
         // @ConstructorProperties({"expectedResponseType"})
-        public InstanceResponseType(/*@JsonProperty("expectedResponseType")*/ Type expectedResponseType) : base(expectedResponseType)
+        public InstanceResponseType( /*@JsonProperty("expectedResponseType")*/ Type expectedResponseType) : base(
+            expectedResponseType)
         {
         }
 
@@ -50,7 +52,6 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         public override string ToString()
         {
             return "InstanceResponseType{" + ExpectedResponseType + "}";
-
         }
     }
 }

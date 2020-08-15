@@ -10,7 +10,8 @@ namespace Ase.Messaging.QueryHandling
     /// a query resulted in a single result object, that object is contained as the sole element of the collection.
     /// </summary>
     /// <typeparam name="T">The type of object resulting from the query</typeparam>
-    public interface IQueryResponseMessage<T>: IResultMessage<T>
+    public interface IQueryResponseMessage<T> : IResultMessage<T>
+        where T : class
     {
         /// <summary>
         /// Returns a copy of this QueryResponseMessage with the given {@code metaData}. The payload remains unchanged.

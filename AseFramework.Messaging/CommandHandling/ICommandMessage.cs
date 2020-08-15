@@ -9,7 +9,8 @@ namespace Ase.Messaging.CommandHandling
     /// state.
     /// </summary>
     /// <typeparam name="T">The type of payload contained in the message</typeparam>
-    public interface ICommandMessage<T>: IMessage<T>
+    public interface ICommandMessage<T> : IMessage<T>
+        where T : class
     {
         /// <summary>
         /// Returns the name of the command to execute. This is an indication of what should be done, using the payload as
@@ -17,7 +18,7 @@ namespace Ase.Messaging.CommandHandling
         /// </summary>
         /// <returns></returns>
         string CommandName();
-        
+
         /// <summary>
         /// Returns a copy of this CommandMessage with the given {@code metaData}. The payload remains unchanged.
         /// <p/>
@@ -36,6 +37,5 @@ namespace Ase.Messaging.CommandHandling
         /// <param name="metaData">The MetaData to merge with</param>
         /// <returns>a copy of this message with the given MetaData</returns>
         ICommandMessage<T> AndMetaData(ReadOnlyDictionary<string, object> metaData);
-
     }
 }

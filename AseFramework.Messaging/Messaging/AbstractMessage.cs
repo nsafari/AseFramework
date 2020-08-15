@@ -6,7 +6,8 @@ namespace Ase.Messaging.Messaging
     /// <summary>
     /// Abstract base class for Messages.
     /// </summary>
-    public abstract class AbstractMessage<T>: IMessage<T>
+    public abstract class AbstractMessage<T> : IMessage<T>
+        where T : class
     {
         private readonly string _identifier;
 
@@ -18,7 +19,7 @@ namespace Ase.Messaging.Messaging
         {
             _identifier = identifier;
         }
-        
+
         public string GetIdentifier()
         {
             return this._identifier;
@@ -30,20 +31,21 @@ namespace Ase.Messaging.Messaging
 
         public abstract Type GetPayloadType();
 
-        
+
         /// <summary>
         /// Returns a new message instance with the same payload and properties as this message but given <code>metaData</code>.
         /// </summary>
         /// <param name="metaData">The metadata in the new message</param>
         /// <returns>a copy of this instance with given metadata</returns>
         protected abstract IMessage<T> WithMetaData(MetaData metaData);
-        
+
         public IMessage<T> AndMetaData(IReadOnlyDictionary<string, object> metaData)
         {
             if (metaData?.Count == 0)
             {
                 return this;
             }
+
             return WithMetaData(GetMetaData().MergedWith(metaData));
         }
 
@@ -56,6 +58,5 @@ namespace Ase.Messaging.Messaging
 
             return WithMetaData(MetaData.From(metaData));
         }
-        
     }
 }
