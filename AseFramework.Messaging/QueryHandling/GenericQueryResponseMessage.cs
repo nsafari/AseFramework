@@ -106,12 +106,12 @@ namespace Ase.Messaging.QueryHandling
 
         public IQueryResponseMessage<R> WithMetaData(ReadOnlyDictionary<string, object> metaData)
         {
-            throw new NotImplementedException();
+            return new GenericQueryResponseMessage<R>(Delegate().WithMetaData(metaData));
         }
 
         public IQueryResponseMessage<R> AndMetaData(ReadOnlyDictionary<string, object> additionalMetaData)
         {
-            throw new NotImplementedException();
+            return new GenericQueryResponseMessage<R>(Delegate().AndMetaData(additionalMetaData));
         }
     }
 }
