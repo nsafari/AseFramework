@@ -1,4 +1,6 @@
-﻿namespace Ase.Messaging.Common
+﻿using System;
+
+namespace Ase.Messaging.Common
 {
     /// <summary>
     /// Abstract Factory class that provides access to an IdentifierFactory implementation. The IdentifierFactory
@@ -16,7 +18,24 @@
     /// @see ServiceLoader
     public abstract class IdentifierFactory
     {
-        private static IdentifierFactory _instance;
+        private static readonly Lazy<IdentifierFactory> Instance =
+            new Lazy<IdentifierFactory>(() =>
+            {
+                // logger.debug("Looking for IdentifierFactory implementation using the context class loader");
+                IdentifierFactory factory = null;//locateFactories(Thread.currentThread().getContextClassLoader(), "Context");
+                if (factory == null) {
+                    // logger.debug("Looking for IdentifierFactory implementation using the IdentifierFactory class loader.");
+                    factory = null;//locateFactories(IdentifierFactory.class.getClassLoader(), "IdentifierFactory");
+                }
+                if (factory == null) {
+                    factory = new DefaultIdentifierFactory();
+                    // logger.debug("Using default UUID-based IdentifierFactory");
+                } else {
+                    // logger.info("Found custom IdentifierFactory implementation: {}", factory.getClass().getName());
+                }
+
+                return factory;
+            });
 
         /// <summary>
         /// Returns an instance of the IdentifierFactory discovered on the classpath. This class uses the {@link
@@ -26,7 +45,7 @@
         /// <returns>the IdentifierFactory implementation found on the classpath.</returns>
         public static IdentifierFactory GetInstance()
         {
-            return _instance;
+            return Instance.Value;
         }
 
         /// <summary>
@@ -36,6 +55,5 @@
         /// </summary>
         /// <returns>a String representation of a unique identifier</returns>
         public abstract string GenerateIdentifier();
-
     }
 }
