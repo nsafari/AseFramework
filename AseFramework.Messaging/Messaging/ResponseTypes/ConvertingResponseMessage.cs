@@ -12,11 +12,13 @@ namespace Ase.Messaging.Messaging.ResponseTypes
     /// {@link OptionalResponseType}.
     /// </summary>
     /// <typeparam name="R"></typeparam>
-    public class ConvertingResponseMessage<R> : IQueryResponseMessage<R>
+    public class ConvertingResponseMessage<R, T> : IQueryResponseMessage<R>
         where R : class
+        where T : class
+
     {
         private readonly IResponseType<R> _expectedResponseType;
-        private readonly IQueryResponseMessage<R> _responseMessage;
+        private readonly IQueryResponseMessage<T> _responseMessage;
 
         /// <summary>
         /// Initialize a response message, using {@code expectedResponseType} to convert the payload from the {@code
@@ -25,10 +27,10 @@ namespace Ase.Messaging.Messaging.ResponseTypes
         /// <param name="expectedResponseType">an instance describing the expected response type</param>
         /// <param name="responseMessage">the message containing the actual response from the handler</param>
         public ConvertingResponseMessage(IResponseType<R> expectedResponseType,
-            IQueryResponseMessage<R> responseMessage)
+            IQueryResponseMessage<T> responseMessage)
         {
-            this._expectedResponseType = expectedResponseType;
-            this._responseMessage = responseMessage;
+            _expectedResponseType = expectedResponseType;
+            _responseMessage = responseMessage;
         }
 
 
@@ -79,23 +81,23 @@ namespace Ase.Messaging.Messaging.ResponseTypes
 
         public IQueryResponseMessage<R> WithMetaData(IReadOnlyDictionary<string, object> metaData)
         {
-            return new ConvertingResponseMessage<R>(_expectedResponseType, _responseMessage.WithMetaData(metaData));
+            return new ConvertingResponseMessage<R, T>(_expectedResponseType, _responseMessage.WithMetaData(metaData));
         }
 
         public IQueryResponseMessage<R> AndMetaData(IReadOnlyDictionary<string, object> additionalMetaData)
         {
-            return new ConvertingResponseMessage<R>(_expectedResponseType,
+            return new ConvertingResponseMessage<R, T>(_expectedResponseType,
                 _responseMessage.AndMetaData(additionalMetaData));
         }
 
         IMessage<R> IMessage<R>.WithMetaData(IReadOnlyDictionary<string, object> metaData)
         {
-            return _responseMessage.WithMetaData(metaData);
+            return (IMessage<R>) _responseMessage.WithMetaData(metaData);
         }
 
         IMessage<R> IMessage<R>.AndMetaData(IReadOnlyDictionary<string, object> metaData)
         {
-            return _responseMessage.AndMetaData(metaData);
+            return (IMessage<R>) _responseMessage.AndMetaData(metaData);
         }
     }
 }
