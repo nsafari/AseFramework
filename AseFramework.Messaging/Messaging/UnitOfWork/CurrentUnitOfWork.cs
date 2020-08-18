@@ -1,9 +1,18 @@
 ﻿using System;
+using System.Threading;
+using Nito.Collections;
 
 namespace Ase.Messaging.Messaging.UnitOfWork
 {
-    public class CurrentUnitOfWork
+    /// <summary>
+    /// Default entry point to gain access to the current UnitOfWork. Components managing transactional boundaries can
+    /// register and clear UnitOfWork instances, which components can use.
+    /// </summary>
+    public class CurrentUnitOfWork<T>
+        where T : IMessage<object>
     {
+        private static readonly ThreadLocal<Deque<IUnitOfWork<T>>> Current = new ThreadLocal<Deque<IUnitOfWork<T>>>();
+
 
         /// <summary>
         /// Returns the Correlation Data attached to the current Unit of Work, or an empty {@link MetaData} instance
@@ -17,6 +26,5 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         {
             throw new NotImplementedException();
         }
-
     }
 }
