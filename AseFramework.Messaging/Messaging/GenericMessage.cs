@@ -43,7 +43,7 @@ namespace Ase.Messaging.Messaging
         public GenericMessage(Type declaredPayloadType, T payload,
             IImmutableDictionary<string, object> metaData) : this(
             IdentifierFactory.GetInstance().GenerateIdentifier(), declaredPayloadType, payload,
-            CurrentUnitOfWork.CorrelationData().MergedWith(MetaData.From(metaData)))
+            CurrentUnitOfWork<IMessage<T>, T>.CorrelationData().MergedWith(MetaData.From(metaData)))
         {
         }
 

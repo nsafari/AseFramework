@@ -8,10 +8,11 @@ namespace Ase.Messaging.Messaging.UnitOfWork
     /// Default entry point to gain access to the current UnitOfWork. Components managing transactional boundaries can
     /// register and clear UnitOfWork instances, which components can use.
     /// </summary>
-    public class CurrentUnitOfWork<T>
-        where T : IMessage<object>
+    public class CurrentUnitOfWork<T, R>
+        where T : IMessage<R> where R : class
     {
-        private static readonly ThreadLocal<Deque<IUnitOfWork<T>>> Current = new ThreadLocal<Deque<IUnitOfWork<T>>>();
+        private static readonly ThreadLocal<Deque<IUnitOfWork<T, R>>> Current =
+            new ThreadLocal<Deque<IUnitOfWork<T, R>>>();
 
 
         /// <summary>
