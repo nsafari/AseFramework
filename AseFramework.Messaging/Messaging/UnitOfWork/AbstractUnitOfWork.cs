@@ -27,7 +27,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
             CurrentUnitOfWork<T, R>.IfStarted(parent => {
                 // we're nesting.
                 this._parentUnitOfWork = (IUnitOfWork<IMessage<R>, R>) parent;
-                // root().onCleanup(r -> changePhase(IUnitOfWork<,>.Phase.CLEANUP, IUnitOfWork<,>.IUnitOfWork<,>.Phase.CLOSED));
+                root().onCleanup(r -> changePhase(IUnitOfWork<,>.Phase.CLEANUP, IUnitOfWork<,>.IUnitOfWork<,>.Phase.CLOSED));
             });
             // changePhase(IUnitOfWork<,>.IUnitOfWork<,>.Phase.STARTED);
             // CurrentUnitOfWork.set(this);

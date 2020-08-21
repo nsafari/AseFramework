@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Transactions;
+using Ase.Messaging.Common.transaction;
+using Ase.Messaging.Messaging.correlation;
 
 namespace Ase.Messaging.Messaging.UnitOfWork
 {
@@ -108,8 +112,148 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <param name="handler">the handler to register with the Unit of Work</param>
         void OnCleanup(Action<IUnitOfWork<T, R>> handler);
 
+        /// <summary>
+        /// Returns an optional for the parent of this Unit of Work. The optional holds the Unit of Work that was active when
+        /// this Unit of Work was started. In case no other Unit of Work was active when this Unit of Work was started the
+        /// optional is empty, indicating that this is the Unit of Work root.
+        /// </summary>
+        /// <typeparam name="PT"></typeparam>
+        /// <typeparam name="PR"></typeparam>
+        /// <returns>an optional parent Unit of Work</returns>
         IUnitOfWork<PT, PR>? Parent<PT, PR>()
             where PT : IMessage<PR> where PR : class;
+
+        /// <summary>
+        /// Check that returns {@code true} if this Unit of Work has not got a parent.
+        /// </summary>
+        /// <returns>{@code true} if this Unit of Work has no parent</returns>
+        bool IsRoot()
+        {
+            return Parent<IMessage<object>, object>() == null;
+        }
+
+
+        /// <summary>
+        /// Returns the root of this Unit of Work. If this Unit of Work has no parent (see {@link #parent()}) it returns
+        /// itself, otherwise it returns the root of its parent.
+        /// </summary>
+        /// <typeparam name="PT"></typeparam>
+        /// <typeparam name="PR"></typeparam>
+        /// <returns>the root of this Unit of Work</returns>
+        IUnitOfWork<PT, PR> Root<PT, PR>()
+            where PT : IMessage<PR> where PR : class
+        {
+            //noinspection unchecked // cast is used to remove inspection error in IDE
+            var unitOfWork = Parent<PT, PR>();
+            return unitOfWork != null ? unitOfWork.Root<PT, PR>() : (IUnitOfWork<PT, PR>) this;
+        }
+
+        /// <summary>
+        /// Get the message that is being processed by the Unit of Work. A Unit of Work processes a single Message over
+        /// its life cycle.
+        /// </summary>
+        /// <returns>the Message being processed by this Unit of Work</returns>
+        T GetMessage();
+
+        /// <summary>
+        /// Transform the Message being processed using the given operator and stores the result.
+        /// <p>
+        /// Implementations should take caution not to change the message type to a type incompatible with the current Unit
+        /// of Work. For example, do not return a CommandMessage when transforming an EventMessage.
+        /// </summary>
+        /// <param name="transformOperator">The transform operator to apply to the stored message</param>
+        /// <typeparam name="TR"></typeparam>
+        /// <returns>this Unit of Work</returns>
+        IUnitOfWork<T, R> TransformMessage<TR>(Func<T, TR> transformOperator)
+            where TR : IMessage<object>;
+
+        /// <summary>
+        /// Get the correlation data contained in the {@link #getMessage() message} being processed by the Unit of Work.
+        /// <p/>
+        /// By default this correlation data will be copied to other {@link Message messages} created in the context of this
+        /// Unit of Work, so long as these messages extend from {@link org.axonframework.messaging.GenericMessage}.
+        /// </summary>
+        /// <returns>The correlation data contained in the message processed by this Unit of Work</returns>
+        MetaData GetCorrelationData();
+
+        /// <summary>
+        /// Register given {@code correlationDataProvider} with this Unit of Work. Correlation data providers are used
+        /// to provide meta data based on this Unit of Work's {@link #getMessage() Message} when {@link
+        /// #getCorrelationData()} is invoked.
+        /// </summary>
+        /// <param name="correlationDataProvider">the Correlation Data Provider to register</param>
+        /// <typeparam name="R"></typeparam>
+        void RegisterCorrelationDataProvider<R>(ICorrelationDataProvider.CorrelationDataFor<R> correlationDataProvider)
+            where R : class;
+        
+        /// <summary>
+        /// Returns a mutable map of resources registered with the Unit of Work.
+        /// </summary>
+        /// <returns>mapping of resources registered with this Unit of Work</returns>
+        IImmutableDictionary<string, object> Resources();
+
+        /// <summary>
+        /// Returns the resource attached under given {@code name}, or {@code null} if no such resource is
+        /// available.
+        /// </summary>
+        /// <param name="name">The name under which the resource was attached</param>
+        /// <typeparam name="R">The type of resource</typeparam>
+        /// <returns>The resource mapped to the given {@code name}, or {@code null} if no resource was found.</returns>
+         R GetResource<R>(string name) {
+            return (R) Resources()[name];
+        }
+
+        /// <summary>
+        /// Returns the resource attached under given {@code name}. If there is no resource mapped to the given key yet
+        /// the {@code mappingFunction} is invoked to provide the mapping.
+        /// </summary>
+        /// <param name="key">The name under which the resource was attached</param>
+        /// <param name="mappingFunction">The function that provides the mapping if there is no mapped resource yet</param>
+        /// <typeparam name="R">The type of resource</typeparam>
+        /// <returns>The resource mapped to the given {@code key}, or the resource returned by the
+        /// {@code mappingFunction} if no resource was found.</returns>
+        R GetOrComputeResource<R>(string key, Func<string, R> mappingFunction) {
+            object val;
+
+            if (!Resources().TryGetValue(key, out val))
+            {
+                Resources().Add(key, mappingFunction(key)!);
+            }
+
+            return (R) val;
+        }
+        
+        /// <summary>
+        /// Returns the resource attached under given {@code name}. If there is no resource mapped to the given key,
+        /// the {@code defaultValue} is returned.
+        /// </summary>
+        /// <param name="key">The name under which the resource was attached</param>
+        /// <param name="defaultValue">The value to return if no mapping is available</param>
+        /// <typeparam name="R">The type of resource</typeparam>
+        /// <returns>The resource mapped to the given {@code key}, or the resource returned by the
+        /// {@code mappingFunction} if no resource was found.</returns>
+        R GetOrDefaultResource<R>(string key, R defaultValue) {
+            return (R) Resources().GetValueOrDefault(key, defaultValue!);
+        }
+        
+        /// <summary>
+        /// Attach a transaction to this Unit of Work, using the given {@code transactionManager}. The transaction will be
+        /// managed in the lifecycle of this Unit of Work. Failure to start a transaction will cause this Unit of Work
+        /// to be rolled back.
+        /// </summary>
+        /// <param name="transactionManager">The Transaction Manager to create, commit and/or rollback the transaction</param>
+        /// <exception cref="Exception"></exception>
+        void AttachTransaction(ITransactionManager transactionManager) {
+            try {
+                ITransaction transaction = transactionManager.StartTransaction();
+                OnCommit(u => transaction.Commit());
+                OnRollback(u => transaction.Rollback());
+            } catch (Exception t) {
+                Rollback(t);
+                throw t;
+            }
+        }
+
     }
 
     public enum Phase
