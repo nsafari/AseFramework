@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Transactions;
 using Ase.Messaging.Common.transaction;
 using Ase.Messaging.Messaging.correlation;
 
@@ -252,6 +251,18 @@ namespace Ase.Messaging.Messaging.UnitOfWork
                 Rollback(t);
                 throw t;
             }
+        }
+        
+        /// <summary>
+        /// Execute the given {@code task} in the context of this Unit of Work. If the Unit of Work is not started yet
+        /// it will be started.
+        /// <p/>
+        /// If the task executes successfully the Unit of Work is committed. If any exception is raised while executing the
+        /// task, the Unit of Work is rolled back and the exception is thrown.
+        /// </summary>
+        /// <param name="task"></param>
+        void Execute(Action task) {
+            Execute(task, RollbackConfigurationType.AnyThrowable);
         }
 
     }

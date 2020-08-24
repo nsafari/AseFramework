@@ -1,22 +1,56 @@
-﻿namespace Ase.Messaging.Messaging.UnitOfWork
+﻿using System;
+using Microsoft.CSharp.RuntimeBinder;
+
+namespace Ase.Messaging.Messaging.UnitOfWork
 {
-    public enum RollbackConfigurationType
+    public class RollbackConfigurationType : IRollbackConfiguration
     {
+        private readonly string _display;
+        private readonly Func<Exception, bool> _rollBackOn;
+
+        public RollbackConfigurationType(string display, Func<Exception, bool> rollBackOn)
+        {
+            _display = display;
+        }
+
         /// <summary>
         /// Configuration that never performs a rollback of the unit of work.
         /// </summary>
-        NEVER,
+        public static readonly RollbackConfigurationType Never =
+            new RollbackConfigurationType("NEVER", ex => false);
+
         /// <summary>
-        /// Configuration that prescribes a rollback on any sort of exception or error.
+        /// Configuration that prescribes a rollback on any sort of exception.
         /// </summary>
-        ANY_THROWABLE,
+        public static readonly RollbackConfigurationType AnyThrowable =
+            new RollbackConfigurationType("ANY_THROWABLE", exception => exception != null);
+
         /// <summary>
-        /// Configuration that prescribes a rollback on any sort of unchecked exception, including errors.
+        /// Configuration that prescribes a rollback on any sort of system exception.
         /// </summary>
-        UNCHECKED_EXCEPTIONS,
+        public static readonly RollbackConfigurationType UncheckedExceptions =
+            new RollbackConfigurationType("SYSTEM_EXCEPTIONS", exception => exception is SystemException);
+
         /// <summary>
-        /// Configuration that prescribes a rollback on runtime exceptions only.
+        /// Configuration that prescribes a rollback on not system exception.
         /// </summary>
-        RUNTIME_EXCEPTIONS
+        public static readonly RollbackConfigurationType RuntimeException =
+            new RollbackConfigurationType("NOT_SYSTEM_EXCEPTION", exception => exception is SystemException);
+
+        public bool rollBackOn(Exception throwable)
+        {
+            return _rollBackOn(throwable);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is RollbackConfigurationType rollbackConfigurationType &&
+                   rollbackConfigurationType.GetHashCode().Equals(this.GetHashCode());
+        }
+
+        public override int GetHashCode()
+        {
+            return _display.GetHashCode();
+        }
     }
 }
