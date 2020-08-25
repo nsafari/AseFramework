@@ -16,7 +16,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
     /// Handlers can be notified about the state of the processing of the Message by registering with this Unit of Work.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IUnitOfWork<out T, out R>
+    public interface IUnitOfWork<out T, R>
         where T : IMessage<R> where R : class
     {
         /// <summary>
@@ -182,9 +182,8 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// </summary>
         /// <param name="correlationDataProvider">the Correlation Data Provider to register</param>
         /// <typeparam name="R"></typeparam>
-        void RegisterCorrelationDataProvider<R>(ICorrelationDataProvider.CorrelationDataFor<R> correlationDataProvider)
-            where R : class;
-        
+        void RegisterCorrelationDataProvider(ICorrelationDataProvider.CorrelationDataFor<R> correlationDataProvider);
+
         /// <summary>
         /// Returns a mutable map of resources registered with the Unit of Work.
         /// </summary>
@@ -196,10 +195,11 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// available.
         /// </summary>
         /// <param name="name">The name under which the resource was attached</param>
-        /// <typeparam name="R">The type of resource</typeparam>
+        /// <typeparam name="TR">The type of resource</typeparam>
         /// <returns>The resource mapped to the given {@code name}, or {@code null} if no resource was found.</returns>
-         R GetResource<R>(string name) {
-            return (R) Resources()[name];
+        TR GetResource<TR>(string name)
+        {
+            return (TR) Resources()[name];
         }
 
         /// <summary>
@@ -211,30 +211,31 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <typeparam name="R">The type of resource</typeparam>
         /// <returns>The resource mapped to the given {@code key}, or the resource returned by the
         /// {@code mappingFunction} if no resource was found.</returns>
-        R GetOrComputeResource<R>(string key, Func<string, R> mappingFunction) {
-            object val;
-
-            if (!Resources().TryGetValue(key, out val))
+        TR GetOrComputeResource<TR>(string key, Func<string, TR> mappingFunction)
+        {
+            if (!Resources().TryGetValue(key, out var val))
             {
-                Resources().Add(key, mappingFunction(key)!);
+                val = mappingFunction(key)!;
+                Resources().Add(key, val);
             }
 
-            return (R) val;
+            return (TR) val;
         }
-        
+
         /// <summary>
         /// Returns the resource attached under given {@code name}. If there is no resource mapped to the given key,
         /// the {@code defaultValue} is returned.
         /// </summary>
         /// <param name="key">The name under which the resource was attached</param>
         /// <param name="defaultValue">The value to return if no mapping is available</param>
-        /// <typeparam name="R">The type of resource</typeparam>
+        /// <typeparam name="TR">The type of resource</typeparam>
         /// <returns>The resource mapped to the given {@code key}, or the resource returned by the
         /// {@code mappingFunction} if no resource was found.</returns>
-        R GetOrDefaultResource<R>(string key, R defaultValue) {
-            return (R) Resources().GetValueOrDefault(key, defaultValue!);
+        TR GetOrDefaultResource<TR>(string key, TR defaultValue)
+        {
+            return (TR) Resources().GetValueOrDefault(key, defaultValue!);
         }
-        
+
         /// <summary>
         /// Attach a transaction to this Unit of Work, using the given {@code transactionManager}. The transaction will be
         /// managed in the lifecycle of this Unit of Work. Failure to start a transaction will cause this Unit of Work
@@ -242,17 +243,21 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// </summary>
         /// <param name="transactionManager">The Transaction Manager to create, commit and/or rollback the transaction</param>
         /// <exception cref="Exception"></exception>
-        void AttachTransaction(ITransactionManager transactionManager) {
-            try {
+        void AttachTransaction(ITransactionManager transactionManager)
+        {
+            try
+            {
                 ITransaction transaction = transactionManager.StartTransaction();
                 OnCommit(u => transaction.Commit());
                 OnRollback(u => transaction.Rollback());
-            } catch (Exception t) {
+            }
+            catch (Exception t)
+            {
                 Rollback(t);
                 throw t;
             }
         }
-        
+
         /// <summary>
         /// Execute the given {@code task} in the context of this Unit of Work. If the Unit of Work is not started yet
         /// it will be started.
@@ -261,10 +266,90 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// task, the Unit of Work is rolled back and the exception is thrown.
         /// </summary>
         /// <param name="task"></param>
-        void Execute(Action task) {
+        void Execute(Action task)
+        {
             Execute(task, RollbackConfigurationType.AnyThrowable);
         }
 
+        /// <summary>
+        /// Execute the given {@code task} in the context of this Unit of Work. If the Unit of Work is not started yet
+        /// it will be started.
+        /// <p/>
+        /// If the task executes successfully the Unit of Work is committed. If any exception is raised while executing the
+        /// task, the Unit of Work is rolled back and the exception is thrown.
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="rollbackConfiguration"></param>
+        /// <exception cref="RuntimeException"></exception>
+        void Execute(Action task, IRollbackConfiguration rollbackConfiguration)
+        {
+            IResultMessage<R> resultMessage = ExecuteWithResult(() =>
+            {
+                task();
+                return null;
+            }, rollbackConfiguration);
+            if (resultMessage.IsExceptional())
+            {
+                throw resultMessage.ExceptionResult();
+            }
+        }
+
+        /// <summary>
+        /// Execute the given {@code task} in the context of this Unit of Work. If the Unit of Work is not started yet
+        /// it will be started.
+        /// <p/>
+        /// If the task executes successfully the Unit of Work is committed and the result of the task is returned. If any
+        /// exception is raised while executing the task, the Unit of Work is rolled back and the exception is thrown.
+        /// </summary>
+        /// <param name="task">the task to execute</param>
+        /// <returns>The result of the task wrapped in Result Message</returns>
+        IResultMessage<R> ExecuteWithResult(Func<R> task)
+        {
+            return ExecuteWithResult(task, RollbackConfigurationType.AnyThrowable);
+        }
+
+        /// <summary>
+        /// Execute the given {@code task} in the context of this Unit of Work. If the Unit of Work is not started yet
+        /// it will be started.
+        /// <p/>
+        /// If the task executes successfully the Unit of Work is committed and the result of the task is returned. If
+        /// execution fails, the {@code rollbackConfiguration} determines if the Unit of Work should be rolled back or
+        /// committed.
+        /// </summary>
+        /// <param name="task">the task to execute</param>
+        /// <param name="rollbackConfiguration">configuration that determines whether or not to rollback the
+        ///     unit of work when task execution fails</param>
+        /// <typeparam name="R">the type of result that is returned after successful execution</typeparam>
+        /// <returns></returns>
+        IResultMessage<R> ExecuteWithResult(Func<R?> task, IRollbackConfiguration rollbackConfiguration);
+
+        /// <summary>
+        /// Get the result of the task that was executed by this Unit of Work. If the Unit of Work has not been given a task
+        /// to execute this method returns {@code null}.
+        /// <p>
+        /// Note that the value of the returned ExecutionResult's {@link ExecutionResult#isExceptionResult()} does not
+        /// determine whether or not the UnitOfWork has been rolled back. To check whether or not the UnitOfWork was rolled
+        /// back check {@link #isRolledBack}.
+        /// </summary>
+        /// <typeparam name="R"></typeparam>
+        /// <returns>The result of the task executed by this Unit of Work, or {@code null} if the Unit of Work has not
+        /// been given a task to execute.</returns>
+        ExecutionResult<R> GetExecutionResult();
+
+        /// <summary>
+        /// Check if the Unit of Work has been rolled back.
+        /// </summary>
+        /// <returns>{@code true} if the unit of work was rolled back, {@code false} otherwise.</returns>
+        bool IsRolledBack();
+
+        /// <summary>
+        /// Check if the Unit of Work is the 'currently' active Unit of Work returned by {@link CurrentUnitOfWork#get()}.
+        /// </summary>
+        /// <returns>{@code true} if the Unit of Work is the currently active Unit of Work</returns>
+        bool IsCurrent()
+        {
+            return CurrentUnitOfWork<T, R>.IsStarted() && CurrentUnitOfWork<T, R>.Get() == this;
+        }
     }
 
     public enum Phase

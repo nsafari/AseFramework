@@ -45,7 +45,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         public override bool Equals(object? obj)
         {
             return obj is RollbackConfigurationType rollbackConfigurationType &&
-                   rollbackConfigurationType.GetHashCode().Equals(this.GetHashCode());
+                   rollbackConfigurationType.GetHashCode().Equals(GetHashCode());
         }
 
         public override int GetHashCode()
