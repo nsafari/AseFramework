@@ -126,7 +126,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// Check that returns {@code true} if this Unit of Work has not got a parent.
         /// </summary>
         /// <returns>{@code true} if this Unit of Work has no parent</returns>
-        bool IsRoot()
+        public bool IsRoot()
         {
             return Parent<IMessage<object>, object>() == null;
         }
@@ -139,7 +139,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <typeparam name="PT"></typeparam>
         /// <typeparam name="PR"></typeparam>
         /// <returns>the root of this Unit of Work</returns>
-        IUnitOfWork<PT, PR> Root<PT, PR>()
+        public IUnitOfWork<PT, PR> Root<PT, PR>()
             where PT : IMessage<PR> where PR : class
         {
             //noinspection unchecked // cast is used to remove inspection error in IDE
