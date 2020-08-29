@@ -14,7 +14,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
     public abstract class AbstractUnitOfWork<T, R> : IUnitOfWork<T, R>
         where T : IMessage<R> where R : class
     {
-        private IUnitOfWork<IMessage<R>, R> _parentUnitOfWork;
+        private IUnitOfWork<IMessage<R>, R>? _parentUnitOfWork;
         private bool _rolledBack;
         private Phase _phase = Phase.NotStarted;
 
@@ -84,7 +84,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
             try {
                 ChangePhase(Phase.PrepareCommit, Phase.Commit);
                 DelegateAfterCommitToParent(this);
-                _parentUnitOfWork.OnRollback(u => ChangePhase(Phase.Rollback));
+                _parentUnitOfWork!.OnRollback(u => ChangePhase(Phase.Rollback));
             } catch (Exception e) {
                 SetRollbackCause(e);
                 ChangePhase(Phase.Rollback);
@@ -92,8 +92,8 @@ namespace Ase.Messaging.Messaging.UnitOfWork
             }
         }
         
-        private void DelegateAfterCommitToParent(IUnitOfWork<IMessage<R>, R> unitOfWork) {
-            var parent = unitOfWork.Parent<IMessage<R>, R>();
+        private void DelegateAfterCommitToParent(IUnitOfWork<T, R> unitOfWork) {
+            var parent = unitOfWork.Parent<T, R>();
             if (parent != null) {
                 parent.AfterCommit(this.DelegateAfterCommitToParent);
             } else {

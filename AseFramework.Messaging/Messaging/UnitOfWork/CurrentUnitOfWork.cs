@@ -13,7 +13,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         where T : IMessage<R> where R : class
     {
         private static readonly ThreadLocal<Deque<IUnitOfWork<T, R>>?> Current =
-            new ThreadLocal<Deque<IUnitOfWork<T, R>>>();
+            new ThreadLocal<Deque<IUnitOfWork<T, R>>?>();
 
 
 
@@ -82,7 +82,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <summary>
         /// Commits the current UnitOfWork. If no UnitOfWork was started, an {@link IllegalStateException} is thrown.
         /// </summary>
-        public static void commit()
+        public static void Commit()
         {
             Get().Commit();
         }
@@ -92,7 +92,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// will be marked as inactive until the given UnitOfWork is cleared.
         /// </summary>
         /// <param name="unitOfWork">The UnitOfWork to bind to the current thread.</param>
-        public static void set(IUnitOfWork<T, R> unitOfWork)
+        public static void Set(IUnitOfWork<T, R> unitOfWork)
         {
             if (Current.Value == null)
             {
@@ -106,7 +106,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// {@code unitOfWork}.
         /// </summary>
         /// <param name="unitOfWork">The UnitOfWork expected to be bound to the current thread.</param>
-        public static void clear(IUnitOfWork<T, R> unitOfWork)
+        public static void Clear(IUnitOfWork<T, R> unitOfWork)
         {
             if (!IsStarted())
             {

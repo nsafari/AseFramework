@@ -11,7 +11,7 @@ namespace Ase.Messaging.Messaging
     public class HandlerExecutionException<R> : AseException
         where R : class
     {
-        private readonly R _details;
+        private readonly R? _details;
 
         /// <summary>
         /// Initializes an execution exception with given {@code message}. The innerException and application-specific details are
@@ -29,7 +29,7 @@ namespace Ase.Messaging.Messaging
         /// <param name="message"></param>
         /// <param name="innerException"></param>
         public HandlerExecutionException(string message, Exception innerException) : this(message, innerException,
-            ResolveDetails<R>(innerException))
+            ResolveDetails(innerException))
         {
         }
 
@@ -40,7 +40,7 @@ namespace Ase.Messaging.Messaging
         /// <param name="message"></param>
         /// <param name="innerException"></param>
         /// <param name="details"></param>
-        public HandlerExecutionException(string message, Exception innerException, R details) : base(message,
+        public HandlerExecutionException(string message, Exception? innerException, R? details) : base(message,
             innerException)
         {
             _details = details;
@@ -51,10 +51,9 @@ namespace Ase.Messaging.Messaging
         /// details are implicitly cast to the expected type. A mismatch in type may lead to a {@link ClassCastException}
         /// further downstream, when accessing the Optional's enclosed value.
         /// </summary>
-        /// <typeparam name="R">The type of details expected</typeparam>
+        /// <typeparam name="TR">The type of details expected</typeparam>
         /// <returns>a nullable containing the details, if provided</returns>
-        public R? GetDetails<R>()
-            where R : class
+        public R? GetDetails()
         {
             return _details as R;
         }
@@ -65,13 +64,13 @@ namespace Ase.Messaging.Messaging
         /// </summary>
         /// <typeparam name="R">The type of details expected</typeparam>
         /// <returns>an Optional containing details, if present in the given {@code throwable}</returns>
-        public static R? ResolveDetails<R>(Exception? exception) where R : class
+        public static R? ResolveDetails(Exception? exception) 
         {
             while (true)
             {
                 if (exception != null && exception is HandlerExecutionException<R> handlerExecutionException)
                 {
-                    return handlerExecutionException.GetDetails<R>();
+                    return handlerExecutionException.GetDetails();
                 }
 
                 if (exception?.InnerException == null)

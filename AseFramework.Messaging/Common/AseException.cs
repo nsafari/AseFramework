@@ -20,7 +20,7 @@ namespace Ase.Messaging.Common
         /// </summary>
         /// <param name="message">The message describing the exception</param>
         /// <param name="innerException">The underlying cause of the exception</param>
-        protected AseException(string message, Exception innerException) : base(message, innerException)
+        protected AseException(string message, Exception? innerException) : base(message, innerException)
         {
         }
     }

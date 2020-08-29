@@ -175,7 +175,7 @@ namespace Ase.Messaging.Messaging
             return _values.GetHashCode();
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             if (this == obj)
             {

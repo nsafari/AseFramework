@@ -63,24 +63,25 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             return new Object();
         }
 
-        public E SomeUnboundedGenericQuery<E>()
+        public E? SomeUnboundedGenericQuery<E>()
+        where E : class
         {
             return default;
         }
 
-        public E SomeBoundedGenericQuery<E>()
+        public E? SomeBoundedGenericQuery<E>()
             where E : QueryResponse
         {
             return new SubTypedQueryResponse() as E;
         }
 
-        public E SomeMultiBoundedGenericQuery<E>()
+        public E? SomeMultiBoundedGenericQuery<E>()
             where E : SubTypedQueryResponse, IQueryResponseInterface
         {
             return new ComplexTypedQueryResponse() as E;
         }
 
-        public E SomeNonMatchingBoundedGenericQuery<E>()
+        public E? SomeNonMatchingBoundedGenericQuery<E>()
             where E : class, IQueryResponseInterface
         {
             return new { } as E;
@@ -102,24 +103,24 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             return new Object[] { };
         }
 
-        public E[] SomeUnboundedGenericArrayQuery<E>()
+        public E[]? SomeUnboundedGenericArrayQuery<E>()
         {
             return new SubTypedQueryResponse[] { } as E[];
         }
 
-        public E[] SomeBoundedGenericArrayQuery<E>()
+        public E[]? SomeBoundedGenericArrayQuery<E>()
             where E : QueryResponse
         {
             return new SubTypedQueryResponse[] { } as E[];
         }
 
-        public E[] SomeMultiBoundedGenericArrayQuery<E>()
+        public E[]? SomeMultiBoundedGenericArrayQuery<E>()
             where E : SubTypedQueryResponse, IQueryResponseInterface
         {
             return new ComplexTypedQueryResponse[] { } as E[];
         }
 
-        public E[] SomeNonMatchingBoundedGenericArrayQuery<E>()
+        public E[]? SomeNonMatchingBoundedGenericArrayQuery<E>()
             where E : IQueryResponseInterface
         {
             return new SubTypedQueryResponse[] { } as E[];
@@ -182,15 +183,15 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             return new BoundQueryResponseList<E>();
         }
 
-        public MultiUnboundQueryResponseList<E, R> SomeMultiUnboundedListImplementationQuery<E, R>()
+        public MultiUnboundQueryResponseList<E, TR> SomeMultiUnboundedListImplementationQuery<E, TR>()
         {
-            return new MultiUnboundQueryResponseList<E, R>();
+            return new MultiUnboundQueryResponseList<E, TR>();
         }
 
-        public MultiBoundQueryResponseList<E, R> SomeMultiBoundedListImplementationQuery<E, R>()
+        public MultiBoundQueryResponseList<E, TR> SomeMultiBoundedListImplementationQuery<E, TR>()
             where E : QueryResponse
         {
-            return new MultiBoundQueryResponseList<E, R>();
+            return new MultiBoundQueryResponseList<E, TR>();
         }
 
 
@@ -220,7 +221,7 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
 
         public Task<List<QueryResponse>> SomeFutureListQuery()
         {
-            return Task.FromResult(new List<QueryResponse> {new QueryResponse()}.AsReadOnly().ToList());
+            return Task.FromResult(new List<QueryResponse> { new QueryResponse() }.AsReadOnly().ToList());
         }
 
 

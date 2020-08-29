@@ -11,6 +11,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         public RollbackConfigurationType(string display, Func<Exception, bool> rollBackOn)
         {
             _display = display;
+            _rollBackOn = rollBackOn;
         }
 
         /// <summary>

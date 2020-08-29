@@ -43,7 +43,7 @@ namespace Ase.Messaging.Messaging
         D? ExceptionDetails<D>()
             where D : class
         {
-            return HandlerExecutionException<D>.ResolveDetails<D>(OptionalExceptionResult());
+            return HandlerExecutionException<D>.ResolveDetails(OptionalExceptionResult());
         }
 
 

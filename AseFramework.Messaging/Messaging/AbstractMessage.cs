@@ -27,7 +27,7 @@ namespace Ase.Messaging.Messaging
 
         public abstract MetaData GetMetaData();
 
-        public abstract T GetPayload();
+        public abstract T? GetPayload();
 
         public abstract Type GetPayloadType();
 
@@ -41,7 +41,7 @@ namespace Ase.Messaging.Messaging
 
         public IMessage<T> AndMetaData(IReadOnlyDictionary<string, object> metaData)
         {
-            if (metaData?.Count == 0)
+            if (metaData == null || metaData.Count == 0)
             {
                 return this;
             }

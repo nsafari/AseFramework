@@ -13,7 +13,7 @@ namespace Ase.Messaging.Messaging
     public class GenericResultMessage<R> : MessageDecorator<R>, IResultMessage<R>
         where R : class
     {
-        private readonly Exception _exception;
+        private readonly Exception? _exception;
 
         /// <summary>
         ///  Creates a ResultMessage with the given {@code result} as the payload.
@@ -64,7 +64,7 @@ namespace Ase.Messaging.Messaging
         /// </summary>
         /// <param name="delegate">the Message delegate</param>
         /// <param name="exception">the Exception describing the cause of an error</param>
-        public GenericResultMessage(IMessage<R> @delegate, Exception exception) : base(@delegate)
+        public GenericResultMessage(IMessage<R> @delegate, Exception? exception) : base(@delegate)
         {
             this._exception = exception;
         }

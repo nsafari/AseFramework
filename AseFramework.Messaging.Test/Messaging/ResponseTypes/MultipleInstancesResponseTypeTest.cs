@@ -283,10 +283,10 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         {
             QueryResponse[] testResponse = new QueryResponse[] {new QueryResponse()};
 
-            List<QueryResponse> result = TestSubject.Convert(testResponse);
+            List<QueryResponse>? result = TestSubject.Convert(testResponse);
 
-            Assert.Equal(testResponse.Length, result.Count);
-            Assert.Equal(testResponse[0], result[0]);
+            Assert.Equal(testResponse.Length, result?.Count);
+            Assert.Equal(testResponse[0], result?[0]);
         }
 
         [Fact]
@@ -294,10 +294,10 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         {
             SubTypedQueryResponse[] testResponse = new SubTypedQueryResponse[] {new SubTypedQueryResponse()};
 
-            List<QueryResponse> result = TestSubject.Convert(testResponse);
+            List<QueryResponse>? result = TestSubject.Convert(testResponse);
 
-            Assert.Equal(testResponse.Length, result.Count);
-            Assert.Equal(testResponse[0], result[0]);
+            Assert.Equal(testResponse.Length, result?.Count);
+            Assert.Equal(testResponse[0], result?[0]);
         }
 
         
@@ -320,10 +320,10 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             List<QueryResponse> testResponse = new List<QueryResponse>();
             testResponse.Add(new QueryResponse());
 
-            List<QueryResponse> result = TestSubject.Convert(testResponse);
+            List<QueryResponse>? result = TestSubject.Convert(testResponse);
 
-            Assert.Equal(testResponse.Count, result.Count);
-            Assert.Equal(testResponse[0], result[0]);
+            Assert.Equal(testResponse.Count, result?.Count);
+            Assert.Equal(testResponse[0], result?[0]);
         }
 
         [Fact]
@@ -332,10 +332,10 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             List<SubTypedQueryResponse> testResponse = new List<SubTypedQueryResponse>();
             testResponse.Add(new SubTypedQueryResponse());
 
-            List<QueryResponse> result = TestSubject.Convert(testResponse);
+            List<QueryResponse>? result = TestSubject.Convert(testResponse);
 
-            Assert.Equal(testResponse.Count, result.Count);
-            Assert.Equal(testResponse[0], result[0]);
+            Assert.Equal(testResponse.Count, result?.Count);
+            Assert.Equal(testResponse[0], result?[0]);
         }
 
         [Fact]
@@ -344,10 +344,10 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
             HashSet<QueryResponse> testResponse = new HashSet<QueryResponse>();
             testResponse.Add(new QueryResponse());
 
-            List<QueryResponse> result = TestSubject.Convert(testResponse);
+            List<QueryResponse>? result = TestSubject.Convert(testResponse);
 
-            Assert.Equal(testResponse.Count, result.Count);
-            Assert.Equal(testResponse.First(), result[0]);
+            Assert.Equal(testResponse.Count, result?.Count);
+            Assert.Equal(testResponse.First(), result?[0]);
         }
 
         
@@ -368,7 +368,7 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         {
             List<IQueryResponseInterface> testResponse = new List<IQueryResponseInterface>();
 
-            List<QueryResponse> result = TestSubject.Convert(testResponse);
+            List<QueryResponse>? result = TestSubject.Convert(testResponse);
 
             Assert.True(!result.Any());
         }

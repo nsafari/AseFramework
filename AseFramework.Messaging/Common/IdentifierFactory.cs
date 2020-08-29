@@ -22,7 +22,7 @@ namespace Ase.Messaging.Common
             new Lazy<IdentifierFactory>(() =>
             {
                 // logger.debug("Looking for IdentifierFactory implementation using the context class loader");
-                IdentifierFactory factory = null;//locateFactories(Thread.currentThread().getContextClassLoader(), "Context");
+                IdentifierFactory? factory = null;//locateFactories(Thread.currentThread().getContextClassLoader(), "Context");
                 if (factory == null) {
                     // logger.debug("Looking for IdentifierFactory implementation using the IdentifierFactory class loader.");
                     factory = null;//locateFactories(IdentifierFactory.class.getClassLoader(), "IdentifierFactory");

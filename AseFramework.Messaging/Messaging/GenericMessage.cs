@@ -10,7 +10,7 @@ namespace Ase.Messaging.Messaging
     {
         private readonly MetaData _metaData;
         private readonly Type _payloadType;
-        private readonly T _payload;
+        private readonly T? _payload;
 
         /// <summary>
         /// Constructs a Message for the given <code>payload</code> using the correlation data of the current Unit of Work, if
@@ -40,10 +40,14 @@ namespace Ase.Messaging.Messaging
         /// <param name="declaredPayloadType">The declared type of message payload</param>
         /// <param name="payload">The payload for the message</param>
         /// <param name="metaData">The meta data for the message</param>
-        public GenericMessage(Type declaredPayloadType, T payload,
+        public GenericMessage(Type declaredPayloadType,
+            T? payload,
             IImmutableDictionary<string, object> metaData) : this(
-            IdentifierFactory.GetInstance().GenerateIdentifier(), declaredPayloadType, payload,
-            CurrentUnitOfWork<IMessage<T>, T>.CorrelationData().MergedWith(MetaData.From(metaData)))
+            IdentifierFactory.GetInstance().GenerateIdentifier(),
+            declaredPayloadType,
+            payload,
+            CurrentUnitOfWork<IMessage<T>, T>.CorrelationData().MergedWith(MetaData.From(metaData))
+            )
         {
         }
 
@@ -69,7 +73,7 @@ namespace Ase.Messaging.Messaging
         /// <param name="declaredPayloadType">The declared type of message payload</param>
         /// <param name="payload">The payload for the message</param>
         /// <param name="metaData">The meta data for the message</param>
-        public GenericMessage(string identifier, Type declaredPayloadType, T payload,
+        public GenericMessage(string identifier, Type declaredPayloadType, T? payload,
             IImmutableDictionary<string, object> metaData) : base(identifier)
         {
             _payloadType = declaredPayloadType;
@@ -120,7 +124,7 @@ namespace Ase.Messaging.Messaging
             return _metaData;
         }
 
-        public override T GetPayload()
+        public override T? GetPayload()
         {
             return _payload;
         }

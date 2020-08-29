@@ -247,7 +247,7 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         void TestConvertReturnsSingleResponseAsIs() {
             QueryResponse testResponse = new QueryResponse();
 
-            QueryResponse result = TestSubject.Convert(testResponse);
+            QueryResponse? result = TestSubject.Convert(testResponse);
 
             Assert.Equal(testResponse, result);
         }
@@ -257,7 +257,7 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         void TestConvertReturnsSingleResponseAsIsForSubTypedResponse() {
             SubTypedQueryResponse testResponse = new SubTypedQueryResponse();
 
-            QueryResponse result = TestSubject.Convert(testResponse);
+            QueryResponse? result = TestSubject.Convert(testResponse);
 
             Assert.Equal(testResponse, result);
         }
@@ -267,14 +267,14 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
         {
             
             Assert.Throws<InvalidCastException>(() => {
-                QueryResponse convert = TestSubject.Convert(new QueryResponseFromInterface());
+                QueryResponse? convert = TestSubject.Convert(new QueryResponseFromInterface());
             });
         }
 
         [Fact]
         void TestConvertThrowsClassCastExceptionForMultipleInstanceResponse() {
             Assert.Throws<InvalidCastException>(() => {
-                QueryResponse convert = TestSubject.Convert(new QueryResponse[]{});
+                QueryResponse? convert = TestSubject.Convert(new QueryResponse[]{});
             });
         }
     }
