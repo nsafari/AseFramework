@@ -12,21 +12,19 @@ namespace Ase.Messaging.Messaging.UnitOfWork
     public class CurrentUnitOfWork<T, R>
         where T : IMessage<R> where R : class
     {
-        private static readonly ThreadLocal<Deque<IUnitOfWork<T, R>>> Current =
+        private static readonly ThreadLocal<Deque<IUnitOfWork<T, R>>?> Current =
             new ThreadLocal<Deque<IUnitOfWork<T, R>>>();
 
 
+
         /// <summary>
-        /// Returns the Correlation Data attached to the current Unit of Work, or an empty {@link MetaData} instance
-        /// if no Unit of Work is started.
+        /// Indicates whether a unit of work has already been started. This method can be used by interceptors to prevent
+        /// nesting of UnitOfWork instances.
         /// </summary>
-        /// <returns>a MetaData instance representing the current Unit of Work's correlation data, or an empty MetaData
-        /// instance if no Unit of Work is started.</returns>
-        /// <see cref="UnitOfWork.getCorrelationData()"/>
-        /// <exception cref="NotImplementedException"></exception>
-        public static MetaData CorrelationData()
+        /// <returns>whether a UnitOfWork has already been started.</returns>
+        public static bool IsStarted()
         {
-            throw new NotImplementedException();
+            return Current.Value != null && Current.Value.Count != 0;
         }
 
         /// <summary>
@@ -42,15 +40,20 @@ namespace Ase.Messaging.Messaging.UnitOfWork
             return true;
         }
 
+
         /// <summary>
-        /// Indicates whether a unit of work has already been started. This method can be used by interceptors to prevent
-        /// nesting of UnitOfWork instances.
+        /// If a Unit of Work is started, execute the given {@code function} on it. Otherwise, returns an empty Optional.
+        /// Use this method when you wish to retrieve information from a Unit of Work, reverting to a default when no Unit
+        /// of Work is started.
         /// </summary>
-        /// <returns>whether a UnitOfWork has already been started.</returns>
-        public static bool IsStarted()
+        /// <param name="function">The function to apply to the unit of work, if present</param>
+        /// <returns>an optional containing the result of the function, or an empty Optional when no Unit of Work was started</returns>
+        public static RT? Map<RT>(Func<IUnitOfWork<T, R>, RT> func)
+        where RT : class
         {
-            return Current.Value != null && Current.Value.Count != 0;
+            return IsStarted() ? func(Get()) : null;
         }
+
 
         /// <summary>
         /// Gets the UnitOfWork bound to the current thread. If no UnitOfWork has been started, an {@link
@@ -75,5 +78,68 @@ namespace Ase.Messaging.Messaging.UnitOfWork
             Deque<IUnitOfWork<T, R>>? unitsOfWork = Current.Value;
             return unitsOfWork == null || unitsOfWork.Count == 0;
         }
+
+        /// <summary>
+        /// Commits the current UnitOfWork. If no UnitOfWork was started, an {@link IllegalStateException} is thrown.
+        /// </summary>
+        public static void commit()
+        {
+            Get().Commit();
+        }
+
+        /// <summary>
+        /// Binds the given {@code unitOfWork} to the current thread. If other UnitOfWork instances were bound, they
+        /// will be marked as inactive until the given UnitOfWork is cleared.
+        /// </summary>
+        /// <param name="unitOfWork">The UnitOfWork to bind to the current thread.</param>
+        public static void set(IUnitOfWork<T, R> unitOfWork)
+        {
+            if (Current.Value == null)
+            {
+                Current.Value = new Deque<IUnitOfWork<T, R>>();
+            }
+            Current.Value.AddToFront(unitOfWork);
+        }
+
+        /// <summary>
+        /// Clears the UnitOfWork currently bound to the current thread, if that UnitOfWork is the given
+        /// {@code unitOfWork}.
+        /// </summary>
+        /// <param name="unitOfWork">The UnitOfWork expected to be bound to the current thread.</param>
+        public static void clear(IUnitOfWork<T, R> unitOfWork)
+        {
+            if (!IsStarted())
+            {
+                throw new InvalidOperationException("Could not clear this UnitOfWork. There is no UnitOfWork active.");
+            }
+            if (Current.Value![0] == unitOfWork)
+            {
+                Current.Value.RemoveFromFront();
+                if (Current.Value.Any())
+                {
+                    Current.Value = null;
+                }
+            }
+            else
+            {
+                throw new InvalidOperationException("Could not clear this UnitOfWork. It is not the active one.");
+            }
+        }
+
+
+        /// <summary>
+        /// Returns the Correlation Data attached to the current Unit of Work, or an empty {@link MetaData} instance
+        /// if no Unit of Work is started.
+        /// </summary>
+        /// <returns>a MetaData instance representing the current Unit of Work's correlation data, or an empty MetaData
+        /// instance if no Unit of Work is started.</returns>
+        /// <see cref="UnitOfWork.getCorrelationData()"/>
+        /// <exception cref="NotImplementedException"></exception>
+        public static MetaData CorrelationData()
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }
