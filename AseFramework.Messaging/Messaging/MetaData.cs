@@ -54,7 +54,7 @@ namespace Ase.Messaging.Messaging
                 return dataEntries;
             }
 
-            return metaDataEntries.Any() ? EmptyInstance : new MetaData(metaDataEntries);
+            return metaDataEntries.Any() ? new MetaData(metaDataEntries): EmptyInstance;
         }
 
         /// <summary>
@@ -99,12 +99,12 @@ namespace Ase.Messaging.Messaging
         /// <code>additionalEntries</code></returns>
         public MetaData MergedWith(IReadOnlyDictionary<string, object> additionalEntries)
         {
-            if (additionalEntries.Any())
+            if (!additionalEntries.Any())
             {
                 return this;
             }
 
-            return this.Any() ? From(additionalEntries) : new MetaData(_values.SetItems(additionalEntries));
+            return this.Any() ? new MetaData(_values.SetItems(additionalEntries)) : From(additionalEntries) ;
         }
 
         /// <summary>

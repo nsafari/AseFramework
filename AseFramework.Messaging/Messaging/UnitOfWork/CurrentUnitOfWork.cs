@@ -137,7 +137,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <exception cref="NotImplementedException"></exception>
         public static MetaData CorrelationData()
         {
-            throw new NotImplementedException();
+            return CurrentUnitOfWork<T, R>.Map((unitOfWork) => unitOfWork.GetCorrelationData()) ?? MetaData.EmptyInstance;
         }
 
 
