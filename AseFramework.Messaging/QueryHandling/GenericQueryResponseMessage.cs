@@ -13,6 +13,85 @@ namespace Ase.Messaging.QueryHandling
     public class GenericQueryResponseMessage<R> : GenericResultMessage<R>, IQueryResponseMessage<R>
         where R : class
     {
+
+        /// <summary>
+        /// Creates a QueryResponseMessage for the given {@code result}. If result already implements QueryResponseMessage,
+        /// it is returned directly. Otherwise a new QueryResponseMessage is created with the result as payload.
+        /// </summary>
+        /// <param name="result">The result of a Query, to be wrapped in a QueryResponseMessage</param>
+        /// <returns>a QueryResponseMessage for the given {@code result}, or the result itself, if already a QueryResponseMessage.</returns>
+        public static IQueryResponseMessage<R> AsResponseMessage(object result)
+        {
+            if (result is IQueryResponseMessage<R>)
+            {
+                return (IQueryResponseMessage<R>)result;
+            }
+            else if (result is IResultMessage<R>)
+            {
+                IResultMessage<R> resultMessage = (IResultMessage<R>)result;
+                return new GenericQueryResponseMessage<R>(resultMessage.GetPayload(), resultMessage.GetMetaData());
+            }
+            else if (result is IMessage<R>)
+            {
+                IMessage<R> message = (IMessage<R>)result;
+                return new GenericQueryResponseMessage<R>(message.GetPayload(), message.GetMetaData());
+            }
+            else
+            {
+                return new GenericQueryResponseMessage<R>((R)result);
+            }
+        }
+
+
+        /// <summary>
+        /// Creates a QueryResponseMessage for the given {@code result} with a {@code declaredType} as the result type.
+        /// Providing both the result type and the result allows the creation of a nullable response message, as the
+        /// implementation does not have to check the type itself, which could result in a
+        /// {@link java.lang.NullPointerException}. If result already implements QueryResponseMessage, it is returned
+        /// directly. Otherwise a new QueryResponseMessage is created with the declared type as the result type and the
+        /// result as payload.
+        /// </summary>
+        /// <param name="declaredType">The declared type of the Query Response Message to be created.</param>
+        /// <param name="result">The result of a Query, to be wrapped in a QueryResponseMessage</param>
+        /// <returns>a QueryResponseMessage for the given {@code result}, or the result itself, if already a QueryResponseMessage.</returns>
+        public static IQueryResponseMessage<R> AsNullableResponseMessage(Type declaredType, Object result)
+        {
+            if (result is IQueryResponseMessage<R>)
+            {
+                return (IQueryResponseMessage<R>)result;
+            }
+            else if (result is IResultMessage<R>)
+            {
+                IResultMessage<R> resultMessage = (IResultMessage<R>)result;
+                if (resultMessage.IsExceptional())
+                {
+                    Exception cause = resultMessage.ExceptionResult();
+                    return new GenericQueryResponseMessage<R>(declaredType, cause, resultMessage.GetMetaData());
+                }
+                return new GenericQueryResponseMessage<R>(resultMessage.GetPayload(), resultMessage.GetMetaData());
+            }
+            else if (result is IMessage<R>)
+            {
+                IMessage<R> message = (IMessage<R>)result;
+                return new GenericQueryResponseMessage<R>(message.GetPayload(), message.GetMetaData());
+            }
+            else
+            {
+                return new GenericQueryResponseMessage<R>(declaredType, (R)result);
+            }
+        }
+
+        /// <summary>
+        /// Creates a Query Response Message with given {@code declaredType} and {@code exception}.
+        /// </summary>
+        /// <param name="declaredType">The declared type of the Query Response Message to be created</param>
+        /// <param name="exception">The Exception describing the cause of an error</param>
+        /// <returns>a message containing exception result</returns>
+        public static IQueryResponseMessage<R> AsResponseMessage(Type declaredType, Exception exception)
+        {
+            return new GenericQueryResponseMessage<R>(declaredType, exception);
+        }
+
         /// <summary>
         /// Initialize the response message with given {@code result}.
         /// </summary>
@@ -49,7 +128,7 @@ namespace Ase.Messaging.QueryHandling
         /// </summary>
         /// <param name="result">The result reported by the Query Handler, may not be {@code null}</param>
         /// <param name="metaData">The meta data to contain in the message</param>
-        public GenericQueryResponseMessage(R result, IImmutableDictionary<string, object> metaData) : base(
+        public GenericQueryResponseMessage(R? result, IImmutableDictionary<string, object> metaData) : base(
             new GenericMessage<R>(result, metaData))
         {
         }
