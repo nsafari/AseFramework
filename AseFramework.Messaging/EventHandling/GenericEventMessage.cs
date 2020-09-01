@@ -31,9 +31,9 @@ namespace AseFramework.Messaging.EventHandling
             else if (@event is IMessage<TR>)
             {
                 IMessage<TR> message = (IMessage<TR>)@event;
-                return new GenericEventMessage<TR>(message, clock.ToUnixTimeMilliseconds);
+                return new GenericEventMessage<TR>(message, clock);
             }
-            return new GenericEventMessage<TR>(new GenericMessage<TR>((TR)@event), clock.ToUnixTimeMilliseconds);
+            return new GenericEventMessage<TR>(new GenericMessage<TR>((TR)@event), clock);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace AseFramework.Messaging.EventHandling
         /// <param name="payload">The payload of the EventMessage</param>
         /// <param name="metaData">The MetaData for the EventMessage</param>
         public GenericEventMessage(T? payload, IImmutableDictionary<string, object> metaData)
-        : this(new GenericMessage<T>(payload, metaData), clock.ToUnixTimeMilliseconds())
+        : this(new GenericMessage<T>(payload, metaData), clock)
         {
         }
 
@@ -63,11 +63,11 @@ namespace AseFramework.Messaging.EventHandling
         public GenericEventMessage(IMessage<T>? @delegate, Action<DateTimeOffset> timestampSupplier) : base(@delegate)
         {
 
-            this.timestampSupplier = CachingSupplier.of(timestampSupplier);
+            // this.timestampSupplier = CachingSupplier.of(timestampSupplier);
         }
 
 
-        protected GenericEventMessage(IMessage<T>? @delegate, DateTimeOffset timestamp) : this(@delegate, CachingSupplier.of(timestamp))
+        protected GenericEventMessage(IMessage<T>? @delegate, DateTimeOffset timestamp) : this(@delegate, null/*CachingSupplier.of(timestamp)*/)
         {
 
         }
@@ -79,7 +79,7 @@ namespace AseFramework.Messaging.EventHandling
             throw new NotImplementedException();
         }
 
-        public IMessage<T> AndMetaData(IIImmutableDictionary<string, object> metaData)
+        public IMessage<T> AndMetaData(ReadOnlyDictionary<string, object> metaData)
         {
             throw new NotImplementedException();
         }
@@ -115,6 +115,11 @@ namespace AseFramework.Messaging.EventHandling
         }
 
         public IMessage<T> WithMetaData(IReadOnlyDictionary<string, object> metaData)
+        {
+            throw new NotImplementedException();
+        }
+
+        IEventMessage<T> IEventMessage<T>.AndMetaData(ReadOnlyDictionary<string, object> metaData)
         {
             throw new NotImplementedException();
         }
