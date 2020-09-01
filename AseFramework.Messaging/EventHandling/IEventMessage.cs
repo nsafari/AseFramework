@@ -4,6 +4,12 @@ using Ase.Messaging.Messaging;
 
 namespace AseFramework.Messaging.EventHandling
 {
+    /// <summary>
+    /// Represents a Message wrapping an Event, which is represented by its payload. An Event is a representation of an
+    /// occurrence of an event (i.e. anything that happened any might be of importance to any other component) in the
+    /// application. It contains the data relevant for components that need to act based on that event.
+    /// </summary>
+    /// <typeparam name="T">The type of payload contained in this Message</typeparam>
     public interface IEventMessage<T> : IMessage<T>
     where T : class
     {
