@@ -55,7 +55,7 @@ namespace AseFramework.Messaging.Serialization
         }
 
 
-        public T? get()
+        public T? Get()
         {
             T? result = _value;
             if (result == null)

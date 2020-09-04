@@ -184,12 +184,12 @@ namespace Ase.Messaging.QueryHandling
         {
         }
 
-        public IQueryResponseMessage<R> WithMetaData(IReadOnlyDictionary<string, object> metaData)
+        public new IQueryResponseMessage<R> WithMetaData(IReadOnlyDictionary<string, object> metaData)
         {
             return new GenericQueryResponseMessage<R>(Delegate().WithMetaData(metaData));
         }
 
-        public IQueryResponseMessage<R> AndMetaData(IReadOnlyDictionary<string, object> additionalMetaData)
+        public new IQueryResponseMessage<R> AndMetaData(IReadOnlyDictionary<string, object> additionalMetaData)
         {
             return new GenericQueryResponseMessage<R>(Delegate().AndMetaData(additionalMetaData));
         }

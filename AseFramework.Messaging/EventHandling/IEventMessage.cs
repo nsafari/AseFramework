@@ -1,8 +1,8 @@
-using System;
-using System.Collections.ObjectModel;
+using System.Collections.Immutable;
 using Ase.Messaging.Messaging;
+using AseFramework.Messaging.Common.Wrapper;
 
-namespace AseFramework.Messaging.EventHandling
+namespace Ase.Messaging.EventHandling
 {
     /// <summary>
     /// Represents a Message wrapping an Event, which is represented by its payload. An Event is a representation of an
@@ -32,7 +32,7 @@ namespace AseFramework.Messaging.EventHandling
         /// Returns the timestamp of this event. The timestamp is set to the date and time the event was reported.
         /// </summary>
         /// <returns>the timestamp of this event.</returns>
-        DateTime getTimestamp();
+        InternalDateTimeOffset? GetTimestamp();
 
         /// <summary>
         /// Returns a copy of this EventMessage with the given {@code metaData}. The payload, {@link #getTimestamp()
@@ -40,7 +40,7 @@ namespace AseFramework.Messaging.EventHandling
         /// </summary>
         /// <param name="metaData">The new MetaData for the Message</param>
         /// <returns>a copy of this message with the given MetaData</returns>
-        IEventMessage<T> WithMetaData(ReadOnlyDictionary<string, object> metaData);
+        IEventMessage<T> WithMetaData(IImmutableDictionary<string, object> metaData);
 
         /// <summary>
         /// Returns a copy of this EventMessage with it MetaData merged with the given {@code metaData}. The payload,
@@ -48,7 +48,7 @@ namespace AseFramework.Messaging.EventHandling
         /// </summary>
         /// <param name="metaData">metaData The MetaData to merge with</param>
         /// <returns>a copy of this message with the given MetaData</returns>
-        IEventMessage<T> AndMetaData(ReadOnlyDictionary<string, object> metaData);
+        IEventMessage<T> AndMetaData(IImmutableDictionary<string, object> metaData);
 
     }
 }

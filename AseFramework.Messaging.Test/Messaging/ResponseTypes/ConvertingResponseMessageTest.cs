@@ -11,7 +11,7 @@ namespace Ase.Messaging.Test.Messaging.ResponseTypes
     public class ConvertingResponseMessageTest
     {
         [Fact]
-        void TestPayloadIsConvertedToExpectedType()
+        private void TestPayloadIsConvertedToExpectedType()
         {
             IQueryResponseMessage<string[]> msg =
                 new GenericQueryResponseMessage<string[]>(new[] {"Some string result"})

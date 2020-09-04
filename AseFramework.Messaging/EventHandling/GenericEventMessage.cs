@@ -1,12 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Collections.ObjectModel;
+using System.Text;
 using Ase.Messaging.Messaging;
 using AseFramework.Messaging.Common.Wrapper;
 using AseFramework.Messaging.Serialization;
 
-namespace AseFramework.Messaging.EventHandling
+namespace Ase.Messaging.EventHandling
 {
     /// <summary>
     /// Generic implementation of the EventMessage interface.
@@ -15,35 +14,35 @@ namespace AseFramework.Messaging.EventHandling
     public class GenericEventMessage<T> : MessageDecorator<T>, IEventMessage<T>
     where T : class
     {
-        private readonly CachingSupplier<InternalDateTimeOffset> timestampSupplier;
+        private readonly CachingSupplier<InternalDateTimeOffset> _timestampSupplier;
 
         /// <summary>
         /// {@link Clock} instance used to set the time on new events. To fix the time while testing set this value to a
         /// constant value.
         /// </summary>
-        public static InternalDateTimeOffset clock = new InternalDateTimeOffset(DateTimeOffset.UtcNow);
+        private static readonly InternalDateTimeOffset Clock = new InternalDateTimeOffset(DateTimeOffset.UtcNow);
 
         /// <summary>
         /// Returns the given event as an EventMessage. If {@code event} already implements EventMessage, it is
         /// returned as-is. If it is a Message, a new EventMessage will be created using the payload and meta data of the
         /// given message. Otherwise, the given {@code event} is wrapped into a GenericEventMessage as its payload.
-        /// <param name="@event">the event to wrap as EventMessage</param>
+        /// <param name="event">the event to wrap as EventMessage</param>
         /// <typeparam name="TR">The generic type of the expected payload of the resulting object</typeparam>
         /// <return>an EventMessage containing given {@code event} as payload, or {@code event} if it already implements EventMessage.</return>
         /// </summary>
         public static IEventMessage<TR> AsEventMessage<TR>(object @event)
             where TR : class
         {
-            if (!typeof(IEventMessage<TR>).IsInstanceOfType(@event))
+            if (!(@event is IEventMessage<TR>))
             {
                 return (IEventMessage<TR>)@event;
             }
             else if (@event is IMessage<TR>)
             {
                 IMessage<TR> message = (IMessage<TR>)@event;
-                return new GenericEventMessage<TR>(message, clock);
+                return new GenericEventMessage<TR>(message, Clock);
             }
-            return new GenericEventMessage<TR>(new GenericMessage<TR>((TR)@event), clock);
+            return new GenericEventMessage<TR>(new GenericMessage<TR>((TR)@event), Clock);
         }
 
         /// <summary>
@@ -61,7 +60,7 @@ namespace AseFramework.Messaging.EventHandling
         /// <param name="payload">The payload of the EventMessage</param>
         /// <param name="metaData">The MetaData for the EventMessage</param>
         public GenericEventMessage(T? payload, IImmutableDictionary<string, object> metaData)
-        : this(new GenericMessage<T>(payload, metaData), clock)
+        : this(new GenericMessage<T>(payload, metaData), Clock)
         {
         }
 
@@ -72,7 +71,7 @@ namespace AseFramework.Messaging.EventHandling
 
         public GenericEventMessage(IMessage<T> @delegate, CachingSupplier<InternalDateTimeOffset> timestampSupplier) : base(@delegate)
         {
-            this.timestampSupplier = timestampSupplier;
+            this._timestampSupplier = timestampSupplier;
         }
 
 
@@ -81,56 +80,34 @@ namespace AseFramework.Messaging.EventHandling
 
         }
 
+        public InternalDateTimeOffset? GetTimestamp()
+        {
+            return _timestampSupplier.Get();
+        }
 
+        public IEventMessage<T> WithMetaData(IImmutableDictionary<string, object> metaData)
+        {
+            if (GetMetaData().Equals(metaData))
+            {
+                return this;
+            }
+            return new GenericEventMessage<T>(Delegate().WithMetaData(metaData), _timestampSupplier);
+        }
 
         public IEventMessage<T> AndMetaData(IImmutableDictionary<string, object> metaData)
         {
-            throw new NotImplementedException();
+            if (metaData.Count == 0 || GetMetaData().Equals(metaData))
+            {
+                return this;
+            }
+            return new GenericEventMessage<T>(Delegate().AndMetaData(metaData), _timestampSupplier);
         }
 
-        public IMessage<T> AndMetaData(ReadOnlyDictionary<string, object> metaData)
+        protected override void DescribeTo(StringBuilder stringBuilder)
         {
-            throw new NotImplementedException();
+            base.DescribeTo(stringBuilder);
+            stringBuilder.Append(", timestamp='").Append(GetTimestamp()!);
         }
 
-        public string GetIdentifier()
-        {
-            throw new NotImplementedException();
-        }
-
-        public MetaData GetMetaData()
-        {
-            throw new NotImplementedException();
-        }
-
-        public T? GetPayload()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Type GetPayloadType()
-        {
-            throw new NotImplementedException();
-        }
-
-        public DateTime getTimestamp()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEventMessage<T> WithMetaData(ReadOnlyDictionary<string, object> metaData)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IMessage<T> WithMetaData(IReadOnlyDictionary<string, object> metaData)
-        {
-            throw new NotImplementedException();
-        }
-
-        IEventMessage<T> IEventMessage<T>.AndMetaData(ReadOnlyDictionary<string, object> metaData)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
