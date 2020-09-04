@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using Ase.Messaging.Messaging;
+using AseFramework.Messaging.Common.Wrapper;
+using AseFramework.Messaging.Serialization;
 
 namespace AseFramework.Messaging.EventHandling
 {
@@ -13,14 +15,22 @@ namespace AseFramework.Messaging.EventHandling
     public class GenericEventMessage<T> : MessageDecorator<T>, IEventMessage<T>
     where T : class
     {
-        private readonly Action<DateTime> timestampSupplier;
+        private readonly CachingSupplier<InternalDateTimeOffset> timestampSupplier;
 
         /// <summary>
         /// {@link Clock} instance used to set the time on new events. To fix the time while testing set this value to a
         /// constant value.
         /// </summary>
-        public static DateTimeOffset clock = DateTimeOffset.UtcNow;
+        public static InternalDateTimeOffset clock = new InternalDateTimeOffset(DateTimeOffset.UtcNow);
 
+        /// <summary>
+        /// Returns the given event as an EventMessage. If {@code event} already implements EventMessage, it is
+        /// returned as-is. If it is a Message, a new EventMessage will be created using the payload and meta data of the
+        /// given message. Otherwise, the given {@code event} is wrapped into a GenericEventMessage as its payload.
+        /// <param name="@event">the event to wrap as EventMessage</param>
+        /// <typeparam name="TR">The generic type of the expected payload of the resulting object</typeparam>
+        /// <return>an EventMessage containing given {@code event} as payload, or {@code event} if it already implements EventMessage.</return>
+        /// </summary>
         public static IEventMessage<TR> AsEventMessage<TR>(object @event)
             where TR : class
         {
@@ -55,19 +65,18 @@ namespace AseFramework.Messaging.EventHandling
         {
         }
 
-        public GenericEventMessage(String identifier, T payload, IImmutableDictionary<string, object> metaData, DateTimeOffset timestamp) :
+        public GenericEventMessage(String identifier, T payload, IImmutableDictionary<string, object> metaData, InternalDateTimeOffset timestamp) :
         this(new GenericMessage<T>(identifier, payload, metaData), timestamp)
         {
         }
 
-        public GenericEventMessage(IMessage<T>? @delegate, Action<DateTimeOffset> timestampSupplier) : base(@delegate)
+        public GenericEventMessage(IMessage<T> @delegate, CachingSupplier<InternalDateTimeOffset> timestampSupplier) : base(@delegate)
         {
-
-            // this.timestampSupplier = CachingSupplier.of(timestampSupplier);
+            this.timestampSupplier = timestampSupplier;
         }
 
 
-        protected GenericEventMessage(IMessage<T>? @delegate, DateTimeOffset timestamp) : this(@delegate, null/*CachingSupplier.of(timestamp)*/)
+        protected GenericEventMessage(IMessage<T> @delegate, InternalDateTimeOffset timestamp) : this(@delegate, CachingSupplier<InternalDateTimeOffset>.Of(timestamp))
         {
 
         }
