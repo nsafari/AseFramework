@@ -33,13 +33,13 @@ namespace Ase.Messaging.EventHandling
         public static IEventMessage<TR> AsEventMessage<TR>(object @event)
             where TR : class
         {
-            if (!(@event is IEventMessage<TR>))
+            if (@event is IEventMessage<TR> eventMessage)
             {
-                return (IEventMessage<TR>)@event;
+                return eventMessage;
             }
-            else if (@event is IMessage<TR>)
+
+            if (@event is IMessage<TR> message)
             {
-                IMessage<TR> message = (IMessage<TR>)@event;
                 return new GenericEventMessage<TR>(message, Clock);
             }
             return new GenericEventMessage<TR>(new GenericMessage<TR>((TR)@event), Clock);

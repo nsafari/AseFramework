@@ -93,7 +93,7 @@ namespace Ase.Messaging.Test.EventHandling
         {
             string actual = GenericEventMessage<string>.AsEventMessage<string>("MyPayload")
                 .AndMetaData(MetaData.With("key", "value").And("key2", 13)).ToString()!;
-            Assert.True(actual.StartsWith("GenericEventMessage{payload={MyPayload}, metadata={"),
+            Assert.True(actual.StartsWith("MessageDecorator`1{payload={MyPayload}, metadata={"),
                 "Wrong output: " + actual);
             Assert.True(actual.Contains("'key'->'value'"), "Wrong output: " + actual);
             Assert.True(actual.Contains("'key2'->'13'"), "Wrong output: " + actual);
