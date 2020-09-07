@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace AseFramework.Messaging.Serialization
+namespace Ase.Messaging.Serialization
 {
     public class CachingSupplier<T>
     where T : class
@@ -16,12 +16,12 @@ namespace AseFramework.Messaging.Serialization
         /// serialized.
         /// </summary>
         /// <param name="value">the value to supply</param>
-        /// <typeparam name="R">the type of results supplied by this supplier</typeparam>
+        /// <typeparam name="TR">the type of results supplied by this supplier</typeparam>
         /// <returns>a {@link CachingSupplier} that supplies the given value</returns>
-        public static CachingSupplier<R> Of<R>(R value)
-        where R : class
+        public static CachingSupplier<TR> Of<TR>(TR value)
+        where TR : class
         {
-            return new CachingSupplier<R>(value);
+            return new CachingSupplier<TR>(value);
         }
 
         /// <summary>
@@ -30,22 +30,22 @@ namespace AseFramework.Messaging.Serialization
         /// {@link CachingSupplier} instance is created.
         /// </summary>
         /// <param name="supplier">supplier for which to cache the result</param>
-        /// <typeparam name="R">the type of results supplied by this supplier</typeparam>
+        /// <typeparam name="TR">the type of results supplied by this supplier</typeparam>
         /// <returns>a {@link CachingSupplier} based on given {@code supplier}</returns>
-        public static CachingSupplier<R> Of<R>(Func<R> supplier)
-        where R : class
+        public static CachingSupplier<TR> Of<TR>(Func<TR> supplier)
+        where TR : class
         {
             // CachingSupplier is not func
             // if (supplier is CachingSupplier<T>)
             // {
             //     return (CachingSupplier<T>)supplier;
             // }
-            return new CachingSupplier<R>(supplier);
+            return new CachingSupplier<TR>(supplier);
         }
 
         private CachingSupplier(Func<T> @delegate)
         {
-            this._delegate = @delegate;
+            _delegate = @delegate;
         }
 
         private CachingSupplier(T value)

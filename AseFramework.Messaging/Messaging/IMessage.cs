@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Ase.Messaging.Messaging
 {
@@ -11,7 +12,7 @@ namespace Ase.Messaging.Messaging
     /// <see cref="org.axonframework.commandhandling.CommandMessage"/> or <see cref="EventMessage"/> instead.
     /// <typeparam name="T">The type of payload contained in this Message</typeparam>
     /// </summary>
-    public interface IMessage<T>
+    public interface IMessage<out T>
         where T : class
     {
         /// <summary>

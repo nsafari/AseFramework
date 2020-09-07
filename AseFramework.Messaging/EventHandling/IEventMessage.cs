@@ -1,6 +1,6 @@
 using System.Collections.Immutable;
+using Ase.Messaging.Common.Wrapper;
 using Ase.Messaging.Messaging;
-using AseFramework.Messaging.Common.Wrapper;
 
 namespace Ase.Messaging.EventHandling
 {
@@ -10,7 +10,7 @@ namespace Ase.Messaging.EventHandling
     /// application. It contains the data relevant for components that need to act based on that event.
     /// </summary>
     /// <typeparam name="T">The type of payload contained in this Message</typeparam>
-    public interface IEventMessage<T> : IMessage<T>
+    public interface IEventMessage<out T> : IMessage<T>
     where T : class
     {
 

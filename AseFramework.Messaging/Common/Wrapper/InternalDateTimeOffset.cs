@@ -1,15 +1,15 @@
 using System;
 
-namespace AseFramework.Messaging.Common.Wrapper
+namespace Ase.Messaging.Common.Wrapper
 {
     public class InternalDateTimeOffset
     {
         public InternalDateTimeOffset(DateTimeOffset dateTimeOffset)
         {
-            this.dateTimeOffset = dateTimeOffset;
+            DateTimeOffset = dateTimeOffset;
         }
 
-        public DateTimeOffset dateTimeOffset { get; set; }
+        public DateTimeOffset DateTimeOffset { get; set; }
 
     }
 }

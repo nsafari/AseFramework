@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Immutable;
 using System.Text;
+using Ase.Messaging.Common.Wrapper;
 using Ase.Messaging.Messaging;
-using AseFramework.Messaging.Common.Wrapper;
-using AseFramework.Messaging.Serialization;
+using Ase.Messaging.Serialization;
 
 namespace Ase.Messaging.EventHandling
 {
@@ -12,15 +12,15 @@ namespace Ase.Messaging.EventHandling
     /// </summary>
     /// <typeparam name="T">The type of payload contained in this Message</typeparam>
     public class GenericEventMessage<T> : MessageDecorator<T>, IEventMessage<T>
-    where T : class
+        where T : class
     {
-        private readonly CachingSupplier<InternalDateTimeOffset> _timestampSupplier;
+        protected CachingSupplier<InternalDateTimeOffset> TimestampSupplier;
 
         /// <summary>
         /// {@link Clock} instance used to set the time on new events. To fix the time while testing set this value to a
         /// constant value.
         /// </summary>
-        private static readonly InternalDateTimeOffset Clock = new InternalDateTimeOffset(DateTimeOffset.UtcNow);
+        public static readonly InternalDateTimeOffset Clock = new InternalDateTimeOffset(DateTimeOffset.UtcNow);
 
         /// <summary>
         /// Returns the given event as an EventMessage. If {@code event} already implements EventMessage, it is
@@ -42,7 +42,8 @@ namespace Ase.Messaging.EventHandling
             {
                 return new GenericEventMessage<TR>(message, Clock);
             }
-            return new GenericEventMessage<TR>(new GenericMessage<TR>((TR)@event), Clock);
+
+            return new GenericEventMessage<TR>(new GenericMessage<TR>((TR) @event), Clock);
         }
 
         /// <summary>
@@ -60,29 +61,31 @@ namespace Ase.Messaging.EventHandling
         /// <param name="payload">The payload of the EventMessage</param>
         /// <param name="metaData">The MetaData for the EventMessage</param>
         public GenericEventMessage(T? payload, IImmutableDictionary<string, object> metaData)
-        : this(new GenericMessage<T>(payload, metaData), Clock)
+            : this(new GenericMessage<T>(payload, metaData), Clock)
         {
         }
 
-        public GenericEventMessage(String identifier, T payload, IImmutableDictionary<string, object> metaData, InternalDateTimeOffset timestamp) :
-        this(new GenericMessage<T>(identifier, payload, metaData), timestamp)
+        public GenericEventMessage(string identifier, T payload, IImmutableDictionary<string, object> metaData,
+            InternalDateTimeOffset timestamp) :
+            this(new GenericMessage<T>(identifier, payload, metaData), timestamp)
         {
         }
 
-        public GenericEventMessage(IMessage<T> @delegate, CachingSupplier<InternalDateTimeOffset> timestampSupplier) : base(@delegate)
+        public GenericEventMessage(IMessage<T> @delegate, CachingSupplier<InternalDateTimeOffset> timestampSupplier) :
+            base(@delegate)
         {
-            this._timestampSupplier = timestampSupplier;
+            TimestampSupplier = timestampSupplier;
         }
 
 
-        protected GenericEventMessage(IMessage<T> @delegate, InternalDateTimeOffset timestamp) : this(@delegate, CachingSupplier<InternalDateTimeOffset>.Of(timestamp))
+        protected GenericEventMessage(IMessage<T> @delegate, InternalDateTimeOffset timestamp) : this(@delegate,
+            CachingSupplier<InternalDateTimeOffset>.Of(timestamp))
         {
-
         }
 
         public InternalDateTimeOffset? GetTimestamp()
         {
-            return _timestampSupplier.Get();
+            return TimestampSupplier.Get();
         }
 
         public IEventMessage<T> WithMetaData(IImmutableDictionary<string, object> metaData)
@@ -91,7 +94,8 @@ namespace Ase.Messaging.EventHandling
             {
                 return this;
             }
-            return new GenericEventMessage<T>(Delegate().WithMetaData(metaData), _timestampSupplier);
+
+            return new GenericEventMessage<T>(Delegate().WithMetaData(metaData), TimestampSupplier);
         }
 
         public IEventMessage<T> AndMetaData(IImmutableDictionary<string, object> metaData)
@@ -100,7 +104,8 @@ namespace Ase.Messaging.EventHandling
             {
                 return this;
             }
-            return new GenericEventMessage<T>(Delegate().AndMetaData(metaData), _timestampSupplier);
+
+            return new GenericEventMessage<T>(Delegate().AndMetaData(metaData), TimestampSupplier);
         }
 
         protected override void DescribeTo(StringBuilder stringBuilder)
@@ -108,6 +113,5 @@ namespace Ase.Messaging.EventHandling
             base.DescribeTo(stringBuilder);
             stringBuilder.Append(", timestamp='").Append(GetTimestamp()!);
         }
-
     }
 }
