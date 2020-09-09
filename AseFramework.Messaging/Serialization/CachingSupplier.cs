@@ -57,20 +57,16 @@ namespace Ase.Messaging.Serialization
 
         public T? Get()
         {
-            T? result = _value;
-            if (result == null)
-            {
-                result = updateAndGet(_value, (v) => v == null ? _delegate() : v);
-            }
+            T? result = _value ?? updateAndGet(_value, (v) => v ?? _delegate());
             return result;
         }
 
 
-        private V? updateAndGet<V>(V? destination, Func<V?, V?> var1)
-        where V : class
+        private TV? updateAndGet<TV>(TV? destination, Func<TV?, TV?> var1)
+        where TV : class
         {
-            V? var2;
-            V? var3;
+            TV? var2;
+            TV? var3;
             do
             {
                 var2 = destination;

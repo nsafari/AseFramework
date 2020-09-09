@@ -90,12 +90,7 @@ namespace Ase.Messaging.EventHandling
 
         public IEventMessage<T> WithMetaData(IImmutableDictionary<string, object> metaData)
         {
-            if (GetMetaData().Equals(metaData))
-            {
-                return this;
-            }
-
-            return new GenericEventMessage<T>(Delegate().WithMetaData(metaData), TimestampSupplier);
+            return GetMetaData().Equals(metaData) ? this : new GenericEventMessage<T>(Delegate().WithMetaData(metaData), TimestampSupplier);
         }
 
         public IEventMessage<T> AndMetaData(IImmutableDictionary<string, object> metaData)
