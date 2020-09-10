@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Text;
 using Ase.Messaging.Common.Wrapper;
 using Ase.Messaging.Messaging;
 using Ase.Messaging.Serialization;
@@ -17,7 +18,6 @@ namespace Ase.Messaging.EventHandling
         private readonly string _aggregateIdentifier;
         private readonly long _sequenceNumber;
 
-
         /// <summary>
         /// Initialize a DomainEventMessage originating from an Aggregate with the given {@code aggregateIdentifier},
         /// with given {@code sequenceNumber} and {@code payload}. The MetaData of the message is empty.
@@ -30,7 +30,6 @@ namespace Ase.Messaging.EventHandling
             this(type, aggregateIdentifier, sequenceNumber, payload, MetaData.EmptyInstance)
         {
         }
-
 
         /// <summary>
         /// Initialize a DomainEventMessage originating from an Aggregate with the given {@code aggregateIdentifier},
@@ -138,6 +137,20 @@ namespace Ase.Messaging.EventHandling
             return new GenericDomainEventMessage<T>(_type, _aggregateIdentifier, _sequenceNumber,
                 Delegate().AndMetaData(metaData), GetTimestamp()!);
 
+        }
+        
+        protected override void DescribeTo(StringBuilder stringBuilder) {
+            base.DescribeTo(stringBuilder);
+            stringBuilder.Append('\'').Append(", aggregateType='")
+                .Append(GetType()).Append('\'')
+                .Append(", aggregateIdentifier='")
+                .Append(GetAggregateIdentifier()).Append('\'')
+                .Append(", sequenceNumber=")
+                .Append(GetSequenceNumber());
+        }
+
+        protected override string DescribeType() {
+            return "GenericDomainEventMessage";
         }
     }
 }
