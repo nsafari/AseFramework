@@ -97,14 +97,14 @@ namespace Ase.Messaging.EventHandling
         /// <param name="delegate">The delegate message providing the payload, metadata and identifier of the event</param>
         /// <param name="timestamp">the timestamp of the event</param>
         public GenericDomainEventMessage(string type, string aggregateIdentifier, long sequenceNumber,
-            IMessage<T> @delegate, InternalDateTimeOffset timestamp) : base(@delegate, timestamp)
+            IMessage<T> @delegate, InternalDateTimeOffset? timestamp) : base(@delegate, timestamp)
         {
             _type = type;
             _aggregateIdentifier = aggregateIdentifier;
             _sequenceNumber = sequenceNumber;
         }
 
-        
+
         public new string GetType()
         {
             return _type;
@@ -122,24 +122,33 @@ namespace Ase.Messaging.EventHandling
 
         public new IDomainEventMessage<T> WithMetaData(IImmutableDictionary<string, object> metaData)
         {
-            if (GetMetaData().Equals(metaData)) {
+            if (GetMetaData().Equals(metaData))
+            {
                 return this;
             }
-            return new GenericDomainEventMessage<T>(_type, _aggregateIdentifier, _sequenceNumber,
-                Delegate().WithMetaData(metaData), GetTimestamp()!);
+
+            return new GenericDomainEventMessage<T>(
+                _type,
+                _aggregateIdentifier,
+                _sequenceNumber,
+                Delegate().WithMetaData(metaData),
+                GetTimestamp()!
+            );
         }
 
         public new IDomainEventMessage<T> AndMetaData(IImmutableDictionary<string, object> metaData)
         {
-            if (metaData.Count == 0 || GetMetaData().Equals(metaData)) {
+            if (metaData.Count == 0 || GetMetaData().Equals(metaData))
+            {
                 return this;
             }
+
             return new GenericDomainEventMessage<T>(_type, _aggregateIdentifier, _sequenceNumber,
                 Delegate().AndMetaData(metaData), GetTimestamp()!);
-
         }
-        
-        protected override void DescribeTo(StringBuilder stringBuilder) {
+
+        protected override void DescribeTo(StringBuilder stringBuilder)
+        {
             base.DescribeTo(stringBuilder);
             stringBuilder.Append('\'').Append(", aggregateType='")
                 .Append(GetType()).Append('\'')
@@ -149,7 +158,8 @@ namespace Ase.Messaging.EventHandling
                 .Append(GetSequenceNumber());
         }
 
-        protected override string DescribeType() {
+        protected override string DescribeType()
+        {
             return "GenericDomainEventMessage";
         }
     }

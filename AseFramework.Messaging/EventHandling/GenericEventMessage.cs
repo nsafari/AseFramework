@@ -71,15 +71,15 @@ namespace Ase.Messaging.EventHandling
         {
         }
 
-        public GenericEventMessage(IMessage<T> @delegate, CachingSupplier<InternalDateTimeOffset> timestampSupplier) :
-            base(@delegate)
+        public GenericEventMessage(IMessage<T> @delegate, CachingSupplier<InternalDateTimeOffset> timestampSupplier) 
+            : base(@delegate)
         {
             TimestampSupplier = timestampSupplier;
         }
 
 
-        protected GenericEventMessage(IMessage<T> @delegate, InternalDateTimeOffset timestamp) : this(@delegate,
-            CachingSupplier<InternalDateTimeOffset>.Of(timestamp))
+        protected GenericEventMessage(IMessage<T> @delegate, InternalDateTimeOffset? timestamp) 
+            : this(@delegate, CachingSupplier<InternalDateTimeOffset>.Of(timestamp))
         {
         }
 
