@@ -18,7 +18,7 @@ namespace Ase.Messaging.Serialization
         /// Returns the description of the type of object contained in the data.
         /// </summary>
         /// <returns>the description of the type of object contained in the data</returns>
-        ISerializedType GetType();
+        ISerializedType Type();
 
         /// <summary>
         /// The actual data of the serialized object.

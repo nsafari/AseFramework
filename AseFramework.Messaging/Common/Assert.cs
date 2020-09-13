@@ -24,7 +24,7 @@ namespace Ase.Messaging.Common
         /// </summary>
         /// <param name="value">the value not to be {@code null}</param>
         /// <param name="messageSupplier">Supplier of the exception message if the assertion fails</param>
-        public static void NotNull(object value, Func<string> messageSupplier) {
+        public static void NotNull(object? value, Func<string> messageSupplier) {
             IsTrue(value != null, messageSupplier);
         }
     }
