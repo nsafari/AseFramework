@@ -27,7 +27,7 @@ namespace Ase.Messaging.QueryHandling
             Q payload,
             IResponseType<I> responseType,
             IResponseType<U> updateResponseType
-        ) : this(payload, payload.GetType().ToString(), responseType, updateResponseType)
+        ) : this(payload, payload.GetType().Name, responseType, updateResponseType)
         {
         }
 

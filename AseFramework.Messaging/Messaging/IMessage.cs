@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Ase.Messaging.Serialization;
 
 namespace Ase.Messaging.Messaging
 {
@@ -65,7 +66,33 @@ namespace Ase.Messaging.Messaging
         /// <returns>a copy of this message with the given MetaData</returns>
         IMessage<T> AndMetaData(IReadOnlyDictionary<string, object> metaData);
 
-        //TODO: serializePayload
-        //TODO: serializeMetaData
+
+        /// <summary>
+        /// Serialize the payload of this message to the {@code expectedRepresentation} using given {@code serializer}. This
+        /// method <em>should</em> return the same SerializedObject instance when invoked multiple times using the same
+        /// serializer.
+        /// </summary>
+        /// <param name="serializer">The serializer to serialize payload with</param>
+        /// <param name="expectedRepresentation">The type of data to serialize to</param>
+        /// <typeparam name="R">The type of the serialized data</typeparam>
+        /// <returns>a SerializedObject containing the serialized representation of the message's payload</returns>
+        ISerializedObject<R> SerializePayload<R>(ISerializer serializer, Type expectedRepresentation)
+        {
+            return serializer.Serialize<R>(GetPayload()!, expectedRepresentation);
+        }
+
+        /// <summary>
+        /// Serialize the meta data of this message to the {@code expectedRepresentation} using given {@code serializer}.
+        /// This method <em>should</em> return the same SerializedObject instance when invoked multiple times using the same
+        /// serializer.
+        /// </summary>
+        /// <param name="serializer">The serializer to serialize meta data with</param>
+        /// <param name="expectedRepresentation">The type of data to serialize to</param>
+        /// <typeparam name="R">The type of the serialized data</typeparam>
+        /// <returns>a SerializedObject containing the serialized representation of the message's meta data</returns>
+        ISerializedObject<R> SerializeMetaData<R>(ISerializer serializer, Type expectedRepresentation) {
+            return serializer.Serialize<R>(GetMetaData(), expectedRepresentation);
+        }
+
     }
 }
