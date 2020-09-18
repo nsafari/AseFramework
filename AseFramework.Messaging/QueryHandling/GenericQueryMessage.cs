@@ -25,7 +25,7 @@ namespace Ase.Messaging.QueryHandling
         /// <param name="payload">The payload expressing the query</param>
         /// <param name="responseType">The expected response type of type</param>
         public GenericQueryMessage(T payload, IResponseType<TR> responseType)
-            : this(payload, payload.GetType().Name, responseType) {
+            : this(payload, nameof(payload), responseType) {
             
         }
 

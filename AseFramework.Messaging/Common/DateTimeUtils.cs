@@ -7,7 +7,12 @@ namespace Ase.Messaging.Common
     {
         public static string FormatInstant(InternalDateTimeOffset instant)
         {
-            return "ISO_UTC_DATE_TIME.format(instant)";
+            throw new System.NotImplementedException();
+        }
+
+        public static InternalDateTimeOffset ParseInstant(string? timeStamp)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

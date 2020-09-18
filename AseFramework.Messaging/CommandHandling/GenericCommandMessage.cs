@@ -30,7 +30,7 @@ namespace Ase.Messaging.CommandHandling
         /// <param name="payload">the payload for the Message</param>
         /// <param name="metaData">The meta data for this message</param>
         public GenericCommandMessage(T payload, IImmutableDictionary<string, object> metaData) :
-            this(new GenericMessage<T>(payload, metaData), typeof(T).Name)
+            this(new GenericMessage<T>(payload, metaData), nameof(T))
         {
         }
 

@@ -18,7 +18,7 @@ namespace Ase.Messaging.Serialization
             _type = serializedType;
         }
 
-        public SimpleSerializedObject(T data, Type dataType, String type, String revision)
+        public SimpleSerializedObject(T data, Type dataType, String type, string? revision)
             : this(data, dataType, new SimpleSerializedType(type, revision))
         {
         }

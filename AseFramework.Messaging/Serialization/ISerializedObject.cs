@@ -6,7 +6,7 @@ namespace Ase.Messaging.Serialization
     /// Interface describing the structure of a serialized object.
     /// </summary>
     /// <typeparam name="T">The data type representing the serialized object</typeparam>
-    public interface ISerializedObject<T>
+    public interface ISerializedObject<out T>
     {
         /// <summary>
         /// Returns the type of this representation's data.
@@ -18,7 +18,7 @@ namespace Ase.Messaging.Serialization
         /// Returns the description of the type of object contained in the data.
         /// </summary>
         /// <returns>the description of the type of object contained in the data</returns>
-        ISerializedType Type();
+        ISerializedType? Type();
 
         /// <summary>
         /// The actual data of the serialized object.
