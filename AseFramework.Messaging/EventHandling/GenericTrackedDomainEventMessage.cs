@@ -26,7 +26,7 @@ namespace Ase.Messaging.EventHandling
             IDomainEventMessage<T> @delegate
         ) : this(
             trackingToken,
-            @delegate.GetType(),
+            @delegate.Type(),
             @delegate.GetAggregateIdentifier(),
             @delegate.GetSequenceNumber(),
             @delegate,
@@ -87,7 +87,7 @@ namespace Ase.Messaging.EventHandling
         {
             return new GenericTrackedDomainEventMessage<T>(
                 _trackingToken,
-                GetType(),
+                Type(),
                 GetAggregateIdentifier(),
                 GetSequenceNumber(),
                 Delegate().WithMetaData(metaData),
@@ -99,7 +99,7 @@ namespace Ase.Messaging.EventHandling
         {
             return new GenericTrackedDomainEventMessage<T>(
                 _trackingToken,
-                GetType(),
+                Type(),
                 GetAggregateIdentifier(),
                 GetSequenceNumber(),
                 Delegate().AndMetaData(metaData),

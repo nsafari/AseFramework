@@ -32,7 +32,7 @@ namespace Ase.Messaging.EventHandling
         /// name of the aggregate root.
         /// </summary>
         /// <returns>the type of the Aggregate that generated this DomainEvent</returns>
-        string GetType();
+        string Type();
 
         /// <summary>
         /// Returns a copy of this DomainEventMessage with the given {@code metaData}. The payload, {@link #getTimestamp()

@@ -14,14 +14,14 @@ namespace Ase.Messaging.EventHandling
     public abstract class AbstractEventEntry<T> : IEventData<T>
     {
         [NHMA.ColumnAttribute(NotNull = true, Unique = true)]
-        private string _eventIdentifier;
+        private readonly string _eventIdentifier;
 
-        [NHMA.ColumnAttribute(NotNull = true)] private string? _timeStamp;
+        [NHMA.ColumnAttribute(NotNull = true)] private readonly string? _timeStamp;
 
-        [NHMA.ColumnAttribute(NotNull = true)] private string _payloadType;
+        [NHMA.ColumnAttribute(NotNull = true)] private readonly string _payloadType;
 
         [NHMA.ColumnAttribute(NotNull = false)]
-        private string _payloadRevision;
+        private readonly string _payloadRevision;
 
         [NHMA.ColumnAttribute(Length = 10000, NotNull = true, SqlType = "DbType.String")]
         private T _payload;

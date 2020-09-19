@@ -11,7 +11,7 @@
         /// Returns the type identifier of the aggregate.
         /// </summary>
         /// <returns>the type identifier of the aggregate.</returns>
-        string GetType();
+        string Type();
 
         /// <summary>
         /// Returns the Identifier of the Aggregate to which the Event was applied.

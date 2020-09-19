@@ -105,7 +105,7 @@ namespace Ase.Messaging.EventHandling
         }
 
 
-        public new string GetType()
+        public new string Type()
         {
             return _type;
         }
@@ -151,7 +151,7 @@ namespace Ase.Messaging.EventHandling
         {
             base.DescribeTo(stringBuilder);
             stringBuilder.Append('\'').Append(", aggregateType='")
-                .Append(GetType()).Append('\'')
+                .Append(Type()).Append('\'')
                 .Append(", aggregateIdentifier='")
                 .Append(GetAggregateIdentifier()).Append('\'')
                 .Append(", sequenceNumber=")
