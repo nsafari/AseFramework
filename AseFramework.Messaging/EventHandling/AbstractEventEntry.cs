@@ -14,20 +14,20 @@ namespace Ase.Messaging.EventHandling
     public abstract class AbstractEventEntry<T> : IEventData<T>
     {
         [NHMA.ColumnAttribute(NotNull = true, Unique = true)]
-        private readonly string _eventIdentifier;
+        protected readonly string _eventIdentifier;
 
-        [NHMA.ColumnAttribute(NotNull = true)] private readonly string? _timeStamp;
+        [NHMA.ColumnAttribute(NotNull = true)] protected readonly string? _timeStamp;
 
-        [NHMA.ColumnAttribute(NotNull = true)] private readonly string _payloadType;
+        [NHMA.ColumnAttribute(NotNull = true)] protected readonly string _payloadType;
 
         [NHMA.ColumnAttribute(NotNull = false)]
-        private readonly string _payloadRevision;
+        protected readonly string _payloadRevision;
 
         [NHMA.ColumnAttribute(Length = 10000, NotNull = true, SqlType = "DbType.String")]
-        private T _payload;
+        protected T _payload;
 
         [NHMA.ColumnAttribute(Length = 10000, NotNull = true, SqlType = "DbType.String")]
-        private T _metaData;
+        protected T _metaData;
 
         /// <summary>
         /// Construct a new event entry from a published event message to enable storing the event or sending it to a remote

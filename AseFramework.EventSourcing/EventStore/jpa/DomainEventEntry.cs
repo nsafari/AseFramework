@@ -8,6 +8,8 @@ namespace AseFramework.EventSourcing.jpa
     /// Default implementation of a tracked domain event entry. This implementation is used by the {@link
     /// JpaEventStorageEngine} to store events. Event payload and metadata are serialized to a byte array.
     /// </summary>
+    // @Entity
+    // @Table(indexes = @Index(columnList = "aggregateIdentifier,sequenceNumber", unique = true))
     public class DomainEventEntry : AbstractSequencedDomainEventEntry<byte[]>
     {
         
