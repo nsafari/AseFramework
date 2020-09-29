@@ -1,8 +1,7 @@
 ﻿using Ase.Messaging.EventHandling;
 using Ase.Messaging.Serialization;
-using NHMA = NHibernate.Mapping.Attributes;
 
-namespace AseFramework.EventSourcing.jpa
+namespace AseFramework.EventSourcing.EventStore.jpa
 {
     /// <summary>
     /// Default implementation of a tracked domain event entry. This implementation is used by the {@link
