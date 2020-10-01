@@ -411,19 +411,19 @@ namespace Ase.Messaging.Messaging.UnitOfWork
     /// </summary>
     sealed class PhaseUtil
     {
-        private static readonly IDictionary<Phase, PhaseUtil> _phaseUtils =
+        private static readonly IDictionary<Phase, PhaseUtil> PhaseUtils =
             new ConcurrentDictionary<Phase, PhaseUtil>();
 
         static PhaseUtil()
         {
-            _phaseUtils.Add(Phase.NotStarted, new PhaseUtil(false, false, 1000));
-            _phaseUtils.Add(Phase.Started, new PhaseUtil(true, false, 2000));
-            _phaseUtils.Add(Phase.PrepareCommit, new PhaseUtil(true, false, 3000));
-            _phaseUtils.Add(Phase.Commit, new PhaseUtil(true, true, 4000));
-            _phaseUtils.Add(Phase.Rollback, new PhaseUtil(true, true, 5000));
-            _phaseUtils.Add(Phase.AfterCommit, new PhaseUtil(true, true, 6000));
-            _phaseUtils.Add(Phase.Cleanup, new PhaseUtil(false, true, 7000));
-            _phaseUtils.Add(Phase.Closed, new PhaseUtil(false, true, 8000));
+            PhaseUtils.Add(Phase.NotStarted, new PhaseUtil(false, false, 1000));
+            PhaseUtils.Add(Phase.Started, new PhaseUtil(true, false, 2000));
+            PhaseUtils.Add(Phase.PrepareCommit, new PhaseUtil(true, false, 3000));
+            PhaseUtils.Add(Phase.Commit, new PhaseUtil(true, true, 4000));
+            PhaseUtils.Add(Phase.Rollback, new PhaseUtil(true, true, 5000));
+            PhaseUtils.Add(Phase.AfterCommit, new PhaseUtil(true, true, 6000));
+            PhaseUtils.Add(Phase.Cleanup, new PhaseUtil(false, true, 7000));
+            PhaseUtils.Add(Phase.Closed, new PhaseUtil(false, true, 8000));
         }
 
         private readonly bool _started;
@@ -481,7 +481,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
 
         public static PhaseUtil GetPhase(Phase phase)
         {
-            return _phaseUtils[phase];
+            return PhaseUtils[phase];
         }
     }
 }
