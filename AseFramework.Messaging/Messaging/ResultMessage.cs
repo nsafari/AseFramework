@@ -22,6 +22,12 @@ namespace Ase.Messaging.Messaging
         /// <returns>an nullable containing exception result or <code>null</code> in case of a successful execution</returns>
         Exception? OptionalExceptionResult();
 
+        /// <summary>
+        /// Adds the Exception 
+        /// execution.
+        /// </summary>
+        void SetExceptionResult(Exception? exception);
+
 
         /// <summary>
         /// Returns the exception result. This method is to be called if {@link #isExceptional()} returns {@code true}.

@@ -66,7 +66,7 @@ namespace Ase.Messaging.Messaging
         /// <param name="exception">the Exception describing the cause of an error</param>
         public GenericResultMessage(IMessage<R> @delegate, Exception? exception) : base(@delegate)
         {
-            this._exception = exception;
+            _exception = exception;
         }
 
         public bool IsExceptional()

@@ -117,9 +117,8 @@ namespace Ase.Messaging.QueryHandling
         /// </summary>
         /// <param name="declaredResultType">The declared type of the Query Response Message to be created</param>
         /// <param name="exception">The Exception describing the cause of an error</param>
-        public GenericQueryResponseMessage(Type declaredResultType, Exception exception) : this(
-            declaredResultType.GetType(), exception,
-            MetaData.EmptyInstance)
+        public GenericQueryResponseMessage(Type declaredResultType, Exception exception) 
+            : this(declaredResultType, exception, MetaData.EmptyInstance)
         {
         }
 

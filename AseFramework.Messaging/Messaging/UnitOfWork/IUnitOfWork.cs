@@ -15,7 +15,8 @@ namespace Ase.Messaging.Messaging.UnitOfWork
     /// <p/>
     /// Handlers can be notified about the state of the processing of the Message by registering with this Unit of Work.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">Instance of IMessage<R></typeparam>
+    /// <typeparam name="R">Message payload type</typeparam>
     public interface IUnitOfWork<out T, R>
         where T : IMessage<R> where R : class
     {

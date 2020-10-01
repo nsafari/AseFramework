@@ -79,6 +79,11 @@ namespace Ase.Messaging.Messaging.ResponseTypes
             return _responseMessage.OptionalExceptionResult();
         }
 
+        public void SetExceptionResult(Exception? exception)
+        {
+            _responseMessage.SetExceptionResult(exception);
+        }
+
         public IQueryResponseMessage<R> WithMetaData(IReadOnlyDictionary<string, object> metaData)
         {
             return new ConvertingResponseMessage<R, T>(_expectedResponseType, _responseMessage.WithMetaData(metaData));
