@@ -8,7 +8,7 @@ namespace Ase.Messaging.Annotation
     /// Interface describing a handler for specific messages targeting entities of a specific type.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public interface IMessageHandlingMember<T>
+    public interface IMessageHandlingMember<in T>
     {
         /// <summary>
         /// Returns the payload type of messages that can be processed by this handler.
