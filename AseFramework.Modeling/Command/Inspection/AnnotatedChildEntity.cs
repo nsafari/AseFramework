@@ -5,6 +5,7 @@ using System.Linq;
 using Ase.Messaging.Annotation;
 using Ase.Messaging.CommandHandling;
 using Ase.Messaging.EventHandling;
+using NHibernate.Util;
 
 namespace AseFramework.Modeling.Command.Inspection
 {
@@ -28,13 +29,16 @@ namespace AseFramework.Modeling.Command.Inspection
             if (forwardCommands)
             {
                 entityModel.CommandHandlers<C>()
-                    .Where(eh=>eh.Unwrap<>(ICommandMessageHandlingMember.class).isPresent())
-                    .forEach(
-                    (childHandler)->commandHandlers
-                    .add(new ChildForwardingCommandMessageHandlingMember<>(
-                        entityModel.commandHandlerInterceptors(),
-                        childHandler,
-                        commandTargetResolver)));
+                    .Where(eh =>
+                        eh.Unwrap<ICommandMessageHandlingMember<P>>(typeof(ICommandMessageHandlingMember<>)) != null)
+                    .ForEach(
+                        (childHandler) =>
+                            _commandHandlers
+                                .Add(new ChildForwardingCommandMessageHandlingMember<>(
+                                    entityModel.commandHandlerInterceptors(),
+                                    childHandler,
+                                    commandTargetResolver))
+                    );
             }
         }
     }
