@@ -5,7 +5,7 @@ namespace Ase.Messaging.Common
     /// <summary>
     /// Base exception of all Axon Framework related exceptions.
     /// </summary>
-    public abstract class AseException : SystemException
+    public abstract class AseException : ApplicationException
     {
         /// <summary>
         /// Initializes the exception using the given {@code message}.
