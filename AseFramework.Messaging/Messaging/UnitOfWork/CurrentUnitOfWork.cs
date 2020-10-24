@@ -9,11 +9,11 @@ namespace Ase.Messaging.Messaging.UnitOfWork
     /// Default entry point to gain access to the current UnitOfWork. Components managing transactional boundaries can
     /// register and clear UnitOfWork instances, which components can use.
     /// </summary>
-    public class CurrentUnitOfWork<T, R>
-        where T : IMessage<R> where R : class
+    public class CurrentUnitOfWork<TMessage, TPayload>
+        where TMessage : IMessage<TPayload> where TPayload : class
     {
-        private static readonly ThreadLocal<Deque<IUnitOfWork<T, R>>?> Current =
-            new ThreadLocal<Deque<IUnitOfWork<T, R>>?>();
+        private static readonly ThreadLocal<Deque<IUnitOfWork<TMessage, TPayload>>?> Current =
+            new ThreadLocal<Deque<IUnitOfWork<TMessage, TPayload>>?>();
 
 
 
@@ -33,7 +33,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// </summary>
         /// <param name="consumer">The consumer to invoke if a Unit of Work is active</param>
         /// <returns>{@code true} if a unit of work is active, {@code false} otherwise</returns>
-        public static bool IfStarted(Action<IUnitOfWork<T, R>> consumer)
+        public static bool IfStarted(Action<IUnitOfWork<TMessage, TPayload>> consumer)
         {
             if (!IsStarted()) return false;
             consumer(Get());
@@ -48,10 +48,10 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// </summary>
         /// <param name="function">The function to apply to the unit of work, if present</param>
         /// <returns>an optional containing the result of the function, or an empty Optional when no Unit of Work was started</returns>
-        public static RT? Map<RT>(Func<IUnitOfWork<T, R>, RT> func)
-        where RT : class
+        public static TResult? Map<TResult>(Func<IUnitOfWork<TMessage, TPayload>, TResult> function)
+        where TResult : class
         {
-            return IsStarted() ? func(Get()) : null;
+            return IsStarted() ? function(Get()) : null;
         }
 
 
@@ -63,7 +63,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// </summary>
         /// <returns>The UnitOfWork bound to the current thread.</returns>
         /// <exception cref="InvalidOperationException">if no UnitOfWork is active</exception>
-        public static IUnitOfWork<T, R> Get()
+        public static IUnitOfWork<TMessage, TPayload> Get()
         {
             if (IsEmpty())
             {
@@ -75,7 +75,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
 
         private static bool IsEmpty()
         {
-            Deque<IUnitOfWork<T, R>>? unitsOfWork = Current.Value;
+            Deque<IUnitOfWork<TMessage, TPayload>>? unitsOfWork = Current.Value;
             return unitsOfWork == null || unitsOfWork.Count == 0;
         }
 
@@ -92,11 +92,11 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// will be marked as inactive until the given UnitOfWork is cleared.
         /// </summary>
         /// <param name="unitOfWork">The UnitOfWork to bind to the current thread.</param>
-        public static void Set(IUnitOfWork<T, R> unitOfWork)
+        public static void Set(IUnitOfWork<TMessage, TPayload> unitOfWork)
         {
             if (Current.Value == null)
             {
-                Current.Value = new Deque<IUnitOfWork<T, R>>();
+                Current.Value = new Deque<IUnitOfWork<TMessage, TPayload>>();
             }
             Current.Value.AddToFront(unitOfWork);
         }
@@ -106,7 +106,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// {@code unitOfWork}.
         /// </summary>
         /// <param name="unitOfWork">The UnitOfWork expected to be bound to the current thread.</param>
-        public static void Clear(IUnitOfWork<T, R> unitOfWork)
+        public static void Clear(IUnitOfWork<TMessage, TPayload> unitOfWork)
         {
             if (!IsStarted())
             {
@@ -137,7 +137,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <exception cref="NotImplementedException"></exception>
         public static MetaData CorrelationData()
         {
-            return CurrentUnitOfWork<T, R>.Map((unitOfWork) => unitOfWork.GetCorrelationData()) ?? MetaData.EmptyInstance;
+            return CurrentUnitOfWork<TMessage, TPayload>.Map((unitOfWork) => unitOfWork.GetCorrelationData()) ?? MetaData.EmptyInstance;
         }
 
 

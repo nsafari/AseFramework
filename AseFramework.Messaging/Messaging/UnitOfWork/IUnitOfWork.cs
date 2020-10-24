@@ -15,10 +15,10 @@ namespace Ase.Messaging.Messaging.UnitOfWork
     /// <p/>
     /// Handlers can be notified about the state of the processing of the Message by registering with this Unit of Work.
     /// </summary>
-    /// <typeparam name="T">Instance of IMessage<R></typeparam>
-    /// <typeparam name="R">Message payload type</typeparam>
-    public interface IUnitOfWork<out T, R>
-        where T : IMessage<R> where R : class
+    /// <typeparam name="TMessage">Instance of IMessage<R></typeparam>
+    /// <typeparam name="TPayload">Message payload type</typeparam>
+    public interface IUnitOfWork<out TMessage, TPayload>
+        where TMessage : IMessage<TPayload> where TPayload : class
     {
         /// <summary>
         /// Starts the current unit of work. The UnitOfWork instance is registered with the CurrentUnitOfWork.
@@ -81,21 +81,21 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// Unit of Work changes to {@link Phase#PREPARE_COMMIT}.
         /// </summary>
         /// <param name="handler">the handler to register with the Unit of Work</param>
-        void OnPrepareCommit(Action<IUnitOfWork<T, R>> handler);
+        void OnPrepareCommit(Action<IUnitOfWork<TMessage, TPayload>> handler);
 
         /// <summary>
         /// Register given {@code handler} with the Unit of Work. The handler will be notified when the phase of the
         /// Unit of Work changes to {@link Phase#COMMIT}.
         /// </summary>
         /// <param name="handler">the handler to register with the Unit of Work</param>
-        void OnCommit(Action<IUnitOfWork<T, R>> handler);
+        void OnCommit(Action<IUnitOfWork<TMessage, TPayload>> handler);
 
         /// <summary>
         /// Register given {@code handler} with the Unit of Work. The handler will be notified when the phase of the
         /// Unit of Work changes to {@link Phase#AFTER_COMMIT}.
         /// </summary>
         /// <param name="handler">the handler to register with the Unit of Work</param>
-        void AfterCommit(Action<IUnitOfWork<T, R>> handler);
+        void AfterCommit(Action<IUnitOfWork<TMessage, TPayload>> handler);
 
         /// <summary>
         /// Register given {@code handler} with the Unit of Work. The handler will be notified when the phase of the
@@ -103,14 +103,14 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// supplied
         /// </summary>
         /// <param name="handler">the handler to register with the Unit of Work</param>
-        void OnRollback(Action<IUnitOfWork<T, R>> handler);
+        void OnRollback(Action<IUnitOfWork<TMessage, TPayload>> handler);
 
         /// <summary>
         /// Register given {@code handler} with the Unit of Work. The handler will be notified when the phase of the
         /// Unit of Work changes to {@link Phase#CLEANUP}.
         /// </summary>
         /// <param name="handler">the handler to register with the Unit of Work</param>
-        void OnCleanup(Action<IUnitOfWork<T, R>> handler);
+        void OnCleanup(Action<IUnitOfWork<TMessage, TPayload>> handler);
 
         /// <summary>
         /// Returns an optional for the parent of this Unit of Work. The optional holds the Unit of Work that was active when
@@ -153,7 +153,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// its life cycle.
         /// </summary>
         /// <returns>the Message being processed by this Unit of Work</returns>
-        T GetMessage();
+        TMessage GetMessage();
 
         /// <summary>
         /// Transform the Message being processed using the given operator and stores the result.
@@ -164,7 +164,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <param name="transformOperator">The transform operator to apply to the stored message</param>
         /// <typeparam name="TR"></typeparam>
         /// <returns>this Unit of Work</returns>
-        IUnitOfWork<T, R> TransformMessage<TR>(Func<T, TR> transformOperator)
+        IUnitOfWork<TMessage, TPayload> TransformMessage<TR>(Func<TMessage, TR> transformOperator)
             where TR : IMessage<object>;
 
         /// <summary>
@@ -182,8 +182,8 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// #getCorrelationData()} is invoked.
         /// </summary>
         /// <param name="correlationDataProvider">the Correlation Data Provider to register</param>
-        /// <typeparam name="R"></typeparam>
-        void RegisterCorrelationDataProvider(ICorrelationDataProvider.CorrelationDataFor<R> correlationDataProvider);
+        /// <typeparam name="TPayload"></typeparam>
+        void RegisterCorrelationDataProvider(ICorrelationDataProvider.CorrelationDataFor<TPayload> correlationDataProvider);
 
         /// <summary>
         /// Returns a mutable map of resources registered with the Unit of Work.
@@ -209,7 +209,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// </summary>
         /// <param name="key">The name under which the resource was attached</param>
         /// <param name="mappingFunction">The function that provides the mapping if there is no mapped resource yet</param>
-        /// <typeparam name="R">The type of resource</typeparam>
+        /// <typeparam name="TPayload">The type of resource</typeparam>
         /// <returns>The resource mapped to the given {@code key}, or the resource returned by the
         /// {@code mappingFunction} if no resource was found.</returns>
         TR GetOrComputeResource<TR>(string key, Func<string, TR> mappingFunction)
@@ -284,7 +284,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <exception cref="RuntimeException"></exception>
         void Execute(Action task, IRollbackConfiguration rollbackConfiguration)
         {
-            IResultMessage<R> resultMessage = ExecuteWithResult(() =>
+            IResultMessage<TPayload> resultMessage = ExecuteWithResult(() =>
             {
                 task();
                 return null;
@@ -304,7 +304,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// </summary>
         /// <param name="task">the task to execute</param>
         /// <returns>The result of the task wrapped in Result Message</returns>
-        IResultMessage<R> ExecuteWithResult(Func<R> task)
+        IResultMessage<TPayload> ExecuteWithResult(Func<TPayload> task)
         {
             return ExecuteWithResult(task, RollbackConfigurationType.AnyThrowable);
         }
@@ -320,9 +320,9 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <param name="task">the task to execute</param>
         /// <param name="rollbackConfiguration">configuration that determines whether or not to rollback the
         ///     unit of work when task execution fails</param>
-        /// <typeparam name="R">the type of result that is returned after successful execution</typeparam>
+        /// <typeparam name="TPayload">the type of result that is returned after successful execution</typeparam>
         /// <returns></returns>
-        IResultMessage<R> ExecuteWithResult(Func<R?> task, IRollbackConfiguration rollbackConfiguration);
+        IResultMessage<TPayload> ExecuteWithResult(Func<TPayload?> task, IRollbackConfiguration rollbackConfiguration);
 
         /// <summary>
         /// Get the result of the task that was executed by this Unit of Work. If the Unit of Work has not been given a task
@@ -332,10 +332,10 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// determine whether or not the UnitOfWork has been rolled back. To check whether or not the UnitOfWork was rolled
         /// back check {@link #isRolledBack}.
         /// </summary>
-        /// <typeparam name="R"></typeparam>
+        /// <typeparam name="TPayload"></typeparam>
         /// <returns>The result of the task executed by this Unit of Work, or {@code null} if the Unit of Work has not
         /// been given a task to execute.</returns>
-        ExecutionResult<R> GetExecutionResult();
+        ExecutionResult<TPayload> GetExecutionResult();
 
         /// <summary>
         /// Check if the Unit of Work has been rolled back.
@@ -349,7 +349,7 @@ namespace Ase.Messaging.Messaging.UnitOfWork
         /// <returns>{@code true} if the Unit of Work is the currently active Unit of Work</returns>
         bool IsCurrent()
         {
-            return CurrentUnitOfWork<T, R>.IsStarted() && CurrentUnitOfWork<T, R>.Get() == this;
+            return CurrentUnitOfWork<TMessage, TPayload>.IsStarted() && CurrentUnitOfWork<TMessage, TPayload>.Get() == this;
         }
     }
 

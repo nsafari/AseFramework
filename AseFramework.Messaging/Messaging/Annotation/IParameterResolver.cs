@@ -15,14 +15,16 @@ namespace Ase.Messaging.Messaging.Annotation
         /// </summary>
         /// <param name="message">The message to resolve the value from</param>
         /// <returns>the parameter value for the handler</returns>
-        T ResolveParameterValue(IMessage<object> message);
+        T ResolveParameterValue<TMessage, TPayload>(IMessage<object> message)
+            where TMessage : IMessage<TPayload> where TPayload : class;
 
         /// <summary>
         /// Indicates whether this resolver is capable of providing a value for the given {@code message}.
         /// </summary>
         /// <param name="message">The message to evaluate</param>
         /// <returns>{@code true} if this resolver can provide a value for the message, otherwise {@code false}</returns>
-        bool Matches(IMessage<object> message);
+        bool Matches<TPayload>(IMessage<TPayload> message) 
+            where TPayload : class;
 
         /// <summary>
         /// Returns the class of the payload that is supported by this resolver. Defaults to the {@link Object} class
