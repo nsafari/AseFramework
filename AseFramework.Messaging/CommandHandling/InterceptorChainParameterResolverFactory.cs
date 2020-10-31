@@ -28,18 +28,23 @@ namespace Ase.Messaging.CommandHandling
             ) ?? throw new ArgumentException("InterceptorChain should have been injected");
         }
 
-        public bool Matches<T>(IMessage<T> message) 
+        public bool Matches<T>(IMessage<T> message)
             where T : class
         {
             return message is ICommandMessage<T>;
         }
 
-        public IParameterResolver<T>? CreateInstance<T>(MethodBase executable, ParameterInfo[] parameters,
-            int parameterIndex)
+        public IParameterResolver<T>? CreateInstance<T>(
+            MethodBase executable,
+            ParameterInfo[] parameters,
+            int parameterIndex
+        )
         {
-            if (typeof(IInterceptorChain) == parameters[parameterIndex].GetType()) {
+            if (typeof(IInterceptorChain) == parameters[parameterIndex].GetType())
+            {
                 return (IParameterResolver<T>) this;
             }
+
             return null;
         }
     }

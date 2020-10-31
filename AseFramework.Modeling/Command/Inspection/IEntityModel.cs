@@ -10,7 +10,7 @@ namespace AseFramework.Modeling.Command.Inspection
     /// entity may be child entity or an aggregate root.
     /// </summary>
     /// <typeparam name="T">The type of entity described by this model</typeparam>
-    public interface IEntityModel<T>
+    public interface IEntityModel<in T>
     {
         /// <summary>
         /// Get the identifier of the given {@code target} entity.

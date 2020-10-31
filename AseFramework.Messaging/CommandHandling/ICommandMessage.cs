@@ -9,7 +9,7 @@ namespace Ase.Messaging.CommandHandling
     /// state.
     /// </summary>
     /// <typeparam name="T">The type of payload contained in the message</typeparam>
-    public interface ICommandMessage<T> : IMessage<T>
+    public interface ICommandMessage<out T> : IMessage<T>
         where T : class
     {
         /// <summary>

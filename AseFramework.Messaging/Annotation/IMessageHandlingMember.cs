@@ -61,11 +61,11 @@ namespace Ase.Messaging.Annotation
         /// target entity, then this method will return the method handle as a {@link java.lang.reflect.Method}.
         /// </summary>
         /// <param name="handlerType">The expected type of the wrapped handler</param>
-        /// <typeparam name="HT">The wrapped handler type</typeparam>
+        /// <typeparam name="THandler">The wrapped handler type</typeparam>
         /// <returns>An Optional containing the wrapped handler object or an empty Optional if the handler is not an
         /// instance of the given handlerType</returns>
-        HT? Unwrap<HT>(Type handlerType)
-            where HT : class;
+        THandler? Unwrap<THandler>(Type handlerType)
+            where THandler : class;
 
         /// <summary>
         /// Checks whether the method of the target entity contains the given {@code annotationType}.

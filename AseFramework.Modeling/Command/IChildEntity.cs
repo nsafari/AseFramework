@@ -22,6 +22,6 @@ namespace AseFramework.Modeling.Command
         /// </summary>
         /// <typeparam name="TR"></typeparam>
         /// <returns>a list of message handling members that are capable of processing command messages</returns>
-        IList<IMessageHandlingMember<TR>> CommandHandlers<TR>() where TR: T;
+        IList<IMessageHandlingMember<T>> CommandHandlers();
     }
 }
