@@ -44,4 +44,21 @@ namespace Ase.Messaging.Messaging
             return true;
         }
     }
+    
+    public class MessageHandler<TMessage, TPayload>: IMessageHandler<TMessage, TPayload> 
+        where TMessage : IMessage<TPayload> where TPayload : class
+    {
+        private readonly Func<TMessage, object> _handler;
+
+
+        public MessageHandler(Func<TMessage, object> handler)
+        {
+            _handler = handler;
+        }
+
+        public object Handle(TMessage message)
+        {
+            return _handler(message);
+        }
+    }
 }
