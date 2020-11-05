@@ -51,10 +51,12 @@ namespace AseFramework.Modeling.Command.Inspection
 
                 foreach (var childHandler in messageHandlingMembers)
                     _commandHandlers
-                        .Add(new ChildForwardingCommandMessageHandlingMember<TParent, TChild>(
-                            entityModel.CommandHandlerInterceptors<TChild>(),
-                            childHandler,
-                            commandTargetResolver));
+                        .Add(new ChildForwardingCommandMessageHandlingMember<TParent, TChild, object>(
+                                entityModel.CommandHandlerInterceptors<TChild>(),
+                                childHandler,
+                                commandTargetResolver
+                            )
+                        );
             }
         }
 

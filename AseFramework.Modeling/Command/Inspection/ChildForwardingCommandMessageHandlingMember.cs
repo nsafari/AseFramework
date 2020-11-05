@@ -1,22 +1,29 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Ase.Messaging.Annotation;
 using Ase.Messaging.CommandHandling;
 using Ase.Messaging.Messaging;
 using Ase.Messaging.Messaging.UnitOfWork;
+using NHibernate.Mapping;
 
 namespace AseFramework.Modeling.Command.Inspection
 {
-    public class ChildForwardingCommandMessageHandlingMember<P, C> : ICommandMessageHandlingMember<P>
+    public class
+        ChildForwardingCommandMessageHandlingMember<TParent, TChild> : ICommandMessageHandlingMember<TParent>
     {
-        private readonly List<IMessageHandlingMember<C>> _childHandlingInterceptors;
-        private readonly IMessageHandlingMember<C> _childHandler;
-        private readonly Func<ICommandMessage<object>, P, C> _childEntityResolver;
+        private readonly List<IMessageHandlingMember<TChild>> _childHandlingInterceptors;
+        private readonly IMessageHandlingMember<TChild> _childHandler;
+        private readonly Func<ICommandMessage<object>, TParent, TChild> _childEntityResolver;
+
+        private readonly string _commandName;
+        private readonly bool _isFactoryHandler;
 
         public ChildForwardingCommandMessageHandlingMember(
-            List<IMessageHandlingMember<C>> childHandlerInterceptors,
-            IMessageHandlingMember<C> childHandler,
-            Func<ICommandMessage<object>, P, C> childEntityResolver
+            List<IMessageHandlingMember<TChild>> childHandlerInterceptors,
+            IMessageHandlingMember<TChild> childHandler,
+            Func<ICommandMessage<object>, TParent, TChild> childEntityResolver
         )
         {
             _childHandlingInterceptors = childHandlerInterceptors;
@@ -24,20 +31,26 @@ namespace AseFramework.Modeling.Command.Inspection
             _childEntityResolver = childEntityResolver;
             var commandMessageHandlingMember =
                 childHandler
-                    .Unwrap<ICommandMessageHandlingMember<P>>(typeof(ICommandMessageHandlingMember<>));
-            CommandName = commandMessageHandlingMember?.CommandName();
-            IsFactoryHandler = commandMessageHandlingMember?.IsFactoryHandler() ?? false;
+                    .Unwrap<ICommandMessageHandlingMember<TParent>>(typeof(ICommandMessageHandlingMember<>));
+            _commandName = commandMessageHandlingMember?.CommandName();
+            _isFactoryHandler = commandMessageHandlingMember?.IsFactoryHandler() ?? false;
         }
 
-        public string CommandName { get; }
 
+        string ICommandMessageHandlingMember<TParent>.CommandName()
+        {
+            return _commandName;
+        }
 
         public string RoutingKey()
         {
             return null;
         }
 
-        public bool IsFactoryHandler { get; }
+        bool ICommandMessageHandlingMember<TParent>.IsFactoryHandler()
+        {
+            return _isFactoryHandler;
+        }
 
         public Type PayloadType()
         {
@@ -54,39 +67,54 @@ namespace AseFramework.Modeling.Command.Inspection
             return _childHandler.CanHandle(message);
         }
 
-        public object Handle(IMessage<object> message, P target)
+        public object Handle(IMessage<object> message, TParent target)
         {
-            C childEntity = _childEntityResolver.Invoke((ICommandMessage<object>) message, target);
-            if (childEntity == null) {
+            TChild childEntity = _childEntityResolver((ICommandMessage<object>) message, target);
+            if (childEntity == null)
+            {
                 throw new AggregateEntityNotFoundException(
                     "Aggregate cannot handle this command, as there is no entity instance to forward it to."
                 );
             }
-            List<AnnotatedCommandHandlerInterceptor<? super C>> interceptors =
-                childHandlingInterceptors.stream()
-                    .filter(chi -> chi.canHandle(message))
-                    .sorted((chi1, chi2) -> Integer.compare(chi2.priority(), chi1.priority()))
-                    .map(chi -> new AnnotatedCommandHandlerInterceptor<>(chi, childEntity))
-                .collect(Collectors.toList());
 
-            Object result;
-            if (interceptors.isEmpty()) {
-                result = childHandler.handle(message, childEntity);
-            } else {
-                result = new DefaultInterceptorChain<>((UnitOfWork<CommandMessage<?>>) CurrentUnitOfWork<,>.get(),
-                interceptors,
-                m -> childHandler.handle(message, childEntity)).proceed();
+            IList<AnnotatedCommandHandlerInterceptor<TChild, object>> interceptors =
+                _childHandlingInterceptors
+                    .Where(messageHandlingMember => messageHandlingMember.CanHandle(message))
+                    .OrderByDescending((messageHandlingMember) => messageHandlingMember.Priority())
+                    .Select(messageHandlingMember =>
+                        new AnnotatedCommandHandlerInterceptor<TChild, object>(messageHandlingMember, childEntity)
+                    )
+                    .ToList();
+
+            object result;
+            if (interceptors.Count == 0)
+            {
+                result = _childHandler.Handle(message, childEntity);
             }
+            else
+            {
+                result = new DefaultInterceptorChain<IMessage<object>, object>(
+                    (IUnitOfWork<ICommandMessage<object>, object>) CurrentUnitOfWork<IMessage<object>, object>
+                        .Get(),
+                    interceptors.Cast<IMessageHandlerInterceptor<IMessage<object>, object>>().ToList(),
+                    new MessageHandler<IMessage<object>, object>(
+                        m => _childHandler.Handle(message, childEntity)
+                    )
+                ).Proceed();
+            }
+
             return result;
         }
 
-        public T? Unwrap<T>(Type handlerType) 
-            where T : class
+        public THandler Unwrap<THandler>(Type handlerType)
+            where THandler : class
         {
-            if (handlerType.IsInstanceOfType(this)) {
-                return this as T;
+            if (handlerType.IsInstanceOfType(this))
+            {
+                return this as THandler;
             }
-            return _childHandler.Unwrap<T>(handlerType);
+
+            return _childHandler.Unwrap<THandler>(handlerType);
         }
 
         public bool HasAnnotation(Type annotationType)
@@ -98,5 +126,6 @@ namespace AseFramework.Modeling.Command.Inspection
         {
             return _childHandler.AnnotationAttributes(annotationType);
         }
+        
     }
 }
