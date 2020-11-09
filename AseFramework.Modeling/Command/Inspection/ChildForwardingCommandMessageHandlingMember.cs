@@ -37,12 +37,12 @@ namespace AseFramework.Modeling.Command.Inspection
         }
 
 
-        string ICommandMessageHandlingMember<TParent>.CommandName()
+        string? ICommandMessageHandlingMember<TParent>.CommandName()
         {
             return _commandName;
         }
 
-        public string RoutingKey()
+        public string? RoutingKey()
         {
             return null;
         }

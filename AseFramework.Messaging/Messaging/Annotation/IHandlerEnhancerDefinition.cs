@@ -12,7 +12,8 @@
         /// <param name="original">The original message handler</param>
         /// <typeparam name="T">The type of object that will perform the actual handling of the message</typeparam>
         /// <returns>The enhanced message handler</returns>
-        IMessageHandlingMember<T> WrapHandler<T>(IMessageHandlingMember<T> original);
+        IMessageHandlingMember<T> WrapHandler<T>(IMessageHandlingMember<T> original)
+            where T : class;
 
     }
 }

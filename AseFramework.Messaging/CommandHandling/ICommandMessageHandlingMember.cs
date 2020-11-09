@@ -12,7 +12,7 @@ namespace Ase.Messaging.CommandHandling
         /// Returns the name of the command that can be handled.
         /// </summary>
         /// <returns>The name of the command that can be handled</returns>
-        string CommandName();
+        string? CommandName();
         
         /// <summary>
         /// Returns the property of the command that is to be used as routing key towards this command handler instance. If
@@ -20,7 +20,7 @@ namespace Ase.Messaging.CommandHandling
         /// routing key value to the correct instance.
         /// </summary>
         /// <returns>The property of the command to use as routing key</returns>
-        string RoutingKey();
+        string? RoutingKey();
         
         /// <summary>
         /// Check if this message handler creates a new instance of the entity of type {@code T} to handle this command.
