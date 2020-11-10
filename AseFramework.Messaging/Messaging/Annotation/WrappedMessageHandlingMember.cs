@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Ase.Messaging.Messaging;
+using Ase.Messaging.Messaging.Annotation;
 
 namespace Ase.Messaging.Annotation
 {

@@ -2,6 +2,7 @@
 using Ase.Messaging.Annotation;
 using Ase.Messaging.CommandHandling;
 using Ase.Messaging.Messaging;
+using Ase.Messaging.Messaging.Annotation;
 using Ase.Messaging.Messaging.UnitOfWork;
 
 namespace AseFramework.Modeling.Command.Inspection

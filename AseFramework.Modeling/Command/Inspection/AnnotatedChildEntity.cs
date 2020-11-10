@@ -5,6 +5,7 @@ using System.Linq;
 using Ase.Messaging.Annotation;
 using Ase.Messaging.CommandHandling;
 using Ase.Messaging.EventHandling;
+using Ase.Messaging.Messaging.Annotation;
 using NHibernate.Util;
 
 namespace AseFramework.Modeling.Command.Inspection

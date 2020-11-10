@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ase.Messaging.Messaging;
 
-namespace Ase.Messaging.Annotation
+namespace Ase.Messaging.Messaging.Annotation
 {
     /// <summary>
     /// Interface describing a handler for specific messages targeting entities of a specific type.

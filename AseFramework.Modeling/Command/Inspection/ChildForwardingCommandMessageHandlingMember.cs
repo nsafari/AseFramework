@@ -1,10 +1,12 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Ase.Messaging.Annotation;
 using Ase.Messaging.CommandHandling;
 using Ase.Messaging.Messaging;
+using Ase.Messaging.Messaging.Annotation;
 using Ase.Messaging.Messaging.UnitOfWork;
 using NHibernate.Mapping;
 
@@ -106,7 +108,7 @@ namespace AseFramework.Modeling.Command.Inspection
             return result;
         }
 
-        public THandler Unwrap<THandler>(Type handlerType)
+        public THandler? Unwrap<THandler>(Type handlerType)
             where THandler : class
         {
             if (handlerType.IsInstanceOfType(this))

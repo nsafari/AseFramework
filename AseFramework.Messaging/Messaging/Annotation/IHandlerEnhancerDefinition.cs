@@ -1,4 +1,6 @@
-﻿namespace Ase.Messaging.Annotation
+﻿using Ase.Messaging.Messaging.Annotation;
+
+namespace Ase.Messaging.Annotation
 {
     /// <summary>
     /// Interface describing objects that are capable of enhancing a {@link MessageHandler}, giving it additional

@@ -59,7 +59,6 @@ namespace Ase.Messaging.Common
             return null;
         }
 
-
         /// <summary>
         /// Unwrap the given {@code type} if is wrapped by any of the given {@code wrapperTypes}. This method assumes that
         /// the {@code wrapperTypes} have a single generic argument, which identifies the type they wrap.

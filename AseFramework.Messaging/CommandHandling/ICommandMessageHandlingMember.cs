@@ -1,4 +1,5 @@
 ﻿using Ase.Messaging.Annotation;
+using Ase.Messaging.Messaging.Annotation;
 
 namespace Ase.Messaging.CommandHandling
 {
