@@ -6,6 +6,11 @@ namespace Ase.Messaging.Common
 {
     public abstract class ReflectionUtils
     {
+        private ReflectionUtils()
+        {
+            // utility class
+        }
+
         /// <summary>
         /// Finds the most specific supertype of <tt>type</tt> whose erasure is <tt>searchClass</tt>.
         /// In other words, returns a type representing the class <tt>searchClass</tt> plus its exact type parameters in
@@ -108,18 +113,19 @@ namespace Ase.Messaging.Common
             {
                 throw new ArgumentException("Cannot handle given Type of null");
             }
-            
+
             if (type.IsGenericType)
             {
                 return GetExactDirectSuperTypesOfParameterizedTypeOrClass(type);
             }
-            else if (type.IsGenericTypeParameter) {
+            else if (type.IsGenericTypeParameter)
+            {
                 return type.GetGenericParameterConstraints();
             }
             else if (type.HasElementType)
             {
                 return GetExactDirectSuperTypes(type.GetElementType());
-            } 
+            }
 
             // logger.debug(
             //     type.getClass() + " is not supported for retrieving the exact direct super types from. Will by "
@@ -257,6 +263,24 @@ namespace Ase.Messaging.Common
             return type.HasElementType ? Erase(type.GetElementType())?.MakeArrayType() : typeof(object);
 
             // logger.debug(type.getClass() + " is not supported for type erasure. Will by default return Object.");
+        }
+
+        public static MethodBase EnsureAccessible(MethodBase member) {
+            if (!IsAccessible(member)) {
+                AccessController.doPrivileged(new MemberAccessibilityCallback(member));
+            }
+            return member;
+        }
+        
+        public static bool IsAccessible(MethodBase member)
+        {
+            return IsNonFinalPublicMember(member);
+        }
+
+        public static bool IsNonFinalPublicMember(MethodBase member)
+        {
+            return member.DeclaringType is { } && 
+                   member.DeclaringType.IsPublic && !member.IsFinal;
         }
     }
 }

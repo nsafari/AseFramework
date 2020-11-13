@@ -7,7 +7,7 @@ namespace AseFramework.Modeling.Command.Inspection
     /// Interface specifying a message handler capable of intercepting a command.
     /// </summary>
     /// <typeparam name="T">the type of entity to which the message handler will delegate tha actual interception</typeparam>
-    public interface ICommandHandlerInterceptorHandlingMember<T> : IMessageHandlingMember<T>
+    public interface ICommandHandlerInterceptorHandlingMember<in T> : IMessageHandlingMember<T>
     {
         
         /// <summary>
