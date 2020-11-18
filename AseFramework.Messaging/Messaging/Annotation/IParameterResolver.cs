@@ -7,7 +7,7 @@ namespace Ase.Messaging.Messaging.Annotation
     /// 
     /// </summary>
     /// <typeparam name="T">The type of parameter returned by this resolver</typeparam>
-    public interface IParameterResolver<T>
+    public interface IParameterResolver<out T>
     {
         /// <summary>
         /// Resolves the parameter value to use for the given {@code message}, or {@code null} if no suitable

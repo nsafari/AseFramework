@@ -265,13 +265,7 @@ namespace Ase.Messaging.Common
             // logger.debug(type.getClass() + " is not supported for type erasure. Will by default return Object.");
         }
 
-        public static MethodBase EnsureAccessible(MethodBase member) {
-            if (!IsAccessible(member)) {
-                AccessController.doPrivileged(new MemberAccessibilityCallback(member));
-            }
-            return member;
-        }
-        
+       
         public static bool IsAccessible(MethodBase member)
         {
             return IsNonFinalPublicMember(member);

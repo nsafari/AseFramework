@@ -1,16 +1,18 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Ase.Messaging.Common;
+using NHibernate.Mapping.ByCode.Impl;
 
 namespace Ase.Messaging.Messaging.Annotation
 {
     public class AnnotatedMessageHandlingMember<T> : IMessageHandlingMember<T>
     {
-        private readonly Type payloadType;
-        private readonly int parameterCount;
-        private readonly IParameterResolver<object>[] parameterResolvers;
-        private readonly MethodBase executable;
-        private readonly Type messageType;
+        private readonly Type _payloadType;
+        private readonly int _parameterCount;
+        private readonly List<IParameterResolver<object>?> _parameterResolvers;
+        private readonly MethodBase _executable;
+        private readonly Type _messageType;
 
         public AnnotatedMessageHandlingMember(
             MethodBase executable,
@@ -18,37 +20,53 @@ namespace Ase.Messaging.Messaging.Annotation
             Type explicitPayloadType,
             IParameterResolverFactory parameterResolverFactory)
         {
-            this.executable = executable;
-            this.messageType = messageType;
-            ReflectionUtils.ensureAccessible(this.executable);
-            Parameter[] parameters = executable.getParameters();
-            this.parameterCount = executable.getParameterCount();
-            parameterResolvers = new ParameterResolver[parameterCount];
-            Class < ?> supportedPayloadType = explicitPayloadType;
-            for (int i = 0; i < parameterCount; i++)
+            this._executable = executable;
+            this._messageType = messageType;
+            ParameterInfo[] parameters = executable.GetParameters();
+            _parameterCount = executable.GetParameters().Length;
+            _parameterResolvers = new List<IParameterResolver<object>?>();
+            Type supportedPayloadType = explicitPayloadType;
+            for (int i = 0; i < _parameterCount; i++)
             {
-                parameterResolvers[i] = parameterResolverFactory.createInstance(executable, parameters, i);
-                if (parameterResolvers[i] == null)
+                _parameterResolvers[i] = parameterResolverFactory.CreateInstance<object>(executable, parameters, i);
+                if (_parameterResolvers[i] == null)
                 {
                     throw new UnsupportedHandlerException(
-                        "Unable to resolve parameter " + i + " (" + parameters[i].getType().getSimpleName() +
-                        ") in handler " + executable.toGenericString() + ".", executable);
+                        "Unable to resolve parameter " + i + " (" + parameters[i].ParameterType.Name +
+                        ") in handler " + executable + ".", executable);
                 }
 
-                if (supportedPayloadType.isAssignableFrom(parameterResolvers[i].supportedPayloadType()))
+                if (supportedPayloadType.IsAssignableFrom(_parameterResolvers[i]!.SupportedPayloadType()))
                 {
-                    supportedPayloadType = parameterResolvers[i].supportedPayloadType();
+                    supportedPayloadType = _parameterResolvers[i]!.SupportedPayloadType();
                 }
-                else if (!parameterResolvers[i].supportedPayloadType().isAssignableFrom(supportedPayloadType))
+                else if (!_parameterResolvers[i]!.SupportedPayloadType().IsAssignableFrom(supportedPayloadType))
                 {
-                    throw new UnsupportedHandlerException(String.format(
-                        "The method %s seems to have parameters that put conflicting requirements on the payload type" +
-                        " applicable on that method: %s vs %s", executable.toGenericString(),
-                        supportedPayloadType, parameterResolvers[i].supportedPayloadType()), executable);
+                    throw new UnsupportedHandlerException(string.Format(
+                        "The method {0} seems to have parameters that put conflicting requirements on the payload type" +
+                        " applicable on that method: {1} vs {2}", executable,
+                        supportedPayloadType, _parameterResolvers[i]!.SupportedPayloadType()
+                    ), executable);
                 }
             }
 
-            this.payloadType = supportedPayloadType;
+            _payloadType = supportedPayloadType;
         }
+        
+        public Type PayloadType() {
+            return _payloadType;
+        }
+        
+        public int Priority() {
+            return _parameterCount;
+        }
+        
+        public bool CanHandle(IMessage<object> message) {
+            return typeMatches(message) && payloadType.isAssignableFrom(message.getPayloadType()) &&
+                   parametersMatch(message);
+        }
+
+
+
     }
 }
