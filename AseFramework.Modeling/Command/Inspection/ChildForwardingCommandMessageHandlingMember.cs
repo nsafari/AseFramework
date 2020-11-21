@@ -69,7 +69,7 @@ namespace AseFramework.Modeling.Command.Inspection
             return _childHandler.CanHandle(message);
         }
 
-        public object Handle(IMessage<object> message, TParent target)
+        public object? Handle(IMessage<object> message, TParent target)
         {
             TChild childEntity = _childEntityResolver((ICommandMessage<object>) message, target);
             if (childEntity == null)

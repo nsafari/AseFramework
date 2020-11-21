@@ -52,7 +52,7 @@ namespace Ase.Messaging.Messaging.Annotation
         /// <param name="message">The message to handle</param>
         /// <param name="target">The target to handle the message</param>
         /// <returns>The message handling result in case the invocation was successful</returns>
-        object Handle(IMessage<object> message, T target);
+        object? Handle(IMessage<object> message, T target);
 
         /// <summary>
         /// Returns the wrapped handler object if its type is an instance of the given {@code handlerType}. For instance, if

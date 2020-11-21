@@ -38,7 +38,7 @@ namespace Ase.Messaging.Annotation
             return _delegate.CanHandle(message);
         }
 
-        public object Handle(IMessage<object> message, T target)
+        public object? Handle(IMessage<object> message, T target)
         {
             return _delegate.Handle(message, target);
         }

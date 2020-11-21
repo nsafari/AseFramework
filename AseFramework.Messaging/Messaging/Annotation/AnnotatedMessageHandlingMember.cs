@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Ase.Messaging.Common;
+using NHibernate;
 using NHibernate.Mapping.ByCode.Impl;
 
 namespace Ase.Messaging.Messaging.Annotation
@@ -52,21 +54,63 @@ namespace Ase.Messaging.Messaging.Annotation
 
             _payloadType = supportedPayloadType;
         }
-        
-        public Type PayloadType() {
+
+        public Type PayloadType()
+        {
             return _payloadType;
         }
-        
-        public int Priority() {
+
+        public int Priority()
+        {
             return _parameterCount;
         }
-        
-        public bool CanHandle(IMessage<object> message) {
-            return typeMatches(message) && payloadType.isAssignableFrom(message.getPayloadType()) &&
-                   parametersMatch(message);
+
+        public bool CanHandle(IMessage<object> message)
+        {
+            return TypeMatches(message) && _payloadType.IsAssignableFrom(message.GetPayloadType()) &&
+                   ParametersMatch(message);
         }
 
+        protected bool TypeMatches(IMessage<object> message)
+        {
+            return _messageType.IsInstanceOfType(message);
+        }
 
+        protected bool ParametersMatch(IMessage<object> message)
+        {
+            return _parameterResolvers.All(resolver => resolver == null || resolver.Matches(message));
+        }
 
+        public object? Handle(IMessage<object> message, T target)
+        {
+            try
+            {
+                if (_executable is MethodInfo)
+                {
+                    return ((MethodInfo) _executable).Invoke(target, ResolveParameterValues(message));
+                }
+                else if (_executable is ConstructorInfo) {
+                    return ((ConstructorInfo) _executable).Invoke(ResolveParameterValues(message));
+                } else {
+                    throw new ArgumentException("What kind of handler is this?");
+                }
+            }
+            catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                checkAndRethrowForExceptionOrError(e);
+                throw new MessageHandlerInvocationException(
+                    String.format("Error handling an object of type [%s]", message.getPayloadType()), e);
+            }
+        }
+
+        private object[] ResolveParameterValues(IMessage<object> message)
+        {
+            object[] @params = new object[_parameterCount];
+            for (int i = 0; i < _parameterCount; i++)
+            {
+                @params[i] = _parameterResolvers[i].ResolveParameterValue<IMessage<object>, object>(message);
+            }
+
+            return @params;
+        }
     }
 }
