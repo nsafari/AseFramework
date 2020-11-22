@@ -89,25 +89,52 @@ namespace Ase.Messaging.Messaging.Annotation
                 {
                     return ((MethodInfo) _executable).Invoke(target, ResolveParameterValues(message));
                 }
-                else if (_executable is ConstructorInfo) {
+                else if (_executable is ConstructorInfo)
+                {
                     return ((ConstructorInfo) _executable).Invoke(ResolveParameterValues(message));
-                } else {
-                    throw new ArgumentException("What kind of handler is this?");
+                }
+                else
+                {
+                    throw new InvalidOperationException("What kind of handler is this?");
                 }
             }
-            catch (IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                checkAndRethrowForExceptionOrError(e);
+            catch (Exception ex) when (
+                ex is FieldAccessException ||
+                ex is TargetInvocationException ||
+                ex is InstantiationException)
+            {
                 throw new MessageHandlerInvocationException(
-                    String.format("Error handling an object of type [%s]", message.getPayloadType()), e);
+                    $"Error handling an object of type {message.GetPayloadType()}", ex);
             }
         }
 
-        private object[] ResolveParameterValues(IMessage<object> message)
+        public IDictionary<string, object>? AnnotationAttributes(Type annotationType)
         {
-            object[] @params = new object[_parameterCount];
+            return AnnotationUtils.findAnnotationAttributes(executable, annotationType);
+        }
+
+        public bool HasAnnotation(Type annotationType)
+        {
+            return AnnotationUtils.isAnnotationPresent(executable, annotationType);
+        }
+
+        public MethodBase? Unwrap<THandler>(Type handlerType)
+            where THandler : class
+        {
+            return handlerType.IsInstanceOfType(_executable) ? _executable : null;
+        }
+
+        public override string ToString()
+        {
+            return GetType().Name + " " + _executable;
+        }
+
+        private object?[] ResolveParameterValues(IMessage<object> message)
+        {
+            object?[] @params = new object[_parameterCount];
             for (int i = 0; i < _parameterCount; i++)
             {
-                @params[i] = _parameterResolvers[i].ResolveParameterValue<IMessage<object>, object>(message);
+                @params[i] = _parameterResolvers[i]?.ResolveParameterValue<IMessage<object>, object>(message);
             }
 
             return @params;

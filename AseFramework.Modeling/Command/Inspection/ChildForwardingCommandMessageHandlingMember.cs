@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Ase.Messaging.Annotation;
 using Ase.Messaging.CommandHandling;
 using Ase.Messaging.Messaging;
@@ -108,7 +109,7 @@ namespace AseFramework.Modeling.Command.Inspection
             return result;
         }
 
-        public THandler? Unwrap<THandler>(Type handlerType)
+        public MethodBase? Unwrap<THandler>(Type handlerType)
             where THandler : class
         {
             if (handlerType.IsInstanceOfType(this))

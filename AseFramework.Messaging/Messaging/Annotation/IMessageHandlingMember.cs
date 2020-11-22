@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace Ase.Messaging.Messaging.Annotation
 {
@@ -63,7 +64,7 @@ namespace Ase.Messaging.Messaging.Annotation
         /// <typeparam name="THandler">The wrapped handler type</typeparam>
         /// <returns>An Optional containing the wrapped handler object or an empty Optional if the handler is not an
         /// instance of the given handlerType</returns>
-        THandler? Unwrap<THandler>(Type handlerType)
+        MethodBase? Unwrap<THandler>(Type handlerType)
             where THandler : class;
 
         /// <summary>

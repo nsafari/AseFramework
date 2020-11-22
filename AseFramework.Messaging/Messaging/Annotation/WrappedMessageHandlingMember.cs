@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Ase.Messaging.Messaging;
 using Ase.Messaging.Messaging.Annotation;
 
@@ -43,7 +44,7 @@ namespace Ase.Messaging.Annotation
             return _delegate.Handle(message, target);
         }
 
-        public THandler? Unwrap<THandler>(Type handlerType) where THandler : class
+        public MethodBase? Unwrap<THandler>(Type handlerType) where THandler : class
         {
             if (handlerType.IsInstanceOfType(this)) {
                 return this;
