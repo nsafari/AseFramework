@@ -13,22 +13,60 @@ namespace Ase.Messaging.Common.Annotation
             // utility class
         }
 
-        private static Attribute? GetAnnotation(MemberInfo target, string annotationType) {
-            foreach (Attribute annotation in target.GetCustomAttributes()) {
-                if (annotationType.Equals(annotation.GetType().Name)) {
+        public static bool IsAnnotationPresent<T>(MemberInfo element, T annotationType)
+            where T : Attribute
+        {
+            return IsAnnotationPresent(element, annotationType.GetType().Name);
+        }
+        
+        public static bool IsAnnotationPresent(MemberInfo element, string annotationType) {
+            return FindAnnotationAttributes(element, annotationType).isPresent();
+        }
+
+        public static IDictionary<string, object> FindAnnotationAttributes(MemberInfo element, string annotationName) {
+            IDictionary<string, object> attributes = new Dictionary<string, object>();
+            Attribute? ann = GetAnnotation(element, annotationName);
+            bool found = false;
+            if (ann != null) {
+                CollectAttributes(ann, attributes);
+                found = true;
+            } else {
+                HashSet<String> visited = new HashSet<>();
+                for (Annotation metaAnn : element.getAnnotations()) {
+                    if (collectAnnotationAttributes(metaAnn.annotationType(), annotationName, visited, attributes)) {
+                        found = true;
+                        collectAttributes(metaAnn, attributes);
+                    }
+                }
+            }
+            return found ? Optional.of(attributes) : Optional.empty();
+        }
+        
+        private static Attribute? GetAnnotation(MemberInfo target, string annotationType)
+        {
+            foreach (Attribute annotation in target.GetCustomAttributes())
+            {
+                if (annotationType.Equals(annotation.GetType().Name))
+                {
                     return annotation;
                 }
             }
+
             return null;
         }
 
-        
+
         private static void CollectAttributes<T>(T ann, Dictionary<string, object> attributes)
             where T : Attribute
         {
-            MethodInfo[] methods = ann.annotationType().getDeclaredMethods();
-            foreach (MethodInfo method in methods) {
-                if (method.GetParameters().Length == 0 && method.ReturnType != typeof(Void)) {
+            ann.
+            ann.
+                MemberInfo[] methods = ann.NameGetType().GetDefaultMembers();
+            foreach (var memberInfo in methods.Where(method => method is MethodInfo).ToList())
+            {
+                var method = (MethodInfo) memberInfo;
+                if (method.GetParameters().Length == 0 && method.ReturnType != typeof(Void))
+                {
                     try
                     {
                         object value = method.Invoke(ann);

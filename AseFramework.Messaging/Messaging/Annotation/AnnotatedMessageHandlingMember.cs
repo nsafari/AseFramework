@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Ase.Messaging.Common;
+using Ase.Messaging.Common.Annotation;
 using NHibernate;
 using NHibernate.Mapping.ByCode.Impl;
 
