@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -18,37 +19,65 @@ namespace Ase.Messaging.Common.Annotation
         {
             return IsAnnotationPresent(element, annotationType.GetType().Name);
         }
-        
-        public static bool IsAnnotationPresent(MemberInfo element, string annotationType) {
-            return FindAnnotationAttributes(element, annotationType).isPresent();
+
+        public static bool IsAnnotationPresent(MemberInfo element, string annotationType)
+        {
+            return FindAnnotationAttributes(element, annotationType)!.Count > 0;
         }
 
-        public static IDictionary<string, object> FindAnnotationAttributes(MemberInfo element, string annotationName) {
-            IDictionary<string, object> attributes = new Dictionary<string, object>();
-            Attribute? ann = GetAnnotation(element, annotationName);
+        public static IDictionary<string, object?>? FindAnnotationAttributes(MemberInfo element, string annotationName)
+        {
+            IDictionary<string, object?> attributes = new Dictionary<string, object?>();
+            CustomAttributeData? attributeData = GetAnnotation(element, annotationName);
             bool found = false;
-            if (ann != null) {
-                CollectAttributes(ann, attributes);
+            if (attributeData != null)
+            {
+                CollectAttributes(attributeData, attributes);
                 found = true;
-            } else {
-                HashSet<String> visited = new HashSet<>();
-                for (Annotation metaAnn : element.getAnnotations()) {
-                    if (collectAnnotationAttributes(metaAnn.annotationType(), annotationName, visited, attributes)) {
+            }
+            else
+            {
+                HashSet<string> visited = new HashSet<string>();
+                foreach (CustomAttributeData customAttributeData in CustomAttributeData.GetCustomAttributes(element)) {
+                    if (CollectAnnotationAttributes(customAttributeData.AttributeType, annotationName, visited, attributes))
+                    {
                         found = true;
-                        collectAttributes(metaAnn, attributes);
+                        CollectAttributes(customAttributeData, attributes);
                     }
                 }
             }
-            return found ? Optional.of(attributes) : Optional.empty();
+
+            return found ? attributes : null;
         }
         
-        private static Attribute? GetAnnotation(MemberInfo target, string annotationType)
-        {
-            foreach (Attribute annotation in target.GetCustomAttributes())
-            {
-                if (annotationType.Equals(annotation.GetType().Name))
+        public static IDictionary<string, object?>? FindAnnotationAttributes(MemberInfo element, Attribute annotationType) {
+            return FindAnnotationAttributes(element, annotationType.GetType().Name);
+        }
+
+        private static bool CollectAnnotationAttributes(MemberInfo target, string annotationType, HashSet<string> visited, IDictionary<string, object?> attributes) {
+            CustomAttributeData? ann = GetAnnotation(target, annotationType);
+            if (ann == null && visited.Add(target.Name)) {
+                foreach (CustomAttributeData metaAnn in CustomAttributeData.GetCustomAttributes(target))
                 {
-                    return annotation;
+                    if (!CollectAnnotationAttributes(metaAnn.AttributeType, annotationType, visited, attributes))
+                        continue;
+                    CollectAttributes(metaAnn, attributes);
+                    return true;
+                }
+            } else if (ann != null) {
+                CollectAttributes(ann, attributes);
+                return true;
+            }
+            return false;
+        }
+
+        private static CustomAttributeData? GetAnnotation(MemberInfo target, string annotationType)
+        {
+            foreach (CustomAttributeData attributeData in CustomAttributeData.GetCustomAttributes(target))
+            {
+                if (annotationType.Equals(attributeData.GetType().Name))
+                {
+                    return attributeData;
                 }
             }
 
@@ -56,27 +85,30 @@ namespace Ase.Messaging.Common.Annotation
         }
 
 
-        private static void CollectAttributes<T>(T ann, Dictionary<string, object> attributes)
-            where T : Attribute
+        private static void CollectAttributes<T>(T attributeData, IDictionary<string, object?> attributes)
+            where T : CustomAttributeData
         {
-            ann.
-            ann.
-                MemberInfo[] methods = ann.NameGetType().GetDefaultMembers();
-            foreach (var memberInfo in methods.Where(method => method is MethodInfo).ToList())
-            {
-                var method = (MethodInfo) memberInfo;
-                if (method.GetParameters().Length == 0 && method.ReturnType != typeof(Void))
-                {
-                    try
-                    {
-                        object value = method.Invoke(ann);
-                        attributes.put(resolveName(method), value);
-                    }
-                    catch (IllegalAccessException |
+            var customAttributeTypedArguments =
+                attributeData.ConstructorArguments.Concat(
+                    attributeData.NamedArguments
+                        .Select(argument => argument.TypedValue)
+                        .ToList()
+                );
 
-                    InvocationTargetException e) {
-                        throw new AxonConfigurationException("Error while inspecting annotation values", e);
+            foreach (CustomAttributeTypedArgument customAttributeTypedArgument in customAttributeTypedArguments)
+            {
+                if (customAttributeTypedArgument.Value?.GetType() ==
+                    typeof(ReadOnlyCollection<CustomAttributeTypedArgument>))
+                {
+                    foreach (CustomAttributeTypedArgument customAttribute in
+                        (ReadOnlyCollection<CustomAttributeTypedArgument>) customAttributeTypedArgument.Value)
+                    {
+                        attributes.Add(customAttribute.ArgumentType.Name, customAttribute.Value);
                     }
+                }
+                else
+                {
+                    attributes.Add(customAttributeTypedArgument.ArgumentType.Name, customAttributeTypedArgument.Value);
                 }
             }
         }

@@ -109,14 +109,14 @@ namespace Ase.Messaging.Messaging.Annotation
             }
         }
 
-        public IDictionary<string, object>? AnnotationAttributes(Type annotationType)
+        public IDictionary<string, object?>? AnnotationAttributes(Attribute attribute)
         {
-            return AnnotationUtils.findAnnotationAttributes(executable, annotationType);
+            return AnnotationUtils.FindAnnotationAttributes(_executable, attribute);
         }
 
-        public bool HasAnnotation(Type annotationType)
+        public bool HasAnnotation(Attribute attribute)
         {
-            return AnnotationUtils.isAnnotationPresent(executable, annotationType);
+            return AnnotationUtils.IsAnnotationPresent(_executable, attribute);
         }
 
         public MethodBase? Unwrap<THandler>(Type handlerType)
