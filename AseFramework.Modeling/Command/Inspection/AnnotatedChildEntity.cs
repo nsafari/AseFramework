@@ -46,8 +46,7 @@ namespace AseFramework.Modeling.Command.Inspection
                 var messageHandlingMembers =
                     entityModel.CommandHandlers<TChild>()
                         .Where(eh =>
-                            eh.Unwrap<ICommandMessageHandlingMember<TParent>>(
-                                typeof(ICommandMessageHandlingMember<>)) !=
+                            eh.Unwrap<ICommandMessageHandlingMember<TParent>>() !=
                             null);
 
                 foreach (var childHandler in messageHandlingMembers)

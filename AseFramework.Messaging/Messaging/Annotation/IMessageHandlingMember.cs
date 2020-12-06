@@ -60,28 +60,27 @@ namespace Ase.Messaging.Messaging.Annotation
         /// this method is invoked with {@link java.lang.reflect.Executable} and the message is handled by a method of the
         /// target entity, then this method will return the method handle as a {@link java.lang.reflect.Method}.
         /// </summary>
-        /// <param name="handlerType">The expected type of the wrapped handler</param>
         /// <typeparam name="THandler">The wrapped handler type</typeparam>
         /// <returns>An Optional containing the wrapped handler object or an empty Optional if the handler is not an
         /// instance of the given handlerType</returns>
-        MemberInfo? Unwrap<THandler>(Type handlerType)
+        THandler? Unwrap<THandler>()
             where THandler : class;
 
         /// <summary>
         /// Checks whether the method of the target entity contains the given {@code annotationType}.
         /// </summary>
-        /// <param name="attribute">Annotation to check for on the target method</param>
+        /// <typeparam name="TAttribute">Annotation to check for on the target method</typeparam>
         /// <returns>{@code true} if the annotation is present on the target method, {@code false} otherwise</returns>
-        bool HasAnnotation(Attribute attribute);
+        bool HasAnnotation<TAttribute>() where TAttribute : Attribute;
 
         /// <summary>
         /// Get the attributes of an annotation of given {@code annotationType} on the method of the target entity. If the
         /// annotation is present on the target method an Optional is returned containing the properties mapped by their
         /// name. If the annotation is not present an empty Optional is returned.
         /// </summary>
-        /// <param name="attribute">The annotation to check for on the target method</param>
+        /// <typeparam name="TAttribute">The annotation to check for on the target method</typeparam>
         /// <returns>An optional containing a map of the properties of the annotation, or an empty optional if the
         /// annotation is missing on the method</returns>
-        IDictionary<string, object>? AnnotationAttributes(Attribute attribute);
+        IDictionary<string, object?>? AnnotationAttributes<TAttribute>() where TAttribute : Attribute;
     }
 }

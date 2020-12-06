@@ -14,10 +14,10 @@ namespace Ase.Messaging.Common.Annotation
             // utility class
         }
 
-        public static bool IsAnnotationPresent<T>(MemberInfo element, T annotationType)
+        public static bool IsAnnotationPresent<T>(MemberInfo element)
             where T : Attribute
         {
-            return IsAnnotationPresent(element, annotationType.GetType().Name);
+            return IsAnnotationPresent(element, typeof(T).Name);
         }
 
         public static bool IsAnnotationPresent(MemberInfo element, string annotationType)
@@ -38,8 +38,10 @@ namespace Ase.Messaging.Common.Annotation
             else
             {
                 HashSet<string> visited = new HashSet<string>();
-                foreach (CustomAttributeData customAttributeData in CustomAttributeData.GetCustomAttributes(element)) {
-                    if (CollectAnnotationAttributes(customAttributeData.AttributeType, annotationName, visited, attributes))
+                foreach (CustomAttributeData customAttributeData in CustomAttributeData.GetCustomAttributes(element))
+                {
+                    if (CollectAnnotationAttributes(customAttributeData.AttributeType, annotationName, visited,
+                        attributes))
                     {
                         found = true;
                         CollectAttributes(customAttributeData, attributes);
@@ -49,15 +51,20 @@ namespace Ase.Messaging.Common.Annotation
 
             return found ? attributes : null;
         }
-        
-       
-        public static IDictionary<string, object?>? FindAnnotationAttributes(MemberInfo element, Attribute annotationType) {
-            return FindAnnotationAttributes(element, annotationType.GetType().Name);
+
+
+        public static IDictionary<string, object?>? FindAnnotationAttributes<T>(MemberInfo element)
+            where T : Attribute
+        {
+            return FindAnnotationAttributes(element, typeof(T).Name);
         }
 
-        private static bool CollectAnnotationAttributes(MemberInfo target, string annotationType, HashSet<string> visited, IDictionary<string, object?> attributes) {
+        private static bool CollectAnnotationAttributes(MemberInfo target, string annotationType,
+            HashSet<string> visited, IDictionary<string, object?> attributes)
+        {
             CustomAttributeData? ann = GetAnnotation(target, annotationType);
-            if (ann == null && visited.Add(target.Name)) {
+            if (ann == null && visited.Add(target.Name))
+            {
                 foreach (CustomAttributeData metaAnn in CustomAttributeData.GetCustomAttributes(target))
                 {
                     if (!CollectAnnotationAttributes(metaAnn.AttributeType, annotationType, visited, attributes))
@@ -65,10 +72,13 @@ namespace Ase.Messaging.Common.Annotation
                     CollectAttributes(metaAnn, attributes);
                     return true;
                 }
-            } else if (ann != null) {
+            }
+            else if (ann != null)
+            {
                 CollectAttributes(ann, attributes);
                 return true;
             }
+
             return false;
         }
 
@@ -128,6 +138,5 @@ namespace Ase.Messaging.Common.Annotation
 
             return method.Name;
         }
-        
     }
 }

@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using Ase.Messaging.Annotation;
 using Ase.Messaging.Common;
 using Ase.Messaging.Messaging;
 using Ase.Messaging.Messaging.Annotation;
-using NHibernate.Util;
 
 namespace Ase.Messaging.CommandHandling
 {
+    /// <summary>
+    /// Implementation of a {@link HandlerEnhancerDefinition} that is used for {@link CommandHandler} annotated methods.
+    /// </summary>
     public class MethodCommandHandlerDefinition : IHandlerEnhancerDefinition
     {
         public IMessageHandlingMember<T> WrapHandler<T>(IMessageHandlingMember<T> original)
             where T : class
         {
-            IDictionary<string, object>? annotationAttributes = original.AnnotationAttributes(typeof(CommandHandler));
+            IDictionary<string, object?>? annotationAttributes = original.AnnotationAttributes<CommandHandler>();
             return annotationAttributes == null
                 ? new MethodCommandMessageHandlingMember<T>(original, annotationAttributes)
                 : original;
@@ -30,16 +31,13 @@ namespace Ase.Messaging.CommandHandling
 
         internal MethodCommandMessageHandlingMember(
             IMessageHandlingMember<T> @delegate,
-            IDictionary<string, object>? annotationAttributes
+            IDictionary<string, object?>? annotationAttributes
         ) : base(@delegate)
         {
             _routingKey = "".Equals(annotationAttributes?["routingKey"])
                 ? null
                 : (string) annotationAttributes?["routingKey"]!;
-            MethodBase? executable = @delegate.Unwrap<MethodBase>(typeof(MethodBase) ??
-                                                                  throw new AxonConfigurationException(
-                                                                      "The @CommandHandler annotation must be put on an Executable (either directly or as Meta " +
-                                                                      "Annotation)"));
+            MemberInfo? executable = @delegate.Unwrap<MemberInfo>();
             if ("".Equals(annotationAttributes?["commandName"]))
             {
                 _commandName = @delegate.PayloadType().Name;
@@ -49,7 +47,7 @@ namespace Ase.Messaging.CommandHandling
                 _commandName = (string) annotationAttributes?["commandName"]!;
             }
 
-            bool factoryMethod = executable is MethodInfo && executable.IsStatic;
+            bool factoryMethod = executable is MethodInfo && ((MethodInfo)executable).IsStatic;
             if (executable?.DeclaringType != null &&
                 factoryMethod &&
                 !executable.DeclaringType.IsInstanceOfType(((MethodInfo) executable).ReturnType))

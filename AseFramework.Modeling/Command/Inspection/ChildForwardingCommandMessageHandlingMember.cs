@@ -1,18 +1,19 @@
 ﻿#nullable enable
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using Ase.Messaging.Annotation;
 using Ase.Messaging.CommandHandling;
 using Ase.Messaging.Messaging;
 using Ase.Messaging.Messaging.Annotation;
 using Ase.Messaging.Messaging.UnitOfWork;
-using NHibernate.Mapping;
 
 namespace AseFramework.Modeling.Command.Inspection
 {
+    /// <summary>
+    /// Implementation of a {@link CommandMessageHandlingMember} that forwards commands to a child entity.
+    /// </summary>
+    /// <typeparam name="TParent">the parent entity type</typeparam>
+    /// <typeparam name="TChild">the child entity type</typeparam>
     public class
         ChildForwardingCommandMessageHandlingMember<TParent, TChild> : ICommandMessageHandlingMember<TParent>
     {
@@ -23,6 +24,14 @@ namespace AseFramework.Modeling.Command.Inspection
         private readonly string _commandName;
         private readonly bool _isFactoryHandler;
 
+        /// <summary>
+        /// Initializes a {@link ChildForwardingCommandMessageHandlingMember} that routes commands to a compatible child
+        /// entity. Child entities are resolved using the given {@code childEntityResolver}. If an entity is found the
+        /// command will be handled using the given {@code childHandler}.
+        /// </summary>
+        /// <param name="childHandlerInterceptors">interceptors for {@code childHandler}</param>
+        /// <param name="childHandler">handler of the command once a suitable entity is found</param>
+        /// <param name="childEntityResolver">resolver of child entities for a given command</param>
         public ChildForwardingCommandMessageHandlingMember(
             List<IMessageHandlingMember<TChild>> childHandlerInterceptors,
             IMessageHandlingMember<TChild> childHandler,
@@ -34,7 +43,7 @@ namespace AseFramework.Modeling.Command.Inspection
             _childEntityResolver = childEntityResolver;
             var commandMessageHandlingMember =
                 childHandler
-                    .Unwrap<ICommandMessageHandlingMember<TParent>>(typeof(ICommandMessageHandlingMember<>));
+                    .Unwrap<ICommandMessageHandlingMember<TParent>>();
             _commandName = commandMessageHandlingMember?.CommandName();
             _isFactoryHandler = commandMessageHandlingMember?.IsFactoryHandler() ?? false;
         }
@@ -89,7 +98,7 @@ namespace AseFramework.Modeling.Command.Inspection
                     )
                     .ToList();
 
-            object result;
+            object? result;
             if (interceptors.Count == 0)
             {
                 result = _childHandler.Handle(message, childEntity);
@@ -101,7 +110,7 @@ namespace AseFramework.Modeling.Command.Inspection
                         .Get(),
                     interceptors.Cast<IMessageHandlerInterceptor<IMessage<object>, object>>().ToList(),
                     new MessageHandler<IMessage<object>, object>(
-                        m => _childHandler.Handle(message, childEntity)
+                        m => _childHandler.Handle(message, childEntity)!
                     )
                 ).Proceed();
             }
@@ -109,26 +118,27 @@ namespace AseFramework.Modeling.Command.Inspection
             return result;
         }
 
-        public MemberInfo? Unwrap<THandler>(Type handlerType)
+        public THandler? Unwrap<THandler>()
             where THandler : class
         {
-            if (handlerType.IsInstanceOfType(this))
+            if (this is THandler)
             {
                 return this as THandler;
             }
 
-            return _childHandler.Unwrap<THandler>(handlerType);
+            return _childHandler.Unwrap<THandler>();
         }
 
-        public bool HasAnnotation(Type annotationType)
+        public bool HasAnnotation<TAttribute>()
+            where TAttribute : Attribute
         {
-            return _childHandler.HasAnnotation(annotationType);
+            return _childHandler.HasAnnotation<TAttribute>();
         }
 
-        public IDictionary<string, object>? AnnotationAttributes(Type annotationType)
+        public IDictionary<string, object?>? AnnotationAttributes<TAttribute>()
+            where TAttribute : Attribute
         {
-            return _childHandler.AnnotationAttributes(annotationType);
+            return _childHandler.AnnotationAttributes<TAttribute>();
         }
-        
     }
 }

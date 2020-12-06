@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
-using Ase.Messaging.Messaging;
-using Ase.Messaging.Messaging.Annotation;
 
-namespace Ase.Messaging.Annotation
+namespace Ase.Messaging.Messaging.Annotation
 {
     /// <summary>
     /// Abstract implementation of a {@link MessageHandlingMember} that delegates to a wrapped MessageHandlingMember. Extend
@@ -44,22 +41,24 @@ namespace Ase.Messaging.Annotation
             return _delegate.Handle(message, target);
         }
 
-        public MemberInfo? Unwrap<THandler>(Type handlerType) where THandler : class
+        public THandler? Unwrap<THandler>() where THandler : class
         {
-            if (handlerType.IsInstanceOfType(this)) {
-                return this;
+            if (this is THandler) {
+                return this as THandler;
             }
-            return _delegate.Unwrap<THandler>(handlerType);
+            return _delegate.Unwrap<THandler>();
         }
 
-        public IDictionary<string, object>? AnnotationAttributes(Type annotationType)
+        public IDictionary<string, object?>? AnnotationAttributes<TAttribute>()
+            where TAttribute : Attribute
         {
-            return _delegate.AnnotationAttributes(annotationType);
+            return _delegate.AnnotationAttributes<TAttribute>();
         }
 
-        public bool HasAnnotation(Type annotationType)
+        public bool HasAnnotation<TAttribute>()
+            where TAttribute : Attribute
         {
-            return _delegate.HasAnnotation(annotationType);
+            return _delegate.HasAnnotation<TAttribute>();
         }
     }
 }

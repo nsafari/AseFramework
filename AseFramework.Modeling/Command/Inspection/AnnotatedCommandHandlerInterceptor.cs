@@ -39,9 +39,7 @@ namespace AseFramework.Modeling.Command.Inspection
             object result = _delegate.Handle(unitOfWork.GetMessage(), _target);
 
             if (_delegate
-                .Unwrap<ICommandHandlerInterceptorHandlingMember<TTarget>>(
-                    typeof(ICommandHandlerInterceptorHandlingMember<>)
-                )?.ShouldInvokeInterceptorChain() ?? false)
+                .Unwrap<ICommandHandlerInterceptorHandlingMember<TTarget>>()?.ShouldInvokeInterceptorChain() ?? false)
             {
                 result = interceptorChain.Proceed();
             }

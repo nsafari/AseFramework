@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Ase.Messaging.Common;
 using Ase.Messaging.Common.Annotation;
 using NHibernate;
-using NHibernate.Mapping.ByCode.Impl;
 
 namespace Ase.Messaging.Messaging.Annotation
 {
+    /// <summary>
+    /// Implementation of a {@link MessageHandlingMember} that is used to invoke message handler methods on the target type.
+    /// </summary>
+    /// <typeparam name="T">the target type</typeparam>
     public class AnnotatedMessageHandlingMember<T> : IMessageHandlingMember<T>
     {
         private readonly Type _payloadType;
@@ -16,8 +18,16 @@ namespace Ase.Messaging.Messaging.Annotation
         private readonly List<IParameterResolver<object>?> _parameterResolvers;
         private readonly MemberInfo _executable;
         private readonly Type _messageType;
-        private IMessageHandlingMember<T> _messageHandlingMemberImplementation;
 
+        /// <summary>
+        /// Initializes a new instance that will invoke the given {@code executable} (method) on a target to handle a message
+        /// of the given {@code messageType}.
+        /// </summary>
+        /// <param name="executable">the method to invoke on a target</param>
+        /// <param name="messageType">the type of message that is expected by the target method</param>
+        /// <param name="explicitPayloadType">the expected message payload type</param>
+        /// <param name="parameterResolverFactory">factory used to resolve method parameters</param>
+        /// <exception cref="UnsupportedHandlerException"></exception>
         public AnnotatedMessageHandlingMember(
             MethodBase executable,
             Type messageType,
@@ -73,15 +83,28 @@ namespace Ase.Messaging.Messaging.Annotation
                    ParametersMatch(message);
         }
 
-        public bool CanHandleType(Type payloadType) {
+        public bool CanHandleType(Type payloadType)
+        {
             return _payloadType.IsAssignableFrom(payloadType);
         }
-        
+
+        /// <summary>
+        /// Checks if this member can handle the type of the given {@code message}. This method does not check if the
+        /// parameter resolvers of this member are compatible with the given message. Use {@link #parametersMatch(Message)}
+        /// for that.
+        /// </summary>
+        /// <param name="message">the message to check for</param>
+        /// <returns>{@code true} if this member can handle the message type. {@code false} otherwise</returns>
         protected bool TypeMatches(IMessage<object> message)
         {
             return _messageType.IsInstanceOfType(message);
         }
 
+        /// <summary>
+        /// Checks if the parameter resolvers of this member are compatible with the given {@code message}.
+        /// </summary>
+        /// <param name="message">the message to check for</param>
+        /// <returns>{@code true} if the parameter resolvers can handle this message. {@code false} otherwise</returns>
         protected bool ParametersMatch(IMessage<object> message)
         {
             return _parameterResolvers.All(resolver => resolver == null || resolver.Matches(message));
@@ -114,19 +137,22 @@ namespace Ase.Messaging.Messaging.Annotation
             }
         }
 
-        public IDictionary<string, object?>? AnnotationAttributes(Attribute attribute) {
-            return AnnotationUtils.FindAnnotationAttributes(_executable, attribute);
-        }
-        
-        public bool HasAnnotation(Attribute attribute)
+        public IDictionary<string, object?>? AnnotationAttributes<TAttribute>()
+            where TAttribute : Attribute
         {
-            return AnnotationUtils.IsAnnotationPresent(_executable, attribute);
+            return AnnotationUtils.FindAnnotationAttributes<TAttribute>(_executable);
         }
-        
-        public MemberInfo? Unwrap<THandler>(Type handlerType)
+
+        public bool HasAnnotation<TAttribute>()
+            where TAttribute : Attribute
+        {
+            return AnnotationUtils.IsAnnotationPresent<TAttribute>(_executable);
+        }
+
+        public THandler? Unwrap<THandler>()
             where THandler : class
         {
-            return handlerType.IsInstanceOfType(_executable) ? _executable : null;
+            return (_executable is THandler ? _executable : null) as THandler;
         }
 
         public override string ToString()

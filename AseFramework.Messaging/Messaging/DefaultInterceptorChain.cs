@@ -26,7 +26,7 @@ namespace Ase.Messaging.Messaging
         /// <param name="handler">The handler for the message</param>
         public DefaultInterceptorChain(IUnitOfWork<TMessage, TPayload> unitOfWork,
             IEnumerable<IMessageHandlerInterceptor<TMessage, TPayload>> interceptors,
-            IMessageHandler<TMessage, TPayload> handler)
+            MessageHandler<IMessage<object>, object> handler)
         {
             _handler = handler;
             _chain = interceptors;
