@@ -44,7 +44,7 @@ namespace Ase.Messaging.Annotation
             return _delegate.Handle(message, target);
         }
 
-        public MethodBase? Unwrap<THandler>(Type handlerType) where THandler : class
+        public MemberInfo? Unwrap<THandler>(Type handlerType) where THandler : class
         {
             if (handlerType.IsInstanceOfType(this)) {
                 return this;

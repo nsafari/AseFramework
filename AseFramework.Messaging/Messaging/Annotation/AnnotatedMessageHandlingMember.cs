@@ -14,8 +14,9 @@ namespace Ase.Messaging.Messaging.Annotation
         private readonly Type _payloadType;
         private readonly int _parameterCount;
         private readonly List<IParameterResolver<object>?> _parameterResolvers;
-        private readonly MethodBase _executable;
+        private readonly MemberInfo _executable;
         private readonly Type _messageType;
+        private IMessageHandlingMember<T> _messageHandlingMemberImplementation;
 
         public AnnotatedMessageHandlingMember(
             MethodBase executable,
@@ -72,6 +73,10 @@ namespace Ase.Messaging.Messaging.Annotation
                    ParametersMatch(message);
         }
 
+        public bool CanHandleType(Type payloadType) {
+            return _payloadType.IsAssignableFrom(payloadType);
+        }
+        
         protected bool TypeMatches(IMessage<object> message)
         {
             return _messageType.IsInstanceOfType(message);
@@ -109,17 +114,16 @@ namespace Ase.Messaging.Messaging.Annotation
             }
         }
 
-        public IDictionary<string, object?>? AnnotationAttributes(Attribute attribute)
-        {
+        public IDictionary<string, object?>? AnnotationAttributes(Attribute attribute) {
             return AnnotationUtils.FindAnnotationAttributes(_executable, attribute);
         }
-
+        
         public bool HasAnnotation(Attribute attribute)
         {
             return AnnotationUtils.IsAnnotationPresent(_executable, attribute);
         }
-
-        public MethodBase? Unwrap<THandler>(Type handlerType)
+        
+        public MemberInfo? Unwrap<THandler>(Type handlerType)
             where THandler : class
         {
             return handlerType.IsInstanceOfType(_executable) ? _executable : null;

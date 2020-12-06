@@ -109,7 +109,7 @@ namespace AseFramework.Modeling.Command.Inspection
             return result;
         }
 
-        public MethodBase? Unwrap<THandler>(Type handlerType)
+        public MemberInfo? Unwrap<THandler>(Type handlerType)
             where THandler : class
         {
             if (handlerType.IsInstanceOfType(this))

@@ -64,24 +64,24 @@ namespace Ase.Messaging.Messaging.Annotation
         /// <typeparam name="THandler">The wrapped handler type</typeparam>
         /// <returns>An Optional containing the wrapped handler object or an empty Optional if the handler is not an
         /// instance of the given handlerType</returns>
-        MethodBase? Unwrap<THandler>(Type handlerType)
+        MemberInfo? Unwrap<THandler>(Type handlerType)
             where THandler : class;
 
         /// <summary>
         /// Checks whether the method of the target entity contains the given {@code annotationType}.
         /// </summary>
-        /// <param name="annotationType">Annotation to check for on the target method</param>
+        /// <param name="attribute">Annotation to check for on the target method</param>
         /// <returns>{@code true} if the annotation is present on the target method, {@code false} otherwise</returns>
-        bool HasAnnotation(Type annotationType);
+        bool HasAnnotation(Attribute attribute);
 
         /// <summary>
         /// Get the attributes of an annotation of given {@code annotationType} on the method of the target entity. If the
         /// annotation is present on the target method an Optional is returned containing the properties mapped by their
         /// name. If the annotation is not present an empty Optional is returned.
         /// </summary>
-        /// <param name="annotationType">The annotation to check for on the target method</param>
+        /// <param name="attribute">The annotation to check for on the target method</param>
         /// <returns>An optional containing a map of the properties of the annotation, or an empty optional if the
         /// annotation is missing on the method</returns>
-        IDictionary<string, object>? AnnotationAttributes(Type annotationType);
+        IDictionary<string, object>? AnnotationAttributes(Attribute attribute);
     }
 }

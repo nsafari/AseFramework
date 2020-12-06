@@ -50,6 +50,7 @@ namespace Ase.Messaging.Common.Annotation
             return found ? attributes : null;
         }
         
+       
         public static IDictionary<string, object?>? FindAnnotationAttributes(MemberInfo element, Attribute annotationType) {
             return FindAnnotationAttributes(element, annotationType.GetType().Name);
         }
@@ -127,5 +128,6 @@ namespace Ase.Messaging.Common.Annotation
 
             return method.Name;
         }
+        
     }
 }
