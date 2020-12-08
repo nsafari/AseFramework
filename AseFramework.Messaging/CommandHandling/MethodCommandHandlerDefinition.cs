@@ -15,7 +15,7 @@ namespace Ase.Messaging.CommandHandling
         public IMessageHandlingMember<T> WrapHandler<T>(IMessageHandlingMember<T> original)
             where T : class
         {
-            IDictionary<string, object?>? annotationAttributes = original.AnnotationAttributes<CommandHandler>();
+            IDictionary<string, object?>? annotationAttributes = original.AnnotationAttributes<CommandHandlerAttribute>();
             return annotationAttributes == null
                 ? new MethodCommandMessageHandlingMember<T>(original, annotationAttributes)
                 : original;
