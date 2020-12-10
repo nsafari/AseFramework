@@ -25,7 +25,7 @@ namespace Ase.Messaging.Common.Annotation
             return FindAnnotationAttributes(element, annotationType)!.Count > 0;
         }
 
-        public static IDictionary<string, object?>? FindAnnotationAttributes(MemberInfo element, string annotationName)
+        public static IDictionary<string, object?>? FindAnnotationAttributes(MemberInfo? element, string annotationName)
         {
             IDictionary<string, object?> attributes = new Dictionary<string, object?>();
             CustomAttributeData? attributeData = GetAnnotation(element, annotationName);
@@ -53,7 +53,7 @@ namespace Ase.Messaging.Common.Annotation
         }
 
 
-        public static IDictionary<string, object?>? FindAnnotationAttributes<T>(MemberInfo element)
+        public static IDictionary<string, object?>? FindAnnotationAttributes<T>(MemberInfo? element)
             where T : Attribute
         {
             return FindAnnotationAttributes(element, typeof(T).Name);
@@ -82,9 +82,9 @@ namespace Ase.Messaging.Common.Annotation
             return false;
         }
 
-        private static CustomAttributeData? GetAnnotation(MemberInfo target, string annotationType)
+        private static CustomAttributeData? GetAnnotation(MemberInfo? target, string annotationType)
         {
-            foreach (CustomAttributeData attributeData in CustomAttributeData.GetCustomAttributes(target))
+            foreach (CustomAttributeData attributeData in CustomAttributeData.GetCustomAttributes(target!))
             {
                 if (annotationType.Equals(attributeData.GetType().Name))
                 {
