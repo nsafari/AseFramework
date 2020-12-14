@@ -47,7 +47,7 @@ namespace Ase.Messaging.CommandHandling
                 _commandName = (string) annotationAttributes?["commandName"]!;
             }
 
-            bool factoryMethod = executable is MethodInfo && ((MethodInfo)executable).IsStatic;
+            bool factoryMethod = executable is MethodInfo methodInfo && methodInfo.IsStatic;
             if (executable?.DeclaringType != null &&
                 factoryMethod &&
                 !executable.DeclaringType.IsInstanceOfType(((MethodInfo) executable).ReturnType))

@@ -33,7 +33,7 @@
         /// </summary>
         /// <param name="other">The token to compare to this one</param>
         /// <returns>if this token covers the other, otherwise {@code false}</returns>
-        bool Covers(ITrackingToken other);
+        bool Covers(ITrackingToken? other);
 
         /// <summary>
         /// Return the estimated relative position this token represents.

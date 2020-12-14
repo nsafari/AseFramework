@@ -5,7 +5,7 @@
     /// EventProcessor event processors} to keep track of which events it has processed.
     /// </summary>
     /// <typeparam name="T">The type of payload contained in this Message</typeparam>
-    public interface ITrackedEventMessage<T> : IEventMessage<T> 
+    public interface ITrackedEventMessage<out T> : IEventMessage<T> 
         where T : class
     {
         /// <summary>
