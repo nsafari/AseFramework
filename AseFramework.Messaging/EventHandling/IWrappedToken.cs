@@ -14,7 +14,7 @@
         /// </summary>
         /// <param name="token">The token to unwrap</param>
         /// <returns>the raw lower bound token described by given token</returns>
-        static ITrackingToken UnwrapLowerBound(ITrackingToken? token)
+        static ITrackingToken? UnwrapLowerBound(ITrackingToken? token)
         {
             return token is IWrappedToken wrappedToken ? wrappedToken.LowerBound() : token;
         }

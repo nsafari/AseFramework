@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 using Ase.Messaging.Serialization;
 
 namespace Ase.Messaging.Messaging
