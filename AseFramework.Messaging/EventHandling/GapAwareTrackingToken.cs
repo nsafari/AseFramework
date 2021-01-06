@@ -13,7 +13,7 @@ namespace Ase.Messaging.EventHandling
     public class GapAwareTrackingToken : ITrackingToken
     {
         private readonly long _index;
-        private ImmutableSortedSet<long> _gaps;
+        private SortedSet<long> _gaps;
         private readonly long _gapTruncationIndex;
 
         public static GapAwareTrackingToken NewInstance(long index, Collection<long> gaps)
@@ -48,19 +48,22 @@ namespace Ase.Messaging.EventHandling
         public GapAwareTrackingToken AdvanceTo(long index, int maxGapOffset)
         {
             long newIndex;
-            ConcurrentBag<long> gaps = new ConcurrentBag<long>(_gaps);
+            ImmutableSortedSet<long> gaps = ImmutableSortedSet.Create(_gaps.ToArray());
             if (_gaps.Contains(index))
             {
-                _gaps = _gaps.Remove(index);
+                gaps = gaps.Remove(index);
                 newIndex = _index;
             }
             else if (index > _index)
             {
                 newIndex = index;
+                var immutableBuilder = gaps.ToBuilder();
                 foreach (var i in Enumerable.Range((int) (_index + 1L), (int)index))
                 {
-                    _gaps = _gaps.Add(i);
+                    immutableBuilder.Add(i);
                 }
+
+                gaps = immutableBuilder.ToImmutable();
             }
             else
             {
