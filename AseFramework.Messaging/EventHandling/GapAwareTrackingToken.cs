@@ -7,13 +7,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Ase.Messaging.Common;
 using NHibernate.Engine;
+using NHibernate.Util;
 
 namespace Ase.Messaging.EventHandling
 {
     public class GapAwareTrackingToken : ITrackingToken
     {
         private readonly long _index;
-        private SortedSet<long> _gaps;
+        private readonly ImmutableSortedSet<long> _gaps;
         private readonly long _gapTruncationIndex;
 
         public static GapAwareTrackingToken NewInstance(long index, Collection<long> gaps)
@@ -73,8 +74,10 @@ namespace Ase.Messaging.EventHandling
             }
 
             long smalledAllowedGap = Math.Max(_gapTruncationIndex, newIndex - maxGapOffset);
-            gaps.removeAll(gaps.headSet(smalledAllowedGap));
+            gaps = gaps.Where(x => x >= smalledAllowedGap).ToImmutableSortedSet();
             return new GapAwareTrackingToken(newIndex, gaps, smalledAllowedGap);
         }
+        
+        
     }
 }
