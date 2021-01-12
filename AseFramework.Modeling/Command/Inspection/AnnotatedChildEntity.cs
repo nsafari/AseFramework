@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Ase.Messaging.Annotation;
 using Ase.Messaging.CommandHandling;
 using Ase.Messaging.EventHandling;
 using Ase.Messaging.Messaging.Annotation;
