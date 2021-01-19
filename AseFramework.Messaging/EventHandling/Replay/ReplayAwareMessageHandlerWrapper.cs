@@ -39,12 +39,7 @@ namespace Ase.Messaging.EventHandling.Replay
 
             public new object? Handle(IMessage<object> message, T target)
             {
-                if (ReplayToken.IsReplay(message))
-                {
-                    return null;
-                }
-
-                return base.Handle(message, target);
+                return ReplayToken.IsReplay(message) ? null : base.Handle(message, target);
             }
         }
     }
