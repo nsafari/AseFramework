@@ -13,14 +13,14 @@ namespace AseFramework.Modeling.Saga
     public class AssociationValue
     {
         private readonly string _propertyKey;
-        private readonly string _propertyValue;
+        private readonly string? _propertyValue;
 
         /// <summary>
         /// Creates a Association Value instance with the given {@code key} and {@code value}.
         /// </summary>
         /// <param name="key">The key of the Association Value. Usually indicates where the value comes from.</param>
         /// <param name="value">The value corresponding to the key of the association. It is highly recommended to only use</param>
-        public AssociationValue(string key, string value) {
+        public AssociationValue(string key, string? value) {
             Assert.NotNull(key, () => "Cannot associate a Saga with a null key");
             _propertyKey = key;
             _propertyValue = value;
@@ -38,7 +38,7 @@ namespace AseFramework.Modeling.Saga
         /// Returns the value of this association.
         /// </summary>
         /// <returns>the value of this association. Never {@code null}.</returns>
-        public string GetValue() {
+        public string? GetValue() {
             return _propertyValue;
         }
 

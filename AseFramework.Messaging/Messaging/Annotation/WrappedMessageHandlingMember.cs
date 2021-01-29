@@ -36,12 +36,12 @@ namespace Ase.Messaging.Messaging.Annotation
             return _delegate.CanHandle(message);
         }
 
-        public object? Handle(IMessage<object> message, T target)
+        public virtual object? Handle(IMessage<object> message, T target)
         {
             return _delegate.Handle(message, target);
         }
 
-        public THandler? Unwrap<THandler>() where THandler : class
+        public virtual THandler? Unwrap<THandler>() where THandler : class
         {
             if (this is THandler) {
                 return this as THandler;
@@ -49,13 +49,13 @@ namespace Ase.Messaging.Messaging.Annotation
             return _delegate.Unwrap<THandler>();
         }
 
-        public IDictionary<string, object?>? AnnotationAttributes<TAttribute>()
+        public virtual IDictionary<string, object?>? AnnotationAttributes<TAttribute>()
             where TAttribute : Attribute
         {
             return _delegate.AnnotationAttributes<TAttribute>();
         }
 
-        public bool HasAnnotation<TAttribute>()
+        public virtual bool HasAnnotation<TAttribute>()
             where TAttribute : Attribute
         {
             return _delegate.HasAnnotation<TAttribute>();

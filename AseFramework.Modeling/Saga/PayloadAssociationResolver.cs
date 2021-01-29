@@ -11,7 +11,7 @@ namespace AseFramework.Modeling.Saga
 {
     public class PayloadAssociationResolver : IAssociationResolver
     {
-        private Dictionary<string, IProperty<object>> _propertyMap = new Dictionary<string, IProperty<object>>();
+        private readonly Dictionary<string, IProperty<object>> _propertyMap = new Dictionary<string, IProperty<object>>();
 
         public void Validate<T>(string associationPropertyName, IMessageHandlingMember<T> handler)
         {
