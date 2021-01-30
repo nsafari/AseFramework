@@ -6,6 +6,11 @@ using Ase.Messaging.Messaging.Annotation;
 
 namespace AseFramework.Modeling.Saga
 {
+    /// <summary>
+    /// Abstract implementation of a {@link MessageHandlingMember} that delegates to a wrapped MessageHandlingMember. Extend
+    /// this class to provide additional functionality to the delegate member.
+    /// </summary>
+    /// <typeparam name="T">the entity type</typeparam>
     public class SagaMethodMessageHandlingMember<T> : WrappedMessageHandlingMember<T>
     {
         private readonly IMessageHandlingMember<T> _delegate;
@@ -15,6 +20,10 @@ namespace AseFramework.Modeling.Saga
         private readonly IAssociationResolver _associationResolver;
         private readonly bool _endingHandler;
 
+        /// <summary>
+        /// Initializes the member using the given {@code delegate}.
+        /// </summary>
+        /// <param name="delegate">the actual message handling member to delegate to</param>
         public SagaMethodMessageHandlingMember(IMessageHandlingMember<T> @delegate, SagaCreationPolicy creationPolicy,
             string associationKey,
             string associationPropertyName,
