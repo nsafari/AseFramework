@@ -35,8 +35,10 @@ namespace AseFramework.Modeling.Command.Inspection
             /// <param name="delegate">the actual message handling member to delegate to</param>
             /// <param name="annotationAttributes"></param>
             /// <exception cref="AxonConfigurationException"></exception>
-            internal MethodCommandHandlerInterceptorHandlingMember(IMessageHandlingMember<T> @delegate,
-                IDictionary<string, object?> annotationAttributes) : base(@delegate)
+            internal MethodCommandHandlerInterceptorHandlingMember(
+                IMessageHandlingMember<T> @delegate,
+                IDictionary<string, object?> annotationAttributes
+            ) : base(@delegate)
             {
                 MethodInfo method = @delegate.Unwrap<MethodInfo>() ??
                                     throw new AxonConfigurationException(

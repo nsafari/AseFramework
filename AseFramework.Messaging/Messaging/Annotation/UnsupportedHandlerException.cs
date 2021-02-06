@@ -9,14 +9,14 @@ namespace Ase.Messaging.Messaging.Annotation
     /// </summary>
     public class UnsupportedHandlerException : AxonConfigurationException
     {
-        private readonly MemberInfo _violatingMethod;
+        private readonly MemberInfo? _violatingMethod;
 
         /// <summary>
         /// Initialize the exception with a {@code message} and the {@code violatingMethod}.
         /// </summary>
         /// <param name="message">a descriptive message of the violation</param>
         /// <param name="violatingMethod">the method that violates the rules of annotated Event Handlers</param>
-        public UnsupportedHandlerException(string message, MemberInfo violatingMethod) : base(message)
+        public UnsupportedHandlerException(string message, MemberInfo? violatingMethod) : base(message)
         {
             _violatingMethod = violatingMethod;
         }
@@ -25,7 +25,7 @@ namespace Ase.Messaging.Messaging.Annotation
         /// A reference to the method that violated the event handler rules.
         /// </summary>
         /// <returns>the method that violated the event handler rules</returns>
-        public MemberInfo GetViolatingMethod() {
+        public MemberInfo? GetViolatingMethod() {
             return _violatingMethod;
         }
     }
