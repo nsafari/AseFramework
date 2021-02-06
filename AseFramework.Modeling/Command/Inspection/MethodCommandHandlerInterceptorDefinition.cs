@@ -36,7 +36,7 @@ namespace AseFramework.Modeling.Command.Inspection
             /// <param name="annotationAttributes"></param>
             /// <exception cref="AxonConfigurationException"></exception>
             internal MethodCommandHandlerInterceptorHandlingMember(IMessageHandlingMember<T> @delegate,
-                IDictionary<string, object> annotationAttributes) : base(@delegate)
+                IDictionary<string, object?> annotationAttributes) : base(@delegate)
             {
                 MethodInfo method = @delegate.Unwrap<MethodInfo>() ??
                                     throw new AxonConfigurationException(
@@ -49,7 +49,7 @@ namespace AseFramework.Modeling.Command.Inspection
                                                          "InterceptorChain parameter.");
                 }
 
-                _commandNamePattern = new Regex((string) annotationAttributes["commandNamePattern"]);
+                _commandNamePattern = new Regex((string) annotationAttributes["commandNamePattern"]!);
             }
 
             public bool ShouldInvokeInterceptorChain()
