@@ -9,9 +9,9 @@ namespace Ase.Messaging.EventHandling
     /// occurrence of an event (i.e. anything that happened any might be of importance to any other component) in the
     /// application. It contains the data relevant for components that need to act based on that event.
     /// </summary>
-    /// <typeparam name="T">The type of payload contained in this Message</typeparam>
-    public interface IEventMessage<out T> : IMessage<T>
-    where T : class
+    /// <typeparam name="TPayload">The type of payload contained in this Message</typeparam>
+    public interface IEventMessage<out TPayload> : IMessage<TPayload>
+    where TPayload : class
     {
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace Ase.Messaging.EventHandling
         /// </summary>
         /// <param name="metaData">The new MetaData for the Message</param>
         /// <returns>a copy of this message with the given MetaData</returns>
-        IEventMessage<T> WithMetaData(IImmutableDictionary<string, object> metaData);
+        IEventMessage<TPayload> WithMetaData(IImmutableDictionary<string, object> metaData);
 
         /// <summary>
         /// Returns a copy of this EventMessage with it MetaData merged with the given {@code metaData}. The payload,
@@ -48,7 +48,7 @@ namespace Ase.Messaging.EventHandling
         /// </summary>
         /// <param name="metaData">metaData The MetaData to merge with</param>
         /// <returns>a copy of this message with the given MetaData</returns>
-        IEventMessage<T> AndMetaData(IImmutableDictionary<string, object> metaData);
+        IEventMessage<TPayload> AndMetaData(IImmutableDictionary<string, object> metaData);
 
     }
 }
