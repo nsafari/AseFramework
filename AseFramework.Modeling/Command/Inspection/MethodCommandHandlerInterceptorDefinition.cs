@@ -34,20 +34,20 @@ namespace AseFramework.Modeling.Command.Inspection
             /// </summary>
             /// <param name="delegate">the actual message handling member to delegate to</param>
             /// <param name="annotationAttributes"></param>
-            /// <exception cref="AxonConfigurationException"></exception>
+            /// <exception cref="AseConfigurationException"></exception>
             internal MethodCommandHandlerInterceptorHandlingMember(
                 IMessageHandlingMember<T> @delegate,
                 IDictionary<string, object?> annotationAttributes
             ) : base(@delegate)
             {
                 MethodInfo method = @delegate.Unwrap<MethodInfo>() ??
-                                    throw new AxonConfigurationException(
+                                    throw new AseConfigurationException(
                                         "The @CommandHandlerInterceptor must be on method.");
                 _shouldInvokeInterceptorChain = method.GetParameters()
                     .Any(p => p.GetType() == typeof(IInterceptorChain));
                 if (_shouldInvokeInterceptorChain && typeof(Void) != method.ReturnType)
                 {
-                    throw new AxonConfigurationException("@CommandHandlerInterceptor must return void or declare " +
+                    throw new AseConfigurationException("@CommandHandlerInterceptor must return void or declare " +
                                                          "InterceptorChain parameter.");
                 }
 

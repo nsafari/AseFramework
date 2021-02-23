@@ -6,13 +6,13 @@ namespace Ase.Messaging.Common
     /// Exception indicating that a configuration error has been made in the Axon configuration. This problem prevents the
     /// application from operating properly.
     /// </summary>
-    public class AxonConfigurationException: AxonNonTransientException
+    public class AseConfigurationException: AseNonTransientException
     {
         /// <summary>
         /// Initializes the exception using the given {@code message}.
         /// </summary>
         /// <param name="message">The message describing the exception</param>
-        public AxonConfigurationException(string message): base(message) {
+        public AseConfigurationException(string message): base(message) {
         }
         
         /// <summary>
@@ -20,7 +20,7 @@ namespace Ase.Messaging.Common
         /// </summary>
         /// <param name="message">The message describing the exception</param>
         /// <param name="cause">The underlying cause of the exception</param>
-        public AxonConfigurationException(string message, Exception? cause): base(message, cause) {
+        public AseConfigurationException(string message, Exception? cause): base(message, cause) {
             
         }
 

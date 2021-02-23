@@ -51,7 +51,7 @@ namespace Ase.Messaging.CommandHandling
                 factoryMethod &&
                 !executable.DeclaringType.IsInstanceOfType(((MethodInfo) executable).ReturnType))
             {
-                throw new AxonConfigurationException("static @CommandHandler methods must declare a return value " +
+                throw new AseConfigurationException("static @CommandHandler methods must declare a return value " +
                                                      "which is equal to or a subclass of the declaring type");
             }
 

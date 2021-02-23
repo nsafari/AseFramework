@@ -7,7 +7,7 @@ namespace Ase.Messaging.Messaging.Annotation
     /// Thrown when an @...Handler annotated method was found that does not conform to the rules that apply to those
     /// methods.
     /// </summary>
-    public class UnsupportedHandlerException : AxonConfigurationException
+    public class UnsupportedHandlerException : AseConfigurationException
     {
         private readonly MemberInfo? _violatingMethod;
 

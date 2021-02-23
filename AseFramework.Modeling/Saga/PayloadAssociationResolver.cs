@@ -47,7 +47,7 @@ namespace AseFramework.Modeling.Saga
             );
             if (associationProperty != null) return associationProperty;
             string handlerName = handler.Unwrap<MemberInfo>()?.ToString() ?? "unknown";
-            throw new AxonConfigurationException(
+            throw new AseConfigurationException(
                 $"SagaEventHandler {handlerName} defines a property {associationPropertyName} " +
                 $"that is not defined on the Event it declares to handle ({handler.PayloadType().Name})");
 

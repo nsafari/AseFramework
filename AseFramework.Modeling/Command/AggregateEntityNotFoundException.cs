@@ -6,7 +6,7 @@ namespace AseFramework.Modeling.Command
     /// <summary>
     /// Exception indicating that the an entity for an aggregate could not be found.
     /// </summary>
-    public class AggregateEntityNotFoundException: AxonNonTransientException
+    public class AggregateEntityNotFoundException: AseNonTransientException
     {
         /// <summary>
         /// Initialize a AggregateEntityNotFoundException with given {@code message}.

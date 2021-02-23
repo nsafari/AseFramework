@@ -8,7 +8,7 @@ namespace Ase.Messaging.Common
     /// <p/>
     /// Examples of such errors are programming errors and version conflicts.
     /// </summary>
-    public class AxonNonTransientException: AseException
+    public class AseNonTransientException: AseException
     {
         
         /// <summary>
@@ -20,14 +20,14 @@ namespace Ase.Messaging.Common
         /// AxonNonTransientException, otherwise {@code false}</returns>
         public static bool IsCauseOf(Exception? throwable) {
             return throwable != null
-                   && (throwable is AxonNonTransientException || IsCauseOf(throwable.InnerException));
+                   && (throwable is AseNonTransientException || IsCauseOf(throwable.InnerException));
         }
         
         /// <summary>
         /// Initializes the exception using the given {@code message}.
         /// </summary>
         /// <param name="message">The message describing the exception</param>
-        public AxonNonTransientException(string message) : base(message)
+        public AseNonTransientException(string message) : base(message)
         {
         }
 
@@ -36,7 +36,7 @@ namespace Ase.Messaging.Common
         /// </summary>
         /// <param name="message">The message describing the exception</param>
         /// <param name="innerException">The underlying cause of the exception</param>
-        public AxonNonTransientException(string message, Exception? innerException) : base(message, innerException)
+        public AseNonTransientException(string message, Exception? innerException) : base(message, innerException)
         {
         }
     }
