@@ -14,14 +14,13 @@ namespace Ase.Messaging.EventHandling
     public interface IEventMessageHandler<in TMessage, TPayload>: IMessageHandler<TMessage, IEventMessage<TPayload>> 
         where TMessage : IMessage<IEventMessage<TPayload>> where TPayload : class
     {
-        
         /// <summary>
         /// Process the given event. The implementation may decide to process or skip the given event. It is highly
         /// unrecommended to throw any exception during the event handling process. 
         /// </summary>
         /// <param name="event">the event to handle</param>
         /// <returns>the result of the event handler invocation. Is generally ignored</returns>
-        object Handle(IEventMessage<TPayload> @event);
+        object? Handle(IEventMessage<TPayload> @event);
 
         /// <summary>
         /// Performs any activities that are required to reset the state managed by handlers assigned to this invoker.

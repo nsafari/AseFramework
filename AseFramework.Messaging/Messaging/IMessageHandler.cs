@@ -15,7 +15,7 @@ namespace Ase.Messaging.Messaging
         /// </summary>
         /// <param name="message">The message to be processed.</param>
         /// <returns>The result of the message processing</returns>
-        object Handle(TMessage message);
+        object? Handle(TMessage message);
 
         /// <summary>
         /// Indicates whether this handler can handle the given message
@@ -56,7 +56,7 @@ namespace Ase.Messaging.Messaging
             _handler = handler;
         }
 
-        public object Handle(TMessage message)
+        public object? Handle(TMessage message)
         {
             return _handler(message);
         }
